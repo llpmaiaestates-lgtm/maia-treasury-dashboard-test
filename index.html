@@ -1094,7 +1094,7 @@ $("eDate").addEventListener("change",loadEntry);
   const jitter=Math.floor(Math.random()*90000);
   setTimeout(function tick(){loadAll();setTimeout(tick,REFRESH_MS);},REFRESH_MS+jitter);
 })();
-updateCustomChartControls();
+if(typeof updateCustomChartControls==='function')updateCustomChartControls();
 restoreBootstrapCache();
 loadAll();
 </script>
