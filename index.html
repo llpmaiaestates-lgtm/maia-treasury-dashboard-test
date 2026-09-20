@@ -680,7 +680,19 @@ function renderDashboardCharts(){
   charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
 }
 
-function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return Math.abs(n)>=100?n.toFixed(0):n.toFixed(2);}
+function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return n<0?`(${Math.abs(n).toFixed(2)})`:n.toFixed(2);}
+function oneMetricColor(key,idx=0){
+  const fixed={
+    total:'#1F5B45', liquid:'#B58A3A', nonliquid:'#8C633E',
+    bank:'#3D6F8E', sweep:'#C06C3D', fd:'#7A5C8E', mf:'#4D8A80',
+    bonds:'#6B7D3A', brs:'#A34F4F', reserve:'#5B6E8C',
+    restricted:'#7B4F6D', locked_funds:'#3F7C63'
+  };
+  if(fixed[key])return fixed[key];
+  const palette=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63','#9B7A2F','#4C6678'];
+  const str=String(key||'custom');let hash=7;for(let i=0;i<str.length;i++)hash=((hash*31)+str.charCodeAt(i))>>>0;
+  return palette[hash%palette.length];
+}
 function splitChartLabel(label,maxLen=25,maxLines=3){
   const text=String(label||''); if(text.length<=maxLen)return [text];
   const words=text.split(/\s+/), lines=[''];
@@ -841,7 +853,24 @@ function oneMetricData(cfg,date,metric,item){
   return +filteredRows(date).reduce((s,r)=>s+n(r[item.key]),0).toFixed(2);
 }
 function oneBuildMetricDatasets(cfg,date,items){
-  return cfg.metrics.map((m,mi)=>({label:oneMetricLabel(m),data:items.map(it=>oneMetricData(cfg,date,m,it)),backgroundColor:items.map((_,i)=>V38_ONE_PALETTE[(i+mi*4)%V38_ONE_PALETTE.length]),borderColor:cfg.type==='line'||cfg.type==='area'?(mi===0?'#1F5B45':'#B58A3A'):'#fff',borderWidth:cfg.type==='line'||cfg.type==='area'?3:1,borderRadius:4,fill:cfg.type==='area',tension:.25,pointRadius:cfg.type==='line'||cfg.type==='area'?4:0,pointBackgroundColor:mi===0?'#B58A3A':'#1F5B45',pointBorderColor:'#fff',pointBorderWidth:2}));
+  return cfg.metrics.map((m,mi)=>{
+    const color=oneMetricColor(m,mi);
+    const isLine=cfg.type==='line'||cfg.type==='area';
+    return {
+      label:oneMetricLabel(m),
+      data:items.map(it=>oneMetricData(cfg,date,m,it)),
+      backgroundColor:color,
+      borderColor:isLine?color:'#fff',
+      borderWidth:isLine?3:1,
+      borderRadius:4,
+      fill:cfg.type==='area',
+      tension:.25,
+      pointRadius:isLine?4:0,
+      pointBackgroundColor:color,
+      pointBorderColor:'#fff',
+      pointBorderWidth:2
+    };
+  });
 }
 const V38_ONE_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63','#9B7A2F','#4C6678'];
 function oneStageHeight(cfg,count){
@@ -869,11 +898,11 @@ function oneRenderChart(){
   const canvas=makeOneCanvas(oneStageWidth(cfg,count),oneStageHeight(cfg,count));if(!canvas)return;Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
   const labels=items.map(it=>oneDisplayLabel(cfg,it,count));let chartType=cfg.type==='doughnut'?'doughnut':(cfg.type==='line'||cfg.type==='area'?'line':'bar');let indexAxis=cfg.type==='horizontalBar'||cfg.type==='stackedBar'||cfg.type==='percentStackedBar'?'y':'x';if(cfg.axis==='project')indexAxis='y';
   if(cfg.type==='doughnut'){
-    const vals=items.map(it=>oneMetricData(cfg,date,cfg.metrics[0],it));const ds={label:oneMetricLabel(cfg.metrics[0]),data:vals,backgroundColor:labels.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]),borderColor:'#fff',borderWidth:3,hoverOffset:5};const o=oneOptions('x',false,false,cfg,count);delete o.scales;o.cutout='62%';o.plugins.legend={display:cfg.legend!==false,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(vals[i])} Cr`}))}};o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[ds]},options:o});
+    const vals=items.map(it=>oneMetricData(cfg,date,cfg.metrics[0],it));const ds={label:oneMetricLabel(cfg.metrics[0]),data:vals,backgroundColor:items.map((it,i)=>oneMetricColor(it.key,i)),borderColor:'#fff',borderWidth:3,hoverOffset:5};const o=oneOptions('x',false,false,cfg,count);delete o.scales;o.cutout='62%';o.plugins.legend={display:cfg.legend!==false,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(vals[i])} Cr`}))}};o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[ds]},options:o});
   }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
     const selectedMetrics=oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis);
     const defs=(selectedMetrics.length>1||selectedMetrics[0]!=='total')?selectedMetrics.map((m)=>({key:m,label:oneMetricLabel(m)})):oneTotalDefs();
-    const ds=defs.map((d,i)=>({label:d.label,data:items.map(it=>oneMetricData(cfg,date,d.key,it)),backgroundColor:V38_ONE_PALETTE[i%V38_ONE_PALETTE.length],borderColor:'#fff',borderWidth:1,borderRadius:3}));
+    const ds=defs.map((d,i)=>({label:d.label,data:items.map(it=>oneMetricData(cfg,date,d.key,it)),backgroundColor:oneMetricColor(d.key,i),borderColor:'#fff',borderWidth:1,borderRadius:3}));
     if(cfg.type==='percentStackedBar'){const totals=labels.map((_,i)=>ds.reduce((s,d)=>s+Number(d.data[i]||0),0));ds.forEach(d=>d.data=d.data.map((v,i)=>totals[i]?+(v/totals[i]*100).toFixed(2):0));}
     const o=oneOptions('y',true,cfg.type==='percentStackedBar',cfg,count);o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg)]});
   }else{
