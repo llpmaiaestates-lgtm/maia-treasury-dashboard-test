@@ -189,8 +189,14 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .login-shell{width:min(430px,94vw);background:#fff;border:1px solid #dfe7e2;border-radius:16px;box-shadow:0 18px 60px rgba(25,55,40,.14);overflow:hidden}
 .login-top{background:linear-gradient(135deg,#073e2f,#1f513b);color:#fff;padding:26px 28px 22px}
 .login-brand{display:flex;align-items:center;gap:12px}.login-logo{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:10px;padding:4px}.login-title{font:700 23px "Times New Roman",Times,serif}.login-sub{font-size:12px;opacity:.86;margin-top:3px}
-.login-body{padding:25px 28px 28px}.login-body .fg{margin-bottom:14px}.login-body label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.75px;color:var(--muted);font-weight:800;margin-bottom:6px}.login-body input{width:100%;height:42px}.login-btn{width:100%;height:43px;margin-top:4px}.login-error{min-height:18px;color:var(--red);font-size:11px;margin:9px 0 0;line-height:1.35}.login-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:12px}.auth-user{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media(max-width:1000px){.auth-user{display:none}}
+.login-body{padding:25px 28px 28px}.login-body .fg{margin-bottom:14px}.login-body label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.75px;color:var(--muted);font-weight:800;margin-bottom:6px}.login-body input{width:100%;height:42px}.login-btn{width:100%;height:43px;margin-top:4px}.login-reset{text-align:right;margin-top:10px}.login-reset button{border:0;background:none;padding:0;color:var(--forest);font:700 11px "Times New Roman",Times,serif;cursor:pointer;text-decoration:underline}.login-reset button:hover{opacity:.78}.login-error{min-height:18px;color:var(--red);font-size:11px;margin:9px 0 0;line-height:1.35}.login-success{min-height:18px;color:#267447;font-size:11px;margin:9px 0 0;line-height:1.35}.login-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:12px}.auth-user{width:38px;height:38px;border:1px solid #d7e0da;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--forest);cursor:pointer;transition:.15s ease;position:relative;flex:0 0 auto}
+.auth-user:hover{background:#f3f7f4;border-color:#b9cbbf;transform:translateY(-1px)}
+.auth-user svg{width:19px;height:19px;stroke:currentColor}
+.auth-user::after{content:attr(data-email);position:absolute;right:0;top:45px;background:#163f31;color:#fff;border-radius:6px;padding:7px 9px;font-size:10px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(-3px);transition:.12s ease;box-shadow:0 8px 22px rgba(18,58,43,.16);z-index:2000}
+.auth-user:hover::after{opacity:1;transform:translateY(0)}
+.auth-icon-btn{width:38px;height:38px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:9px!important}
+.auth-icon-btn svg{width:18px;height:18px;stroke:currentColor}
+@media(max-width:1000px){.auth-user{display:flex}}
 body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{display:none!important}
 </style></head>
 <body class="auth-locked">
@@ -206,7 +212,9 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
       <div class="fg"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Enter your email"></div>
       <div class="fg"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')signInUser()"></div>
       <button id="loginBtn" class="btn primary login-btn" onclick="signInUser()">Sign In</button>
+      <div class="login-reset"><button type="button" onclick="resetPassword()">Forgot Password?</button></div>
       <div id="loginError" class="login-error"></div>
+      <div id="loginSuccess" class="login-success"></div>
       <div class="login-hint">Use the email and password created in Firebase Authentication.</div>
     </div>
   </div>
@@ -232,8 +240,19 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
     </div>
     <div class="header-project-filter"><select id="headerProject" onchange="syncHeaderProject()"><option value="ALL">All Projects</option></select></div>
     <div class="last-updated"><small>Last Updated</small><b id="headerLastUpdated">—</b></div>
-     <div class="auth-user" id="authUser" title="Signed-in user"></div>
-     <button class="btn" onclick="signOutUser()">Logout</button>
+     <button type="button" class="auth-user" id="authUser" title="Signed-in user" aria-label="Signed-in user">
+       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+         <path d="M20 21a8 8 0 0 0-16 0"></path>
+         <circle cx="12" cy="7" r="4"></circle>
+       </svg>
+     </button>
+     <button type="button" class="btn auth-icon-btn" onclick="signOutUser()" title="Logout" aria-label="Logout">
+       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+         <path d="M10 17l5-5-5-5"></path>
+         <path d="M15 12H3"></path>
+         <path d="M21 3v18"></path>
+       </svg>
+     </button>
     <button class="btn primary" onclick="loadAll()">↻ Refresh Data</button>
   </div>
 </header>
@@ -331,9 +350,9 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
 </section>
 
 <section id="audit" class="page">
-  <div class="head"><div><div class="eyebrow">Control &amp; history</div><div class="title">Audit Log</div><div class="sub">Separate historical record of additions, changes, reason, IP and browser details.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Control &amp; history</div><div class="title">Audit Log</div><div class="sub">Separate historical record of additions, changes, reason, username and browser details.</div></div></div>
   <div class="card cardpad"><div class="auditfilters"><select id="aEntity" onchange="renderAudit()"><option value="ALL">All Entities</option></select><input id="aFrom" type="date" onchange="renderAudit()"><input id="aTo" type="date" onchange="renderAudit()"><select id="aAction" onchange="renderAudit()"><option value="ALL">All Actions</option><option value="ADD">ADD</option><option value="UPDATE">UPDATE</option><option value="ENTITY_ADD">ENTITY ADD</option><option value="ENTITY_DEACTIVATE">ENTITY DEACTIVATE</option></select></div></div>
-  <div class="card"><div class="tablewrap"><table style="min-width:1450px"><thead><tr><th>Timestamp</th><th>Action</th><th>Date</th><th>Entity</th><th>Changed Fields</th><th>Movement</th><th>Major Reason</th><th>IP Address</th><th>Browser / Device</th></tr></thead><tbody id="auditTable"></tbody></table></div></div>
+  <div class="card"><div class="tablewrap"><table style="min-width:1450px"><thead><tr><th>Timestamp</th><th>Action</th><th>Date</th><th>Entity</th><th>Changed Fields</th><th>Movement</th><th>Major Reason</th><th>Username</th><th>Browser / Device</th></tr></thead><tbody id="auditTable"></tbody></table></div></div>
 </section>
 
 <section id="entities" class="page">
@@ -396,12 +415,14 @@ const maiaAuth = firebase.auth();
 let maiaCurrentUser = null;
 let authBootstrapStarted = false;
 
-function setLoginError(msg){ const e=document.getElementById("loginError"); if(e)e.textContent=msg||""; }
+function setLoginError(msg){ const e=document.getElementById("loginError"); if(e)e.textContent=msg||""; const s=document.getElementById("loginSuccess"); if(s&&msg)s.textContent=""; }
+function setLoginSuccess(msg){ const e=document.getElementById("loginSuccess"); if(e)e.textContent=msg||""; const er=document.getElementById("loginError"); if(er&&msg)er.textContent=""; }
 function setLoginBusy(busy){ const b=document.getElementById("loginBtn"); if(!b)return; b.disabled=busy; b.textContent=busy?"Signing In…":"Sign In"; }
 async function signInUser(){
   const email=String(document.getElementById("loginEmail")?.value||"").trim();
   const password=String(document.getElementById("loginPassword")?.value||"");
   setLoginError("");
+  setLoginSuccess("");
   if(!email||!password){setLoginError("Please enter your email and password.");return;}
   setLoginBusy(true);
   try{ await maiaAuth.signInWithEmailAndPassword(email,password); }
@@ -413,13 +434,26 @@ async function signInUser(){
   }
   finally{ setLoginBusy(false); }
 }
+async function resetPassword(){
+  const email=String(document.getElementById("loginEmail")?.value||"").trim();
+  setLoginError(""); setLoginSuccess("");
+  if(!email){ setLoginError("Please enter your email address first."); document.getElementById("loginEmail")?.focus(); return; }
+  try{
+    await maiaAuth.sendPasswordResetEmail(email);
+    setLoginSuccess("Password reset email sent. Please check your inbox.");
+  }catch(err){
+    const code=String(err?.code||"");
+    const msg=code.includes("user-not-found")?"No Firebase user was found for this email address.":(err?.message||"Unable to send the reset email. Please try again.");
+    setLoginError(msg);
+  }
+}
 function signOutUser(){ return maiaAuth.signOut(); }
 function showDashboardForUser(user){
   maiaCurrentUser=user;
   window.maiaCurrentUser=user;
   document.body.classList.remove("auth-locked");
   document.getElementById("loginScreen")?.classList.add("hidden");
-  const u=document.getElementById("authUser"); if(u)u.textContent=user?.email||"Signed in";
+  const u=document.getElementById("authUser"); if(u){u.textContent="";u.title=user?.email||"Signed-in user";u.setAttribute("data-email",user?.email||"Signed in");u.setAttribute("aria-label",user?.email?`Signed-in user: ${user.email}`:"Signed-in user");}
   if(!authBootstrapStarted){
     authBootstrapStarted=true;
     restoreBootstrapCache();
@@ -431,7 +465,8 @@ function showLoginScreen(){
   authBootstrapStarted=false;
   document.body.classList.add("auth-locked");
   document.getElementById("loginScreen")?.classList.remove("hidden");
-  const u=document.getElementById("authUser"); if(u)u.textContent="";
+  setLoginError(""); setLoginSuccess("");
+  const u=document.getElementById("authUser"); if(u){u.textContent="";u.removeAttribute("data-email");u.title="Signed-in user";u.setAttribute("aria-label","Signed-in user");}
 }
 maiaAuth.onAuthStateChanged(user=>{ if(user)showDashboardForUser(user); else showLoginScreen(); });
 
@@ -1059,14 +1094,14 @@ async function saveEntry(){
   const old=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);$("saveBtn").disabled=true;
   try{
     const values=formRow();
-    const res=await apiPost({action:"save",date,entity,projectCode:project,project,...values});
+    const res=await apiPost({action:"save",date,entity,projectCode:project,project,username:maiaCurrentUser?.email||"",...values});
     if(res.status!=="ok")throw Error(res.message||"Save failed");
     const updated={date,entity:String(entity).toUpperCase(),project:String(project).toUpperCase(),projectName:projectName(project),updatedAt:new Date().toISOString()};
     columns.filter(c=>c.active!==false).forEach(c=>updated[c.key]=n(values[c.key]));
     const idx=rows.findIndex(x=>x.date===date&&x.entity===String(entity).toUpperCase()&&x.project===String(project).toUpperCase());
     if(idx>=0)rows[idx]=updated;else rows.push(updated);
     rows.sort((a,b)=>(a.date+a.entity+a.project).localeCompare(b.date+b.entity+b.project));
-    const auditEntry={timestamp:new Date().toISOString(),action:old?"UPDATE":"ADD",date,entity:String(entity).toUpperCase(),details:old?(project+" · Updated"):("Initial treasury entry · "+project),movement:"",reason:old?"":"Initial entry",ip:"",userAgent:navigator.userAgent};
+    const auditEntry={timestamp:new Date().toISOString(),action:old?"UPDATE":"ADD",date,entity:String(entity).toUpperCase(),details:old?(project+" · Updated"):("Initial treasury entry · "+project),movement:"",reason:old?"":"Initial entry",username:maiaCurrentUser?.email||"",ip:"",userAgent:navigator.userAgent};
     audit=[auditEntry,...audit].slice(0,200);
     populateControls([...new Set(rows.map(r=>r.date).filter(Boolean))].sort());
     renderDashboard();
@@ -1077,6 +1112,29 @@ async function saveEntry(){
   }catch(e){note(e.message,true)}finally{$("saveBtn").disabled=false}
 }
 
+function renderAudit(){
+  const table=$("auditTable"); if(!table)return;
+  const ef=String($("aEntity")?.value||"ALL").toUpperCase();
+  const from=String($("aFrom")?.value||""); const to=String($("aTo")?.value||"");
+  const act=String($("aAction")?.value||"ALL").toUpperCase();
+  let list=Array.isArray(audit)?audit.slice():[];
+  list=list.filter(x=>{
+    const entity=String(x.entity||"").toUpperCase();
+    const date=String(x.date||x.timestamp||"").slice(0,10);
+    const action=String(x.action||"").toUpperCase();
+    if(ef!=="ALL"&&entity!==ef)return false;
+    if(from&&date<from)return false;
+    if(to&&date>to)return false;
+    if(act!=="ALL"&&action!==act)return false;
+    return true;
+  }).sort((a,b)=>String(b.timestamp||"").localeCompare(String(a.timestamp||"")));
+  const escText=v=>esc(v==null?"":String(v));
+  table.innerHTML=list.map(x=>{
+    const username=x.username||x.user||x.userEmail||x.email||"";
+    const ts=x.timestamp?new Date(x.timestamp).toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}):"—";
+    return `<tr><td>${escText(ts)}</td><td>${escText(x.action||"")}</td><td>${escText(x.date||"")}</td><td><b>${escText(x.entity||"")}</b></td><td class="audit-detail">${escText(x.details||"")}</td><td>${escText(x.movement||"")}</td><td class="reasontext">${escText(x.reason||"")}</td><td>${username?escText(username):"<span style=\"color:#9aa59f\">Not recorded</span>"}</td><td class="audit-detail">${escText(x.userAgent||"")}</td></tr>`;
+  }).join("")||'<tr><td colspan="9" class="empty">No audit records found.</td></tr>';
+}
 function clearEntry(){columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=""});preview()}
 function renderCompare(){
   const d1=$('c1').value,d2=$('c2').value;if(!d1||!d2)return;
