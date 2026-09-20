@@ -158,6 +158,24 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 @media(max-width:1100px){.chart-slots{grid-template-columns:1fr}.chart-slot-controls{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:720px){.chart-slot-controls{grid-template-columns:1fr}.saved-chart-row{grid-template-columns:1fr;align-items:stretch}}
 
+
+/* FINAL MULTI-METRIC */
+.metric-multi{position:relative;min-width:0}
+.metric-multi-btn{width:100%;height:42px;text-align:left;padding:9px 34px 9px 11px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;color:var(--ink);font-family:"Times New Roman",Times,serif;font-size:13px;cursor:pointer;position:relative}
+.metric-multi-btn:after{content:"▾";position:absolute;right:11px;color:var(--forest)}
+.metric-multi-menu{display:none;position:absolute;top:47px;left:0;right:0;max-height:290px;overflow:auto;background:#fff;border:1px solid #ccd8d0;border-radius:8px;box-shadow:0 10px 26px rgba(25,55,40,.14);padding:7px;z-index:120}
+.metric-multi.open .metric-multi-menu{display:block}
+.metric-multi-option{display:flex;align-items:center;gap:8px;padding:7px 6px;border-radius:5px;cursor:pointer}
+.metric-multi-option:hover{background:#f5f8f6}
+.metric-multi-option input{margin:0;width:14px;height:14px}
+.metric-multi-help{font-size:10px;color:var(--muted);margin-top:4px}
+.one-chart-scroller{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:4px}
+.one-chart-canvas-wrap{position:relative;min-width:100%}
+
+/* One custom chart: four controls + legend visibility */
+.custom-one-controls{grid-template-columns:repeat(4,minmax(180px,1fr))!important}
+@media(max-width:1100px){.custom-one-controls{grid-template-columns:repeat(2,minmax(220px,1fr))!important}}
+@media(max-width:650px){.custom-one-controls{grid-template-columns:1fr!important}}
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
 /* FINAL ONE CUSTOM CHART UI */
@@ -260,13 +278,14 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 
 
 <section id="charts" class="page">
-  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Treasury Chart</div><div class="sub">Build one chart from your treasury data using Category, Metric, Chart Type and the applicable date option.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Treasury Chart</div><div class="sub">Build one chart from your treasury data using Category, up to 3 Metrics / Values, Chart Type and the applicable date option.</div></div></div>
   <div class="card custom-one-card">
     <div class="cardhead"><div><div class="ct">Custom Chart</div><div class="cs">One fully configurable chart · values always shown</div></div><div class="custom-chart-actions"><button class="btn sm" onclick="resetOneCustomChart()">Reset</button><button class="btn sm primary" onclick="saveOneCustomChart()">Save Chart</button></div></div>
     <div class="custom-one-controls">
       <div class="control"><label>CATEGORY / AXIS</label><select id="oneAxis" onchange="oneChartControlChanged()"></select></div>
-      <div class="control"><label>METRIC / VALUE</label><select id="oneMetric" onchange="oneChartControlChanged()"></select></div>
+      <div class="control"><label>METRIC / VALUE <span style="font-weight:700;color:var(--forest)">(up to 3)</span></label><div class="metric-multi" id="oneMetricMulti"><button type="button" class="metric-multi-btn" id="oneMetricBtn" onclick="toggleOneMetricMenu(event)">1 value selected</button><div class="metric-multi-menu" id="oneMetricMenu"></div></div><div class="metric-multi-help">Select up to three amount parameters.</div></div>
       <div class="control"><label>CHART TYPE</label><select id="oneType" onchange="oneChartControlChanged()"></select></div>
+      <div class="control"><label>LEGEND</label><select id="oneLegend" onchange="oneChartControlChanged()"><option value="yes">Show</option><option value="no">Hide</option></select></div>
     </div>
     <div id="oneDateControls" class="custom-one-date"></div>
     <div id="oneChartNote" class="custom-one-note"></div>
@@ -445,15 +464,29 @@ async function loadAll(){
     rows=normalizeRows({data:b.data||[]});
     const master=(b.entities||[]);
     entityMeta=master.map(x=>typeof x==="string"?{entityCode:String(x).toUpperCase(),entityName:"",startDate:""}:{entityCode:String(x.entityCode||x.code||x.entity||x.name||"").toUpperCase(),entityName:String(x.entityName||""),startDate:String(x.startDate||"").slice(0,10)}).filter(x=>x.entityCode);
-    entities=entityMeta.length?[...new Set(entityMeta.map(x=>x.entityCode))]:[...new Set(rows.map(r=>String(r.entity||"").toUpperCase()).filter(Boolean))];
+    // Active master entities are authoritative. If an entity has saved Treasury_Data rows
+    // but is not yet present in Entity_Project_Master, keep that saved entity visible.
+    // An explicitly inactive master entity is never re-added from historical data.
+    const explicitMasterCodes=new Set((b.entities||[]).map(x=>String(typeof x==="string"?x:(x.entityCode||x.code||x.entity||x.name||"")).toUpperCase()).filter(Boolean));
+    const activeMasterCodes=new Set(entityMeta.map(x=>x.entityCode));
+    const dataOnlyCodes=[...new Set(rows.map(r=>String(r.entity||"").toUpperCase()).filter(Boolean))].filter(code=>!explicitMasterCodes.has(code));
+    entities=[...new Set([...activeMasterCodes,...dataOnlyCodes])];
     // If the user previously had all entities selected, automatically include newly added entities.
     // If the user intentionally selected a subset, preserve that subset.
     if(hadAllEntities || !selectedEntities.length || selectedEntities.some(e=>!entities.includes(e))) selectedEntities=[...entities];
     columns=(b.columns||[]).map(x=>({...x,liquidInclude:x.liquidInclude!==undefined?!!x.liquidInclude:(x.liquidExclude!==true)}));
     if(!columns.length)columns=defaultColumns();
     projects=(b.projects||[]).filter(x=>x.active!==false);
-    // Do not invent a second "General" project on the client. The backend
-    // reconciles missing project masters from Treasury_Data.
+    const activeProjectKeys=new Set(projects.map(p=>String(p.entityCode||"").toUpperCase()+"|"+String(p.projectCode||"").toUpperCase()));
+    const masterProjectState=new Map((b.projects||[]).map(p=>[String(p.entityCode||"").toUpperCase()+"|"+String(p.projectCode||"").toUpperCase(),p.active!==false]));
+    rows.forEach(r=>{
+      const ec=String(r.entity||"").toUpperCase(),pc=String(r.project||"").toUpperCase(),key=ec+"|"+pc;
+      if(!ec||!pc||!entities.includes(ec)||activeProjectKeys.has(key)||masterProjectState.get(key)===false)return;
+      projects.push({projectCode:pc,projectName:String(r.projectName||pc).trim(),entityCode:ec,entityName:(entityMeta.find(e=>e.entityCode===ec)||{}).entityName||ec,active:true,sort:999,startDate:""});
+      activeProjectKeys.add(key);
+    });
+    // Do not invent a second "General" project on the client. Saved Treasury_Data rows
+    // remain visible even if their historical project is not yet in the master.
     audit=b.audit||[];
     officeHolidays=b.holidays||[];
     saveBootstrapCache(b);
@@ -590,7 +623,7 @@ function renderDashboard(){
     const rr=rows.find(x=>x.date===selectedDate&&String(x.entity||'').toUpperCase()===entity&&String(x.project||'').trim().toUpperCase()===project);
     if(rr){displayRows.push(rr);used.add(key)}else{displayRows.push({date:selectedDate,entity,project,projectName:p.projectName,__missing:true});used.add(key)}
   });
-  rows.filter(r=>r.date===selectedDate&&dashEntities.has(String(r.entity||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())&&(!projects.length||projects.some(p=>p.active!==false&&String(p.projectCode).toUpperCase()===String(r.project).toUpperCase()))).forEach(r=>{
+  rows.filter(r=>r.date===selectedDate&&dashEntities.has(String(r.entity||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())).forEach(r=>{
     const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').trim().toUpperCase();if(!used.has(key)){displayRows.push(r);used.add(key)}
   });
 
@@ -610,7 +643,7 @@ function renderDashboard(){
   const td=$('dashTableDate');if(td)td.textContent=selectedDate?` · ${formatDateLong(selectedDate)}`:'';
   const tableWrap=$('dashTable')?.closest('.tablewrap');if(tableWrap)tableWrap.scrollLeft=0;
 }
-function projectName(code){const p=projects.find(x=>String(x.projectCode)===String(code));return p?p.projectName:(code||'General')}
+function projectName(code){const key=String(code||'').toUpperCase();const p=projects.find(x=>String(x.projectCode||'').toUpperCase()===key);if(p&&p.projectName)return p.projectName;const r=rows.find(x=>String(x.project||'').toUpperCase()===key&&x.projectName);return r&&r.projectName?r.projectName:(code||'General')}
 
 function formatDateLong(date){
   if(!date)return "";
@@ -689,27 +722,14 @@ function valueLabelPlugin(pluginId,opts={}){
 
 /* ================================================================
    FINAL ONE-CUSTOM-CHART ENGINE
-   Dashboard keeps its two fixed charts. Charts tab has one configurable chart.
+   Dashboard keeps its 2 fixed charts. Charts tab has ONE configurable chart.
+   Metric / Value supports up to 3 amount parameters.
    ================================================================ */
-const ONE_CHART_TYPE_NAMES={
-  columnBar:'Column Bar',
-  horizontalBar:'Horizontal Bar',
-  line:'Line',
-  area:'Area',
-  doughnut:'Doughnut',
-  stackedBar:'Stacked Bar',
-  percentStackedBar:'100% Stacked Bar'
-};
-const ONE_AXIS_OPTIONS=[
-  {v:'date',l:'Date'},
-  {v:'entity',l:'Entity'},
-  {v:'project',l:'Project'},
-  {v:'fund',l:'Fund Type'}
-];
-const ONE_DEFAULT_CONFIG={axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof',asOf:''};
+const ONE_CHART_TYPE_NAMES={columnBar:'Column Bar',horizontalBar:'Horizontal Bar',line:'Line',area:'Area',doughnut:'Doughnut',stackedBar:'Stacked Bar',percentStackedBar:'100% Stacked Bar'};
+const ONE_AXIS_OPTIONS=[{v:'date',l:'Date'},{v:'entity',l:'Entity'},{v:'project',l:'Project'},{v:'fund',l:'Fund Type'}];
+const ONE_DEFAULT_CONFIG={axis:'entity',metrics:['total'],type:'horizontalBar',dateMode:'asof',asOf:'',legend:true};
 let oneChartConfig={...ONE_DEFAULT_CONFIG};
 let savedCharts=[];
-
 function oneChartDefs(){
   const core=[
     {key:'bank',label:'Bank Balance',sort:1,includeTotal:true,liquidInclude:true,active:true},
@@ -727,29 +747,30 @@ function oneChartDefs(){
   return [...m.values()].filter(c=>c.active!==false).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
 }
 function oneTotalDefs(){return oneChartDefs().filter(c=>c.includeTotal===true);}
-function oneLiquidDefs(){return oneChartDefs().filter(c=>c.liquidInclude===true);}
 function oneMetricOptions(axis){
   if(axis==='fund')return [{v:'amount',l:'Amount'}];
   const out=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},{v:'nonliquid',l:'Non-Liquid Funds'}];
   oneChartDefs().forEach(c=>{if(!out.some(x=>x.v===c.key))out.push({v:c.key,l:c.label});});
   return out;
 }
+function oneNormaliseMetrics(metrics,axis){
+  let arr=Array.isArray(metrics)?metrics.slice():(typeof metrics==='string'?[metrics]:[]);
+  if(!arr.length)arr=['total'];
+  const valid=new Set(oneMetricOptions(axis).map(x=>x.v));
+  arr=arr.filter(x=>valid.has(x));
+  if(axis==='fund')arr=['amount'];
+  if(!arr.length)arr=['total'];
+  return [...new Set(arr)].slice(0,3);
+}
 function oneDateOptions(axis){
   if(axis!=='date')return [{v:'asof',l:'As of Date'}];
-  return [
-    {v:'latest5',l:'Latest 5 Available Dates'},
-    {v:'latest10',l:'Latest 10 Available Dates'},
-    {v:'last30',l:'Last 30 Days'},
-    {v:'last90',l:'Last 90 Days'},
-    {v:'custom',l:'Custom Date Range'}
-  ];
+  return [{v:'latest5',l:'Latest 5 Available Dates'},{v:'latest10',l:'Latest 10 Available Dates'},{v:'last30',l:'Last 30 Days'},{v:'last90',l:'Last 90 Days'},{v:'custom',l:'Custom Date Range'}];
 }
 function oneUniqueDates(){return [...new Set((rows||[]).map(r=>String(r.date||'').slice(0,10)).filter(Boolean))].sort();}
 function oneMaxDate(){const d=oneUniqueDates();return d.length?d[d.length-1]:'';}
 function oneAddDays(s,days){const d=new Date(String(s).slice(0,10)+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
 function oneDatesForConfig(cfg){
-  const all=oneUniqueDates(); if(!all.length)return [];
-  const max=oneMaxDate();
+  const all=oneUniqueDates();if(!all.length)return[];const max=oneMaxDate();
   if(cfg.dateMode==='latest10')return all.slice(-10);
   if(cfg.dateMode==='last30'){const cut=oneAddDays(max,-30);return all.filter(d=>d>=cut&&d<=max);}
   if(cfg.dateMode==='last90'){const cut=oneAddDays(max,-90);return all.filter(d=>d>=cut&&d<=max);}
@@ -757,284 +778,138 @@ function oneDatesForConfig(cfg){
   return all.slice(-5);
 }
 function oneAsOf(cfg){return cfg.axis==='date'?oneMaxDate():(cfg.asOf||selectedDate||oneMaxDate());}
-function oneHasValue(rs,key){return rs.some(r=>r[key]!==''&&r[key]!==null&&r[key]!==undefined&&Number.isFinite(Number(r[key])));}
 function oneAggregate(rs,metric){
   if(metric==='total')return +rs.reduce((s,r)=>s+total(r),0).toFixed(2);
   if(metric==='liquid')return +rs.reduce((s,r)=>s+liquid(r),0).toFixed(2);
   if(metric==='nonliquid')return +rs.reduce((s,r)=>s+(total(r)-liquid(r)),0).toFixed(2);
   return +rs.reduce((s,r)=>s+n(r[metric]),0).toFixed(2);
 }
-function oneEntityItems(){
-  const es=getDashboardEntities();
-  return es.map(code=>{
-    const meta=(entityMeta||[]).find(e=>String(e.entityCode||'').toUpperCase()===String(code).toUpperCase());
-    const name=meta&&meta.entityName?meta.entityName:code;
-    return {key:code,label:name,fullLabel:code+' · '+name,entity:code};
-  });
-}
+function oneEntityItems(){return getDashboardEntities().map(code=>{const meta=(entityMeta||[]).find(e=>String(e.entityCode||'').toUpperCase()===String(code).toUpperCase());const name=meta&&meta.entityName?meta.entityName:code;return{key:code,label:code,fullLabel:code+' · '+name,entity:code,entityName:name};});}
 function oneProjectItems(){
   const es=new Set(getDashboardEntities());
-  return (projects||[])
-    .filter(p=>p.active!==false && es.has(String(p.entityCode||'').toUpperCase()) && (selectedProject==='ALL'||String(p.projectCode||'').toUpperCase()===String(selectedProject).toUpperCase()))
+  return (projects||[]).filter(p=>p.active!==false&&es.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode||'').toUpperCase()===String(selectedProject).toUpperCase()))
     .map(p=>({key:String(p.projectCode||'').toUpperCase(),label:String(p.projectName||p.projectCode||'').trim(),fullLabel:String(p.entityCode||'').toUpperCase()+' · '+String(p.projectName||p.projectCode||'').trim(),entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase()}));
 }
-function oneFundItems(date){
-  const rs=filteredRows(date);
-  return oneTotalDefs().filter(c=>oneHasValue(rs,c.key)).map(c=>({key:c.key,label:c.label,fullLabel:c.label}));
-}
-function oneCategoryItems(cfg,date){
-  if(cfg.axis==='entity')return oneEntityItems();
-  if(cfg.axis==='project')return oneProjectItems();
-  if(cfg.axis==='fund')return oneFundItems(date);
-  return oneDatesForConfig(cfg).map(d=>({key:d,label:fmtDate(d),fullLabel:fmtDate(d),date:d}));
-}
+function oneFundItems(date){const rs=filteredRows(date);return oneChartDefs().filter(c=>rs.some(r=>r[c.key]!==''&&r[c.key]!==null&&r[c.key]!==undefined&&Number.isFinite(Number(r[c.key])))).map(c=>({key:c.key,label:c.label,fullLabel:c.label}));}
+function oneCategoryItems(cfg,date){if(cfg.axis==='entity')return oneEntityItems();if(cfg.axis==='project')return oneProjectItems();if(cfg.axis==='fund')return oneFundItems(date);return oneDatesForConfig(cfg).map(d=>({key:d,label:fmtDate(d),fullLabel:fmtDate(d),date:d}));}
 function oneCount(cfg){return oneCategoryItems(cfg,oneAsOf(cfg)).length;}
-function oneLongLabels(cfg){return oneCategoryItems(cfg,oneAsOf(cfg)).some(x=>String(x.fullLabel||x.label).length>24);}
-function oneValidTypes(cfg){
-  const count=oneCount(cfg),long=oneLongLabels(cfg);
+function oneDisplayLabel(cfg,item,count){
+  if(cfg.axis==='entity'){
+    const code=String(item.entity||item.label||'').toUpperCase();
+    return code;
+  }
   if(cfg.axis==='date'){
-    const out=['line','area'];
-    if(count<=8&&!long)out.push('columnBar');
-    out.push('horizontalBar');
-    return out;
+    const d=String(item.date||item.key||'').slice(0,10);
+    const dt=new Date(d+'T00:00:00');
+    if(isNaN(dt))return String(item.label||item.key||'');
+    const day=String(dt.getDate()).padStart(2,'0');
+    const mon=dt.toLocaleDateString('en-IN',{month:'short'});
+    return day+'-'+mon;
   }
   if(cfg.axis==='project'){
-    const out=['horizontalBar'];
-    if(cfg.metric==='total')out.push('stackedBar','percentStackedBar');
-    return out;
+    return String(item.label||item.fullLabel||item.key||'');
   }
-  if(cfg.axis==='fund'){
-    const out=['horizontalBar'];
-    if(count<=6)out.push('doughnut');
-    return out;
-  }
-  const out=[];
-  if(count<=8&&!long)out.push('columnBar');
-  out.push('horizontalBar');
-  if(cfg.metric==='total')out.push('stackedBar','percentStackedBar');
-  return out;
+  return String(item.label||item.key||'');
+}
+function oneLongLabels(cfg){
+  const items=oneCategoryItems(cfg,oneAsOf(cfg));
+  return items.some(x=>{
+    if(cfg.axis==='entity')return false;
+    const label=String(x.label||x.fullLabel||'');
+    return label.length>24;
+  });
+}
+function oneValidTypes(cfg){
+  const count=oneCount(cfg),long=oneLongLabels(cfg),multi=oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis).length>1;
+  if(cfg.axis==='date'){const out=['line','area'];if(!long&&count<=8)out.unshift('columnBar');out.push('horizontalBar');return out;}
+  if(cfg.axis==='project'){const out=['horizontalBar'];if(!multi&&oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis)[0]==='total')out.push('stackedBar','percentStackedBar');return out;}
+  if(cfg.axis==='fund'){const out=['horizontalBar'];if(count<=6)out.push('doughnut');return out;}
+  const out=[];if(!long&&count<=8)out.push('columnBar');out.push('horizontalBar');if(!multi&&oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis)[0]==='total')out.push('stackedBar','percentStackedBar');return out;
 }
 function oneSafeConfig(cfg){
-  const c={...ONE_DEFAULT_CONFIG,...cfg};
-  c.axis=ONE_AXIS_OPTIONS.some(x=>x.v===c.axis)?c.axis:'entity';
-  const metrics=oneMetricOptions(c.axis);
-  if(c.axis==='fund')c.metric='amount';
-  if(!metrics.some(x=>x.v===c.metric))c.metric=metrics[0]?.v||'total';
-  const types=oneValidTypes(c); if(!types.includes(c.type))c.type=types[0]||'horizontalBar';
-  if(c.axis==='date'){
-    if(!oneDateOptions('date').some(x=>x.v===c.dateMode))c.dateMode='latest5';
-  }else{
-    c.dateMode='asof';c.asOf=c.asOf||oneMaxDate();delete c.from;delete c.to;
-  }
+  const c={...ONE_DEFAULT_CONFIG,...(cfg||{})};c.legend=c.legend!==false;c.axis=ONE_AXIS_OPTIONS.some(x=>x.v===c.axis)?c.axis:'entity';c.metrics=oneNormaliseMetrics(c.metrics!==undefined?c.metrics:c.metric,c.axis);c.metric=c.metrics[0];
+  const types=oneValidTypes(c);if(!types.includes(c.type))c.type=types[0]||'horizontalBar';
+  if(c.axis==='date'){if(!oneDateOptions('date').some(x=>x.v===c.dateMode))c.dateMode='latest5';}else{c.dateMode='asof';c.asOf=c.asOf||oneMaxDate();delete c.from;delete c.to;}
   return c;
 }
-function oneMetricLabel(metric){
-  if(metric==='total')return 'Total Funds';
-  if(metric==='liquid')return 'Liquid Funds';
-  if(metric==='nonliquid')return 'Non-Liquid Funds';
-  if(metric==='amount')return 'Amount';
-  const c=oneChartDefs().find(x=>x.key===metric);return c?c.label:metric;
+function oneMetricLabel(m){if(m==='total')return'Total Funds';if(m==='liquid')return'Liquid Funds';if(m==='nonliquid')return'Non-Liquid Funds';if(m==='amount')return'Amount';const c=oneChartDefs().find(x=>x.key===m);return c?c.label:m;}
+function oneSummary(cfg,count,date){const metricText=cfg.metrics.map(oneMetricLabel).join(' + ');const dateText=cfg.axis==='date'?(cfg.dateMode==='custom'?`${fmtDate(cfg.from)} → ${fmtDate(cfg.to)}`:(oneDateOptions('date').find(x=>x.v===cfg.dateMode)||{}).l||'Date range'):`As of ${fmtDate(date)}`;return `${oneCategoryLabel(cfg.axis)} · ${metricText} · ${ONE_CHART_TYPE_NAMES[cfg.type]||cfg.type} · ${count} categories · ${dateText}`;}
+function oneMetricData(cfg,date,metric,item){
+  if(cfg.axis==='date')return oneAggregate(filteredRows(item.date),metric);
+  if(cfg.axis==='entity')return oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===item.entity),metric);
+  if(cfg.axis==='project')return oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===item.entity&&String(r.project||'').toUpperCase()===item.project),metric);
+  return +filteredRows(date).reduce((s,r)=>s+n(r[item.key]),0).toFixed(2);
 }
-function oneCategoryLabel(axis){return axis==='fund'?'Fund Type':axis.charAt(0).toUpperCase()+axis.slice(1);}
-function oneSummary(cfg,count,date){
-  const dateText=cfg.axis==='date'
-    ?(cfg.dateMode==='custom'?`${fmtDate(cfg.from)} → ${fmtDate(cfg.to)}`:(oneDateOptions('date').find(x=>x.v===cfg.dateMode)?.l||'Date range'))
-    :`As of ${fmtDate(date)}`;
-  return `${oneCategoryLabel(cfg.axis)} · ${oneMetricLabel(cfg.metric)} · ${ONE_CHART_TYPE_NAMES[cfg.type]||cfg.type} · ${count} categories · ${dateText}`;
+function oneBuildMetricDatasets(cfg,date,items){
+  return cfg.metrics.map((m,mi)=>({label:oneMetricLabel(m),data:items.map(it=>oneMetricData(cfg,date,m,it)),backgroundColor:items.map((_,i)=>V38_ONE_PALETTE[(i+mi*4)%V38_ONE_PALETTE.length]),borderColor:cfg.type==='line'||cfg.type==='area'?(mi===0?'#1F5B45':'#B58A3A'):'#fff',borderWidth:cfg.type==='line'||cfg.type==='area'?3:1,borderRadius:4,fill:cfg.type==='area',tension:.25,pointRadius:cfg.type==='line'||cfg.type==='area'?4:0,pointBackgroundColor:mi===0?'#B58A3A':'#1F5B45',pointBorderColor:'#fff',pointBorderWidth:2}));
 }
-function oneBuildRows(cfg,date){
-  const items=oneCategoryItems(cfg,date);
-  if(cfg.axis==='date'){
-    const vals=items.map(it=>({label:it.label,value:oneAggregate(filteredRows(it.date),cfg.metric),key:it.key,date:it.date}));
-    return {items,rows:vals};
-  }
-  if(cfg.axis==='entity'){
-    const vals=items.map(it=>({label:it.fullLabel,value:oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===it.entity),cfg.metric),key:it.key,entity:it.entity}));
-    return {items,rows:vals};
-  }
-  if(cfg.axis==='project'){
-    const vals=items.map(it=>({label:it.fullLabel,value:oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===it.entity&&String(r.project||'').toUpperCase()===it.project),cfg.metric),key:it.key,entity:it.entity,project:it.project}));
-    return {items,rows:vals};
-  }
-  const rs=filteredRows(date);
-  const vals=items.map(it=>({label:it.label,value:+rs.reduce((s,r)=>s+n(r[it.key]),0).toFixed(2),key:it.key}));
-  return {items,rows:vals};
-}
-function oneStackedDatasets(cfg,date){
-  const defs=oneTotalDefs();
-  const base=oneBuildRows(cfg,date);
-  const labels=base.rows.map(r=>r.label);
-  const datasets=defs.map((d,i)=>({label:d.label,data:base.rows.map(r=>{
-    if(cfg.axis==='entity')return +filteredRows(date).filter(x=>String(x.entity||'').toUpperCase()===r.entity).reduce((s,x)=>s+n(x[d.key]),0).toFixed(2);
-    if(cfg.axis==='project')return +filteredRows(date).filter(x=>String(x.entity||'').toUpperCase()===r.entity&&String(x.project||'').toUpperCase()===r.project).reduce((s,x)=>s+n(x[d.key]),0).toFixed(2);
-    return 0;
-  }),backgroundColor:V38_ONE_PALETTE[i%V38_ONE_PALETTE.length],borderColor:'#fff',borderWidth:1,borderRadius:3}));
-  if(cfg.axis==='entity'||cfg.axis==='project')return {labels,datasets};
-  return {labels,datasets:[]};
-}
-const V38_ONE_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63'];
+const V38_ONE_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63','#9B7A2F','#4C6678'];
 function oneStageHeight(cfg,count){
-  if(cfg.type==='doughnut')return 500;
-  if(cfg.type==='line'||cfg.type==='area')return 460;
-  if(cfg.type==='horizontalBar'||cfg.axis==='project'||count>8)return Math.max(460,Math.min(1500,250+count*52));
-  return 470;
+  if(cfg.type==='doughnut')return 540;
+  if(cfg.type==='line'||cfg.type==='area')return Math.max(480,Math.min(1000,440+Math.max(0,count-5)*22));
+  const horizontal=cfg.type==='horizontalBar'||cfg.type==='stackedBar'||cfg.type==='percentStackedBar'||cfg.axis==='project';
+  const perCat=cfg.metrics&&cfg.metrics.length>1?76:62;
+  return horizontal?Math.max(500,Math.min(2200,250+count*perCat)):Math.max(500,Math.min(1000,320+count*78));
 }
 function oneStageWidth(cfg,count){
-  if(cfg.axis==='date'&&(cfg.type==='line'||cfg.type==='area'||cfg.type==='columnBar'))return Math.max(1000,count*85);
+  if(cfg.axis==='date'&&(cfg.type==='line'||cfg.type==='area'||cfg.type==='columnBar'))return Math.max(1000,count*115);
+  if(cfg.axis==='entity'&&cfg.type==='columnBar')return Math.max(900,count*125);
   return null;
 }
-function oneOptions(indexAxis,stacked=false,percent=false){
-  const o={responsive:true,maintainAspectRatio:false,animation:{duration:0},indexAxis,layout:{padding:{top:24,right:65,bottom:28,left:16}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>{const lab=Array.isArray(c.label)?c.label.join(' '):c.label;return `${c.dataset.label||lab}: ₹ ${formatChartCr(c.raw)} Cr`;}}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
-  if(stacked){o.scales.x.stacked=true;o.scales.y.stacked=true;}
-  if(percent){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';o.scales.y.stacked=true;o.scales.x.stacked=true;}
-  return o;
+function oneOptions(indexAxis,stacked=false,percent=false,cfg=null,count=0){
+  const rotate=indexAxis==='x' && !!cfg && ((cfg.axis==='entity'&&count>=6)||(cfg.axis==='date'&&count>=9)||(cfg.axis==='fund'&&count>=5));
+  const o={responsive:true,maintainAspectRatio:false,animation:{duration:0},indexAxis,layout:{padding:{top:24,right:100,bottom:rotate?95:42,left:30}},plugins:{legend:{display:!cfg||cfg.legend!==false,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>{const lab=Array.isArray(c.label)?c.label.join(' '):c.label;return `${c.dataset.label||lab}: ₹ ${formatChartCr(c.raw)} Cr`;}}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:rotate?90:0,minRotation:rotate?90:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
+  if(stacked){o.scales.x.stacked=true;o.scales.y.stacked=true;}if(percent){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';o.scales.x.stacked=true;o.scales.y.stacked=true;}return o;
 }
-function oneValuePlugin(id,cfg){
-  return {id,afterDatasetsDraw(chart){
-    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
-    const type=chart.config.type,indexAxis=chart.options.indexAxis;
-    chart.data.datasets.forEach((ds,di)=>{
-      const meta=chart.getDatasetMeta(di);
-      meta.data.forEach((el,i)=>{
-        const raw=Number(ds.data[i]); if(!Number.isFinite(raw))return;
-        let p=el.tooltipPosition();
-        if((cfg.type==='stackedBar'||cfg.type==='percentStackedBar')){
-          const pr=el.getProps(['base','x','y'],true);
-          const span=indexAxis==='y'?Math.abs(pr.x-(pr.base??pr.x)):Math.abs(pr.y-(pr.base??pr.y));
-          if(span<34)return;
-        }
-        if(type==='doughnut')return;
-        let x=p.x,y=p.y-9;
-        if(indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
-        const txt=cfg.type==='percentStackedBar'?raw.toFixed(1)+'%':formatChartCr(raw);
-        ctx.fillText(txt,x,y);
-      });
-    });
-    ctx.restore();
-  }};
-}
-function makeOneCanvas(width,height){
-  const st=$('oneChartStage');if(!st)return null;
-  st.innerHTML='<div id="oneChartScroller" class="one-chart-scroller"><canvas id="oneChartCanvas"></canvas></div>';
-  const canvas=$('oneChartCanvas');
-  canvas.style.height=height+'px';
-  if(width)canvas.style.width=width+'px';
-  else canvas.style.width='100%';
-  return canvas;
-}
+function oneValuePlugin(id,cfg){return{id,afterDatasetsDraw(chart){const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';const indexAxis=chart.options.indexAxis;chart.data.datasets.forEach((ds,di)=>chart.getDatasetMeta(di).data.forEach((el,i)=>{const raw=Number(ds.data[i]);if(!Number.isFinite(raw)||cfg.type==='doughnut')return;if((cfg.type==='stackedBar'||cfg.type==='percentStackedBar')){const pr=el.getProps(['base','x','y'],true);const span=indexAxis==='y'?Math.abs(pr.x-(pr.base??pr.x)):Math.abs(pr.y-(pr.base??pr.y));if(span<54)return;}const p=el.tooltipPosition();let x=p.x,y=p.y-9;if(indexAxis==='y'){x=p.x+9;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}ctx.fillText(cfg.type==='percentStackedBar'?raw.toFixed(1)+'%':formatChartCr(raw),x,y);}));ctx.restore();}};}
+function makeOneCanvas(width,height){const st=$('oneChartStage');if(!st)return null;st.innerHTML='<div id="oneChartScroller" class="one-chart-scroller"><div class="one-chart-canvas-wrap"><canvas id="oneChartCanvas"></canvas></div></div>';const canvas=$('oneChartCanvas');canvas.style.height=height+'px';canvas.style.width=(width||'100%')+(width?'px':'');if(width)canvas.style.minWidth=width+'px';return canvas;}
 function oneRenderChart(){
-  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;
-  destroyChartKey('oneCustom');
-  if(!rows.length){chartStageMessage('oneChartStage','No treasury data available.');return;}
-  if(typeof Chart==='undefined'){chartStageMessage('oneChartStage','Chart library is loading…');ensureChartJs().then(oneRenderChart).catch(()=>chartStageMessage('oneChartStage','Chart library could not be loaded.'));return;}
-  const date=oneAsOf(cfg), count=oneCount(cfg), height=oneStageHeight(cfg,count), width=oneStageWidth(cfg,count);
-  if(!count){chartStageMessage('oneChartStage','No data available for this selection.');return;}
-  const canvas=makeOneCanvas(width,height); if(!canvas)return;
-  Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
-  let chartType=cfg.type==='columnBar'?'bar':cfg.type==='horizontalBar'?'bar':cfg.type==='doughnut'?'doughnut':cfg.type==='line'?'line':'line';
-  let labels=[],datasets=[],indexAxis=(cfg.type==='horizontalBar'||cfg.type==='stackedBar'&&cfg.axis!=='date'||cfg.type==='percentStackedBar'&&cfg.axis!=='date')?'y':'x';
-  let pluginCfg={...cfg};
+  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;destroyChartKey('oneCustom');if(!rows.length){chartNoData('oneChartStage','No treasury data available.');return;}if(typeof Chart==='undefined'){chartNoData('oneChartStage','Chart library is loading…');ensureChartJs().then(oneRenderChart).catch(()=>chartNoData('oneChartStage','Chart library could not be loaded.'));return;}
+  const date=oneAsOf(cfg),items=oneCategoryItems(cfg,date),count=items.length;if(!count){chartNoData('oneChartStage','No data available for this selection.');return;}
+  const canvas=makeOneCanvas(oneStageWidth(cfg,count),oneStageHeight(cfg,count));if(!canvas)return;Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
+  const labels=items.map(it=>oneDisplayLabel(cfg,it,count));let chartType=cfg.type==='doughnut'?'doughnut':(cfg.type==='line'||cfg.type==='area'?'line':'bar');let indexAxis=cfg.type==='horizontalBar'||cfg.type==='stackedBar'||cfg.type==='percentStackedBar'?'y':'x';if(cfg.axis==='project')indexAxis='y';
   if(cfg.type==='doughnut'){
-    const b=oneBuildRows(cfg,date);labels=b.rows.map(r=>r.label);datasets=[{label:oneMetricLabel(cfg.metric),data:b.rows.map(r=>r.value),backgroundColor:labels.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]),borderColor:'#fff',borderWidth:3,hoverOffset:5}];
-    const o=oneOptions('x');delete o.scales;
-    o.cutout='62%';
-    o.plugins.legend={display:true,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(datasets[0].data[i])} Cr`}))}};
-    o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;
-    charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets},options:o});
+    const vals=items.map(it=>oneMetricData(cfg,date,cfg.metrics[0],it));const ds={label:oneMetricLabel(cfg.metrics[0]),data:vals,backgroundColor:labels.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]),borderColor:'#fff',borderWidth:3,hoverOffset:5};const o=oneOptions('x',false,false,cfg,count);delete o.scales;o.cutout='62%';o.plugins.legend={display:cfg.legend!==false,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(vals[i])} Cr`}))}};o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[ds]},options:o});
   }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
-    const b=oneStackedDatasets(cfg,date);labels=b.labels;
-    if(cfg.type==='percentStackedBar'){
-      const totals=labels.map((_,i)=>b.datasets.reduce((s,d)=>s+Number(d.data[i]||0),0));
-      b.datasets=b.datasets.map(d=>({...d,data:d.data.map((v,i)=>totals[i]?+(v/totals[i]*100).toFixed(2):0)}));
-    }
-    datasets=b.datasets;chartType='bar';indexAxis='y';
-    const o=oneOptions('y',true,cfg.type==='percentStackedBar');
-    o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;
-    charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets},options:o,plugins:[oneValuePlugin('oneValues',pluginCfg)]});
+    const selectedMetrics=oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis);
+    const defs=(selectedMetrics.length>1||selectedMetrics[0]!=='total')?selectedMetrics.map((m)=>({key:m,label:oneMetricLabel(m)})):oneTotalDefs();
+    const ds=defs.map((d,i)=>({label:d.label,data:items.map(it=>oneMetricData(cfg,date,d.key,it)),backgroundColor:V38_ONE_PALETTE[i%V38_ONE_PALETTE.length],borderColor:'#fff',borderWidth:1,borderRadius:3}));
+    if(cfg.type==='percentStackedBar'){const totals=labels.map((_,i)=>ds.reduce((s,d)=>s+Number(d.data[i]||0),0));ds.forEach(d=>d.data=d.data.map((v,i)=>totals[i]?+(v/totals[i]*100).toFixed(2):0));}
+    const o=oneOptions('y',true,cfg.type==='percentStackedBar',cfg,count);o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg)]});
   }else{
-    const b=oneBuildRows(cfg,date);
-    labels=b.rows.map(r=>{
-      if(cfg.type==='horizontalBar')return splitChartLabel(r.label,30,3);
-      return r.label;
-    });
-    const data=b.rows.map(r=>r.value);
-    const bg=b.rows.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]);
-    if(cfg.type==='line'||cfg.type==='area'){
-      chartType=cfg.type==='line'?'line':'line';
-      datasets=[{label:oneMetricLabel(cfg.metric),data,fill:cfg.type==='area',tension:.25,borderWidth:3,borderColor:'#1F5B45',backgroundColor:'rgba(31,91,69,.16)',pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
-    }else{
-      chartType='bar';datasets=[{label:oneMetricLabel(cfg.metric),data,backgroundColor:bg,borderColor:'#fff',borderWidth:1,borderRadius:4}];
-    }
-    const o=oneOptions(indexAxis,false,false);
-    if(cfg.type==='line'||cfg.type==='area'){
-      o.plugins.legend.position='bottom';
-      o.scales.x.ticks.autoSkip=true;o.scales.x.ticks.maxRotation=0;o.scales.x.ticks.minRotation=0;
-    }
-    charts.oneCustom=new Chart(canvas,{type:chartType,data:{labels,datasets},options:o,plugins:[oneValuePlugin('oneValues',pluginCfg)]});
+    const ds=oneBuildMetricDatasets(cfg,date,items);const o=oneOptions(indexAxis,false,false,cfg,count);if(cfg.type==='line'||cfg.type==='area'){o.scales.x.ticks.autoSkip=true;o.scales.x.ticks.maxRotation=0;o.scales.x.ticks.minRotation=0;}charts.oneCustom=new Chart(canvas,{type:chartType,data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg)]});
   }
   $('oneChartNote').textContent=oneSummary(cfg,count,date);
 }
 function renderOneCustomChart(){oneChartConfig=oneSafeConfig(oneChartConfig);updateOneChartControls(false);oneRenderChart();loadSavedCharts();}
 function renderChartGallery(){renderOneCustomChart();}
+function toggleOneMetricMenu(ev){ev.stopPropagation();const m=$('oneMetricMulti');if(m)m.classList.toggle('open');}
+document.addEventListener('click',ev=>{const m=$('oneMetricMulti');if(m&&!m.contains(ev.target))m.classList.remove('open');});
 function updateOneChartControls(rerender=true){
-  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;
-  const ax=$('oneAxis'),me=$('oneMetric'),ty=$('oneType'),dc=$('oneDateControls');
-  if(ax){ax.innerHTML=ONE_AXIS_OPTIONS.map(x=>`<option value="${x.v}" ${cfg.axis===x.v?'selected':''}>${x.l}</option>`).join('');}
-  const metrics=oneMetricOptions(cfg.axis);
-  if(me){me.innerHTML=metrics.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');me.value=cfg.metric;me.disabled=false;}
-  const types=oneValidTypes(cfg);
-  if(ty){ty.innerHTML=types.map(x=>`<option value="${x}">${ONE_CHART_TYPE_NAMES[x]}</option>`).join('');ty.value=cfg.type;}
-  if(dc){
-    const dates=oneUniqueDates();
-    if(cfg.axis==='date'){
-      cfg.from=cfg.from||dates[0]||'';cfg.to=cfg.to||oneMaxDate();
-      dc.innerHTML=`<div class="control"><label>DATE RANGE</label><select id="oneDateMode" onchange="oneChartControlChanged()">${oneDateOptions('date').map(x=>`<option value="${x.v}" ${cfg.dateMode===x.v?'selected':''}>${x.l}</option>`).join('')}</select></div>${cfg.dateMode==='custom'?`<div class="control"><label>FROM</label><input id="oneFrom" type="date" value="${esc(cfg.from)}" onchange="oneChartControlChanged()"></div><div class="control"><label>TO</label><input id="oneTo" type="date" value="${esc(cfg.to)}" onchange="oneChartControlChanged()"></div>`:''}`;
-    }else{
-      cfg.dateMode='asof';cfg.asOf=cfg.asOf||selectedDate||oneMaxDate();
-      dc.innerHTML=`<div class="control"><label>DATE</label><div class="one-date-fixed"><span>As of Date</span><input id="oneAsOf" type="date" value="${esc(cfg.asOf)}" onchange="oneChartControlChanged()"></div></div>`;
-    }
-  }
-  oneChartConfig=oneSafeConfig(cfg);
-  if(rerender)oneRenderChart();
+  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;const ax=$('oneAxis'),meBtn=$('oneMetricBtn'),meMenu=$('oneMetricMenu'),ty=$('oneType'),lg=$('oneLegend'),dc=$('oneDateControls');
+  if(ax)ax.innerHTML=ONE_AXIS_OPTIONS.map(x=>`<option value="${x.v}" ${cfg.axis===x.v?'selected':''}>${x.l}</option>`).join('');
+  const metrics=oneMetricOptions(cfg.axis),selected=new Set(cfg.metrics);if(meBtn&&meMenu){meMenu.innerHTML=metrics.map(x=>`<label class="metric-multi-option"><input type="checkbox" value="${esc(x.v)}" ${selected.has(x.v)?'checked':''} ${cfg.axis==='fund'?'disabled':''} onchange="oneMetricSelectionChanged()"><span>${esc(x.l)}</span></label>`).join('');meBtn.textContent=cfg.axis==='fund'?'Amount':cfg.metrics.map(oneMetricLabel).join(' + ')||'Select value';}
+  const types=oneValidTypes(cfg);if(ty){ty.innerHTML=types.map(x=>`<option value="${x}">${ONE_CHART_TYPE_NAMES[x]}</option>`).join('');ty.value=cfg.type;}if(lg)lg.value=cfg.legend===false?'no':'yes';
+  if(dc){const dates=oneUniqueDates();if(cfg.axis==='date'){cfg.from=cfg.from||dates[0]||'';cfg.to=cfg.to||oneMaxDate();dc.innerHTML=`<div class="control"><label>DATE RANGE</label><select id="oneDateMode" onchange="oneChartControlChanged()">${oneDateOptions('date').map(x=>`<option value="${x.v}" ${cfg.dateMode===x.v?'selected':''}>${x.l}</option>`).join('')}</select></div>${cfg.dateMode==='custom'?`<div class="control"><label>FROM</label><input id="oneFrom" type="date" value="${esc(cfg.from)}" onchange="oneChartControlChanged()"></div><div class="control"><label>TO</label><input id="oneTo" type="date" value="${esc(cfg.to)}" onchange="oneChartControlChanged()"></div>`:''}`;}else{cfg.dateMode='asof';cfg.asOf=cfg.asOf||selectedDate||oneMaxDate();dc.innerHTML=`<div class="control"><label>DATE</label><div class="one-date-fixed"><span>As of Date</span><input id="oneAsOf" type="date" value="${esc(cfg.asOf)}" onchange="oneChartControlChanged()"></div></div>`;}}
+  oneChartConfig=oneSafeConfig(cfg);if(rerender)oneRenderChart();
 }
-function oneChartControlChanged(){
-  oneChartConfig.axis=$('oneAxis')?.value||oneChartConfig.axis;
-  oneChartConfig.metric=$('oneMetric')?.value||oneChartConfig.metric;
-  oneChartConfig.type=$('oneType')?.value||oneChartConfig.type;
-  if(oneChartConfig.axis==='date'){
-    oneChartConfig.dateMode=$('oneDateMode')?.value||oneChartConfig.dateMode;
-    oneChartConfig.from=$('oneFrom')?.value||oneChartConfig.from;
-    oneChartConfig.to=$('oneTo')?.value||oneChartConfig.to;
-  }else{
-    oneChartConfig.asOf=$('oneAsOf')?.value||oneChartConfig.asOf;
-    oneChartConfig.dateMode='asof';
-  }
-  oneChartConfig=oneSafeConfig(oneChartConfig);
+function oneMetricSelectionChanged(){
+  const boxes=[...document.querySelectorAll('#oneMetricMenu input[type="checkbox"]:checked')];
+  if(boxes.length>3){boxes.at(-1).checked=false;note('Select a maximum of 3 amount parameters.',true);}
+  const checked=[...document.querySelectorAll('#oneMetricMenu input[type="checkbox"]:checked')].map(x=>x.value);
+  if(!checked.length){note('Select at least one value.',true);updateOneChartControls(false);return;}
+  oneChartConfig.metrics=checked.slice(0,3);oneChartConfig.metric=oneChartConfig.metrics[0];
+  const types=oneValidTypes(oneChartConfig);if(!types.includes(oneChartConfig.type))oneChartConfig.type=types[0];
   updateOneChartControls(true);
 }
-function resetOneCustomChart(){oneChartConfig={...ONE_DEFAULT_CONFIG,asOf:selectedDate||oneMaxDate()};updateOneChartControls(true);}
-async function saveOneCustomChart(){
-  const name=(prompt('Enter a name for this chart:')||'').trim();if(!name)return;
-  const cfg={...oneSafeConfig(oneChartConfig)};
-  try{const r=await apiPost({action:'saveCustomChart',name,config:cfg,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not save chart');await loadSavedCharts();note('✓ Chart saved.');}catch(e){note(e.message,true);}
-}
-async function loadSavedCharts(){
-  try{const r=await apiGet('getSavedCharts');savedCharts=Array.isArray(r.savedCharts)?r.savedCharts:[];renderSavedCharts();}catch(e){savedCharts=[];renderSavedCharts();}
-}
-function renderSavedCharts(){
-  const box=$('savedChartsList');if(!box)return;
-  if(!savedCharts.length){box.innerHTML='<div class="empty">No saved charts yet.</div>';return;}
-  box.innerHTML=savedCharts.map(s=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><button class="btn sm primary" onclick="loadSavedOneChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
-}
-function loadSavedOneChart(id){
-  const s=savedCharts.find(x=>x.id===id);if(!s)return;let cfg={};
-  try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
-  oneChartConfig=oneSafeConfig(cfg);updateOneChartControls(true);note(`✓ ${s.name} loaded.`);
-}
-async function deleteSavedChart(id){
-  if(!confirm('Delete this saved chart?'))return;
-  try{const r=await apiPost({action:'deleteSavedChart',id,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not delete saved chart');await loadSavedCharts();note('✓ Saved chart deleted.');}catch(e){note(e.message,true);}
-}
+function oneChartControlChanged(){oneChartConfig.axis=$('oneAxis')?.value||oneChartConfig.axis;oneChartConfig.type=$('oneType')?.value||oneChartConfig.type;oneChartConfig.legend=$('oneLegend')?.value!=='no';if(oneChartConfig.axis==='date'){oneChartConfig.dateMode=$('oneDateMode')?.value||oneChartConfig.dateMode;oneChartConfig.from=$('oneFrom')?.value||oneChartConfig.from;oneChartConfig.to=$('oneTo')?.value||oneChartConfig.to;}else{oneChartConfig.asOf=$('oneAsOf')?.value||oneChartConfig.asOf;oneChartConfig.dateMode='asof';}oneChartConfig=oneSafeConfig(oneChartConfig);updateOneChartControls(true);}
+function resetOneCustomChart(){oneChartConfig={...ONE_DEFAULT_CONFIG,metrics:['total'],asOf:selectedDate||oneMaxDate()};updateOneChartControls(true);}
+async function saveOneCustomChart(){const name=(prompt('Enter a name for this chart:')||'').trim();if(!name)return;const cfg={...oneSafeConfig(oneChartConfig)};try{const r=await apiPost({action:'saveCustomChart',name,config:cfg,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not save chart');await loadSavedCharts();note('✓ Chart saved.');}catch(e){note(e.message,true);}}
+function formatDateTime(v){const d=new Date(v);return isNaN(d)?String(v):d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+async function loadSavedCharts(){try{const r=await apiGet('getSavedCharts');savedCharts=Array.isArray(r.savedCharts)?r.savedCharts:[];renderSavedCharts();}catch(e){savedCharts=[];renderSavedCharts();}}
+function renderSavedCharts(){const box=$('savedChartsList');if(!box)return;if(!savedCharts.length){box.innerHTML='<div class="empty">No saved charts yet.</div>';return;}box.innerHTML=savedCharts.map(s=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><button class="btn sm primary" onclick="loadSavedOneChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');}
+function loadSavedOneChart(id){const s=savedCharts.find(x=>x.id===id);if(!s)return;let cfg={};try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}oneChartConfig=oneSafeConfig(cfg);updateOneChartControls(true);note(`✓ ${s.name} loaded.`);}
+async function deleteSavedChart(id){if(!confirm('Delete this saved chart?'))return;try{const r=await apiPost({action:'deleteSavedChart',id,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not delete saved chart');await loadSavedCharts();note('✓ Saved chart deleted.');}catch(e){note(e.message,true);}}
 function resetChartSettings(){resetOneCustomChart();}
 function renderCustomChart(){renderOneCustomChart();}
 
