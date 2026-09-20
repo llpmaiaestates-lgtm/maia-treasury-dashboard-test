@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MAIA Treasury Dashboard V38 Final</title>
+<title>MAIA Treasury Dashboard V38 Final - Custom Chart</title>
 <style>
 :root{--forest:#1f513b;--forest2:#2f6b50;--forest3:#e9f1ec;--gold:#b18a3a;--gold2:#d5bd7b;--ink:#17221c;--muted:#6d7b73;--line:#dfe7e2;--bg:#f5f7f5;--white:#fff;--red:#a33b3b;--shadow:0 8px 28px rgba(25,55,40,.07)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px "Times New Roman",Times,serif}
@@ -61,7 +61,7 @@ body.sidebar-open .wrap{margin-left:205px;max-width:none}body.sidebar-closed .wr
 .default-charts{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px}.default-charts .card{margin-bottom:0}.default-chart{height:300px;padding:10px 18px 18px}.allocation-chart{height:300px;padding:8px 18px 18px}.chart-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:16px}.chart-gallery-card{min-width:0;overflow:hidden}.chart-gallery-canvas{height:430px;padding:10px 16px 18px;position:relative;overflow:hidden}.chart-gallery-canvas.tall{height:430px}.chart-card-note{padding:0 16px 10px;color:var(--muted);font-size:10px}.custom-chart-stage{height:480px;padding:12px 18px 18px;position:relative}@media(max-width:1100px){.chart-gallery{grid-template-columns:1fr}.chart-gallery-canvas{height:430px}.chart-gallery-canvas.tall{height:520px}}
 .table-download{display:flex;align-items:center;gap:8px}.table-download .btn{white-space:nowrap}
 @media(max-width:1100px){.brandtitle{font-size:22px}.brandsub{font-size:13px}.header-controls{gap:7px}.last-updated{display:none}.default-charts{grid-template-columns:1fr}.sidebar{width:185px}body.sidebar-open .wrap{margin-left:185px}}
-@media(max-width:700px){.top{height:auto;min-height:72px;padding:9px 12px;gap:10px}.logo{height:46px;width:56px;max-width:none}.brandtitle{font-size:18px}.brandsub{font-size:11px}.header-date label{display:none}.header-date input{min-width:135px}.header-controls .btn{font-size:11px;padding:8px}.sidebar{top:72px;width:205px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.mobile-open{transform:translateX(0)}body.sidebar-open .wrap,body.sidebar-closed .wrap{margin-left:0}.default-charts{grid-template-columns:1fr}.dash-header{align-items:flex-start}.dash-controls{width:100%}}
+@media(max-width:700px){.top{height:auto;min-height:72px;padding:9px 12px;gap:10px}.logo{height:46px;width:56px;max-width:none}.brandtitle{font-size:18px}.brandsub{font-size:11px}.header-date label{display:none}.header-date input{min-width:135px}.header-controls .btn{font-size:11px;padding:8px}.sidebar{top:72px;width:205px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.mobile-open{transform:translateX(0)}body.sidebar-open .wrap,body.sidebar-closed .wrap{margin-left:0}.default-charts{display:none}.dash-header{align-items:flex-start}.dash-controls{width:100%}}
 input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 
 /* V7 KPI previous values inside each respective card */
@@ -137,7 +137,7 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 @media(max-width:700px){.v38-custom-grid{grid-template-columns:1fr!important}.v38-gallery .chart-gallery-canvas{min-height:390px}.v38-custom-stage{min-height:420px}}
 
 /* V38 Final chart slots + saved charts */
-.chart-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.chart-slots{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:18px;max-width:1100px}
 .chart-slot-card{min-width:0;overflow:hidden}
 .chart-slot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .chart-slot-actions{display:flex;gap:6px;flex-wrap:wrap}
@@ -157,6 +157,7 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .chart-status{font-size:10px;color:var(--muted);margin-top:8px}
 @media(max-width:1100px){.chart-slots{grid-template-columns:1fr}.chart-slot-controls{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:720px){.chart-slot-controls{grid-template-columns:1fr}.saved-chart-row{grid-template-columns:1fr;align-items:stretch}}
+.chart-slot-card{max-width:1100px}.chart-slot-controls select{width:100%}.chart-slot-date input,.chart-slot-date select{min-height:36px}
 
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}</style></head>
@@ -257,7 +258,7 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 
 
 <section id="charts" class="page">
-  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Treasury Charts</div><div class="sub">Six independent chart slots. Each chart can be configured, saved and deleted without affecting the other charts.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Chart</div><div class="sub">Build one fully customizable treasury chart from category, metric, chart type and the applicable date option. Save it for later or delete saved charts.</div></div></div>
   <div id="chartSlots" class="chart-slots"></div>
   <div class="card cardpad" style="margin-bottom:16px">
     <div class="ct" style="margin-bottom:4px">Saved Charts</div>
@@ -318,7 +319,7 @@ const LIB_URLS={chart:{src:"https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/cha
 const libPromises={};
 function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.resolve(window[LIB_URLS[key].global]);if(libPromises[key])return libPromises[key];libPromises[key]=new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src=LIB_URLS[key].src;sc.async=true;sc.onload=()=>window[LIB_URLS[key].global]?resolve(window[LIB_URLS[key].global]):reject(new Error(key+" library loaded but is unavailable"));sc.onerror=()=>reject(new Error("Could not load "+key+" library."));document.head.appendChild(sc)});return libPromises[key]}
 function ensureChartJs(){return loadScriptOnce("chart")}function ensureExcelJs(){return loadScriptOnce("excel")}function ensureHtml2Canvas(){return loadScriptOnce("canvas")}
-function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")){if(typeof renderChartGallery==='function')renderChartGallery()}}).catch(()=>{})}
+function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")&&typeof renderChartGallery==='function')renderChartGallery()}).catch(()=>{})}
 const REFRESH_MS = 10*60*1000;
 let rows=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL";
 
@@ -390,7 +391,6 @@ function restoreBootstrapCache(){
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates.at(-1)):'';
     populateControls(dates); renderEntryFields(); renderDashboard(); renderCompare(); renderAudit(); renderEntityMaster(); renderHolidayList();
     status('Cached · refreshing');
-    warmChartLibrary();
     return true;
   }catch(e){return false}
 }
@@ -455,7 +455,7 @@ async function loadAll(){
     if(typeof renderEntityMaster==='function')renderEntityMaster();
     renderHolidayList();
     renderSavedCharts();
-    // Heavy charts load after the core dashboard is visible.
+    // Heavy chart library loads after the core dashboard is visible.
     warmChartLibrary();
     const sec=((performance.now()-started)/1000).toFixed(1);
     status(rows.length?"Live · "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+" · "+sec+"s":"Connected · No Treasury rows · "+sec+"s");
@@ -507,8 +507,6 @@ function renderDashboard(){
   selectedDate=$('headerDate').value||selectedDate;
   const lu=$('headerLastUpdated');if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
   renderProjectFilter();
-  if(typeof Chart!=="undefined")renderDashboardCharts();
-  if(typeof Chart!=="undefined" && $("charts")?.classList.contains("active") && typeof renderChartGallery==="function")renderChartGallery();
   const source=filteredRows(selectedDate);
   const prev=previousDataDate(selectedDate),pd=filteredRows(prev);
 
@@ -633,7 +631,6 @@ function renderDashboardCharts(){
   const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88","#8B6F47","#A84B4B","#5E6F82","#2D7A61","#C17C3A"];
   charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
 }
-
 function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return Math.abs(n)>=100?n.toFixed(0):n.toFixed(2);}
 function splitChartLabel(label,maxLen=25,maxLines=3){
   const text=String(label||''); if(text.length<=maxLen)return [text];
@@ -674,20 +671,13 @@ function valueLabelPlugin(pluginId,opts={}){
 }
 
 
-const CHART_SLOTS = 6;
+const CHART_SLOTS = 1;
 const CHART_TYPE_NAMES = {
   columnBar:'Column Bar', horizontalBar:'Horizontal Bar', line:'Line', area:'Area',
   doughnut:'Doughnut', stackedBar:'Stacked Bar', percentStackedBar:'100% Stacked Bar',
   radar:'Radar', polarArea:'Polar Area'
 };
-const DEFAULT_SLOT_CONFIGS = [
-  {axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof'},
-  {axis:'entity',metric:'liquid',type:'horizontalBar',dateMode:'asof'},
-  {axis:'project',metric:'total',type:'horizontalBar',dateMode:'asof'},
-  {axis:'fund',metric:'amount',type:'doughnut',dateMode:'asof'},
-  {axis:'date',metric:'liquid',type:'line',dateMode:'latest5'},
-  {axis:'entity',metric:'total',type:'percentStackedBar',dateMode:'asof'}
-];
+const DEFAULT_SLOT_CONFIGS = [{axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof'}];
 let chartSlots = DEFAULT_SLOT_CONFIGS.map(x=>({...x}));
 let savedCharts = [];
 
@@ -889,7 +879,7 @@ function slotSummary(cfg,count,date){
 function categoryLabel(axis){return axis==='fund'?'Fund Type':axis.charAt(0).toUpperCase()+axis.slice(1);}
 function renderChartGallery(){
   const box=$('chartSlots');if(!box)return;
-  box.innerHTML=chartSlots.map((cfg0,i)=>{const cfg=safeSlotConfig(cfg0);chartSlots[i]=cfg;return `<div class="card chart-slot-card"><div class="cardhead"><div class="chart-slot-head"><div><div class="ct">Chart ${i+1}</div><div class="cs">Independent dynamic chart</div></div></div><div class="chart-slot-actions"><button class="btn sm" onclick="resetChartSlot(${i})">Reset</button><button class="btn sm primary" onclick="saveChartSlot(${i})">Save Chart</button></div></div>
+  box.innerHTML=chartSlots.map((cfg0,i)=>{const cfg=safeSlotConfig(cfg0);chartSlots[i]=cfg;return `<div class="card chart-slot-card"><div class="cardhead"><div class="chart-slot-head"><div><div class="ct">Custom Chart</div><div class="cs">One fully customizable chart</div></div></div><div class="chart-slot-actions"><button class="btn sm" onclick="resetChartSlot(${i})">Reset</button><button class="btn sm primary" onclick="saveChartSlot(${i})">Save Chart</button></div></div>
     <div class="chart-slot-controls"><div class="control"><label>Category / Axis</label><select id="slotAxis${i+1}" onchange="slotControlChanged(${i})">${['date','entity','project','fund'].map(v=>`<option value="${v}" ${cfg.axis===v?'selected':''}>${categoryLabel(v)}</option>`).join('')}</select></div>
     <div class="control"><label>Metric / Value</label><select id="slotMetric${i+1}" onchange="slotControlChanged(${i})"></select></div>
     <div class="control"><label>Chart Type</label><select id="slotType${i+1}" onchange="slotControlChanged(${i})"></select></div></div>
@@ -947,19 +937,19 @@ async function loadSavedCharts(){
 function renderSavedCharts(){
   const box=$('savedChartsList');if(!box)return;
   if(!savedCharts.length){box.innerHTML='<div class="empty">No saved charts yet.</div>';return;}
-  box.innerHTML=savedCharts.map((s,i)=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><select id="savedSlot_${esc(s.id)}">${Array.from({length:CHART_SLOTS},(_,j)=>`<option value="${j}">Slot ${j+1}</option>`).join('')}</select><button class="btn sm primary" onclick="loadSavedChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
+  box.innerHTML=savedCharts.map(s=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><button class="btn sm primary" onclick="loadSavedChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
 }
 function formatDateTime(v){const d=new Date(v);return isNaN(d)?String(v):d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function loadSavedChart(id){
-  const s=savedCharts.find(x=>x.id===id);if(!s)return;const slot=Number($(`savedSlot_${id}`)?.value||0);let cfg={};try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
-  chartSlots[slot]=safeSlotConfig({...chartConfigDefaults(slot),...cfg});renderChartGallery();note(`✓ ${s.name} loaded into Slot ${slot+1}.`);
+  const s=savedCharts.find(x=>x.id===id);if(!s)return;let cfg={};try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
+  chartSlots[0]=safeSlotConfig({...chartConfigDefaults(0),...cfg});renderChartGallery();note(`✓ ${s.name} loaded.`);
 }
 async function deleteSavedChart(id){
   if(!confirm('Delete this saved chart?'))return;
   try{const r=await apiPost({action:'deleteSavedChart',id,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not delete saved chart');await loadSavedCharts();note('✓ Saved chart deleted.');}catch(e){note(e.message,true);}
 }
-function resetChartSettings(){chartSlots=DEFAULT_SLOT_CONFIGS.map(x=>({...x}));renderChartGallery();}
-function renderCustomChart(){/* retained for backward compatibility with older click handlers */renderChartGallery();}
+function resetChartSettings(){chartSlots=[chartConfigDefaults(0)];renderChartGallery();}
+function renderCustomChart(){renderChartGallery();}
 
 function renderEntryFields(){
   const wrap=$("entryFields");if(!wrap)return;
