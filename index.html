@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MAIA Treasury Dashboard V38</title>
+<title>MAIA Treasury Dashboard V38 Final</title>
 <style>
 :root{--forest:#1f513b;--forest2:#2f6b50;--forest3:#e9f1ec;--gold:#b18a3a;--gold2:#d5bd7b;--ink:#17221c;--muted:#6d7b73;--line:#dfe7e2;--bg:#f5f7f5;--white:#fff;--red:#a33b3b;--shadow:0 8px 28px rgba(25,55,40,.07)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px "Times New Roman",Times,serif}
@@ -16,7 +16,7 @@ input,select,textarea{font-family:"Times New Roman",Times,serif;font-size:inheri
 .card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}.cardpad{padding:17px}.cardhead{padding:14px 17px;border-bottom:1px solid #edf1ee;display:flex;justify-content:space-between;align-items:center;gap:12px}.ct{font-weight:800;font-size:14px}.cs{font-size:11px;color:var(--muted);margin-top:3px}
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--forest);border-radius:9px;padding:14px 15px;box-shadow:var(--shadow)}.kpi:nth-child(2){border-top-color:var(--gold)}.kpi:nth-child(3){border-top-color:#567f68}.kpi:nth-child(4){border-top-color:#9a7a38}.kpi:nth-child(5){border-top-color:#84968b}.kl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}.kv{font:700 21px "Times New Roman",Times,serif;margin-top:7px}.ks{font-size:10px;color:var(--muted);margin-top:3px}
 .grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}.chart{height:270px;padding:12px 17px 17px}.chart.tall{height:320px}
-.tablewrap{overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-gutter:stable}table{width:max-content;min-width:100%;border-collapse:collapse}th{background:#f1f5f2;color:#52635a;text-transform:uppercase;font-size:10px;letter-spacing:.5px;padding:10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left!important}th.project-head,td.project-cell{text-align:left!important}td{padding:10px;border-bottom:1px solid #eef2ef;text-align:right;white-space:nowrap}td:first-child{font-weight:800;color:var(--forest)}#compareExportTable th:nth-child(2),#compareExportTable td:nth-child(2){text-align:left!important}tr:hover td{background:#fafcfb}.totalrow td{background:#eef4ef;font-weight:800;border-top:2px solid var(--forest)}.treasury-head th{white-space:normal!important;line-height:1.12;height:52px;vertical-align:middle}.treasury-head .th-name{display:block}.treasury-head .th-code{display:block;margin-top:2px;font-size:9px;color:#7a8a82;font-weight:700}.entity-cell{text-align:left!important;min-width:135px;width:135px}.entity-status{display:inline-block;min-width:15px;margin-right:4px}.project-cell{text-align:left!important;min-width:220px;width:220px}.chart-value-note{padding:9px 0;color:var(--forest);font-weight:700}
+.tablewrap{overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-gutter:stable}table{width:max-content;min-width:100%;border-collapse:collapse}th{background:#f1f5f2;color:#52635a;text-transform:uppercase;font-size:10px;letter-spacing:.5px;padding:10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left!important}th.project-head,td.project-cell{text-align:left!important}td{padding:10px;border-bottom:1px solid #eef2ef;text-align:right;white-space:nowrap}td:first-child{font-weight:800;color:var(--forest)}#compareExportTable th:nth-child(2),#compareExportTable td:nth-child(2),#compareExportTable th:nth-child(7),#compareExportTable td:nth-child(7){text-align:left!important}tr:hover td{background:#fafcfb}.totalrow td{background:#eef4ef;font-weight:800;border-top:2px solid var(--forest)}.treasury-head th{white-space:normal!important;line-height:1.12;height:52px;vertical-align:middle}.treasury-head .th-name{display:block}.treasury-head .th-code{display:block;margin-top:2px;font-size:9px;color:#7a8a82;font-weight:700}.entity-cell{text-align:left!important;min-width:135px;width:135px}.entity-status{display:inline-block;min-width:15px;margin-right:4px}.project-cell{text-align:left!important;min-width:220px;width:220px}.chart-value-note{padding:9px 0;color:var(--forest);font-weight:700}
 .pos{color:#267447;font-weight:800}.neg{color:var(--red);font-weight:800}.zero{color:#89958e}.tag{display:inline-block;padding:4px 7px;border-radius:12px;background:var(--forest3);color:var(--forest);font-size:10px;font-weight:800}
 .formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.fg{display:flex;flex-direction:column;gap:5px}.fg label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800}.wide{grid-column:span 2}.reason{grid-column:1/-1}.reason textarea{min-height:75px;resize:vertical}
 .preview{background:#f6f2e6;border:1px solid #e4d5ad;border-radius:8px;padding:11px;color:#654e1d;font-weight:800}
@@ -124,6 +124,40 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .header-controls>.btn.primary{height:38px!important;padding:8px 13px!important;font-size:12px!important;white-space:nowrap!important}
 @media(max-width:1400px){.brandtitle{font-size:20px!important}.brandsub{font-size:10px!important}.header-date input{width:118px!important;min-width:118px!important}.header-entity-filter .multi-select,.header-entity-filter .multi-select-btn{width:140px!important;min-width:140px!important}.header-project-filter select{width:135px!important;min-width:135px!important}.last-updated{width:128px!important;min-width:128px!important}.header-controls>.btn.primary{padding-left:10px!important;padding-right:10px!important}}
 @media(max-width:1100px){.last-updated{display:none!important}.brandtitle{font-size:19px!important}.header-date input{width:115px!important;min-width:115px!important}.header-entity-filter .multi-select,.header-entity-filter .multi-select-btn{width:135px!important;min-width:135px!important}.header-project-filter select{width:130px!important;min-width:130px!important}}
+
+/* V38 clean chart layout / anti-overlap rules */
+.v38-gallery{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:18px}
+.v38-gallery .chart-gallery-card{min-width:0;overflow:hidden}
+.v38-gallery .chart-gallery-canvas{min-height:420px;height:420px;padding:10px 16px 18px;position:relative;overflow:visible}
+.v38-custom-grid{grid-template-columns:repeat(3,minmax(220px,1fr))!important}
+.v38-custom-stage{min-height:450px;overflow:visible}
+.chart-gallery-canvas canvas,.custom-chart-stage canvas{display:block;width:100%!important;height:100%!important}
+.chart-gallery-canvas .empty,.custom-chart-stage .empty{font-size:12px}
+@media(max-width:1100px){.v38-gallery{grid-template-columns:1fr}.v38-custom-grid{grid-template-columns:repeat(2,minmax(180px,1fr))!important}}
+@media(max-width:700px){.v38-custom-grid{grid-template-columns:1fr!important}.v38-gallery .chart-gallery-canvas{min-height:390px}.v38-custom-stage{min-height:420px}}
+
+/* V38 Final chart slots + saved charts */
+.chart-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.chart-slot-card{min-width:0;overflow:hidden}
+.chart-slot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.chart-slot-actions{display:flex;gap:6px;flex-wrap:wrap}
+.chart-slot-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 16px 12px}
+.chart-slot-date{display:flex;align-items:center;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
+.chart-slot-date .date-extra{display:none;align-items:center;gap:6px}
+.chart-slot-date.custom .date-extra{display:flex}
+.chart-slot-note{padding:0 16px 10px;color:var(--muted);font-size:10px;min-height:25px}
+.chart-slot-stage{min-height:360px;height:420px;padding:8px 14px 16px;position:relative;overflow:visible}
+.chart-slot-stage canvas{display:block;width:100%!important;height:100%!important}
+.saved-chart-list{display:grid;gap:8px}
+.saved-chart-row{display:grid;grid-template-columns:minmax(0,1fr) 150px auto auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.saved-chart-row:last-child{border-bottom:0}
+.saved-chart-name{font-weight:700;color:var(--forest)}
+.saved-chart-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.saved-chart-row select{min-width:120px}
+.chart-status{font-size:10px;color:var(--muted);margin-top:8px}
+@media(max-width:1100px){.chart-slots{grid-template-columns:1fr}.chart-slot-controls{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:720px){.chart-slot-controls{grid-template-columns:1fr}.saved-chart-row{grid-template-columns:1fr;align-items:stretch}}
+
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}</style></head>
 <body>
@@ -217,33 +251,19 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
   </div></div>
   <div id="compareSummary" class="compare-summary"></div>
   <div class="card"><div class="cardhead"><div><div class="ct">Total Funds Movement by Entity</div><div class="cs" id="compareSub"></div></div><div class="table-download"><button class="btn sm" onclick="openCompareExport('excel')">⇩ Excel</button><button class="btn sm" onclick="openCompareExport('jpg')">⇩ JPG</button></div></div>
-    <div class="tablewrap"><table id="compareExportTable"><thead><tr><th>Entity</th><th>Project Name</th><th id="compareDate1Head">Date 1</th><th id="compareDate2Head">Date 2</th><th>Movement</th><th>% Movement</th></tr></thead><tbody id="compareTable"></tbody></table></div>
+    <div class="tablewrap"><table id="compareExportTable"><thead><tr><th>Entity</th><th>Project Name</th><th id="compareDate1Head">From Date</th><th id="compareDate2Head">To Date</th><th>Movement</th><th>% Movement</th><th>Remarks</th></tr></thead><tbody id="compareTable"></tbody></table></div>
   </div>
 </section>
 
-<section id="charts" class="page">
-  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Treasury Charts</div><div class="sub">Six dynamic charts are shown by default. They follow the current date, entity and project filters and automatically expand for larger entity / project counts.</div></div></div>
-  <div id="chartGallery" class="chart-gallery">
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds by Entity</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g1Stage" class="chart-gallery-canvas"><canvas id="g1"></canvas></div></div>
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Liquid Funds by Entity</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g2Stage" class="chart-gallery-canvas"><canvas id="g2"></canvas></div></div>
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds vs Liquid Funds by Entity</div><div class="cs">Grouped Horizontal Bar · Selected date</div></div></div><div id="g3Stage" class="chart-gallery-canvas"><canvas id="g3"></canvas></div></div>
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds by Project</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g4Stage" class="chart-gallery-canvas"><canvas id="g4"></canvas></div></div>
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds Components by Entity</div><div class="cs">Stacked Horizontal Bar · Total Funds components</div></div></div><div id="g5Stage" class="chart-gallery-canvas"><canvas id="g5"></canvas></div></div>
-    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Fund Concentration by Entity</div><div class="cs">Doughnut when readable · otherwise Horizontal Bar</div></div></div><div id="g6Stage" class="chart-gallery-canvas"><canvas id="g6"></canvas></div></div>
-  </div>
 
-  <div class="card cardpad">
-    <div class="ct" style="margin-bottom:12px">Custom Chart</div>
-    <div class="formgrid" style="grid-template-columns:1fr 1fr 1fr;align-items:end">
-      <div class="fg"><label>Category / Axis</label><select id="chartAxis" onchange="updateCustomChartControls()"><option value="date">Date</option><option value="entity">Entity</option><option value="project">Project</option><option value="fund">Fund Type</option></select></div>
-      <div class="fg"><label>Metric / Value</label><select id="chartMetric" onchange="updateCustomChartControls()"></select></div>
-      <div class="fg"><label>Chart Type</label><select id="chartType" onchange="updateCustomChartControls()"></select></div>
-    </div>
-    <div class="chart-value-note" style="margin-top:14px">Values are always shown.</div>
-    <div class="custom-chart-note" id="chartLogicNote"></div>
-    <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" onclick="resetChartSettings()">Reset</button><button class="btn primary" onclick="renderCustomChart()">Apply</button></div>
+<section id="charts" class="page">
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Treasury Charts</div><div class="sub">Six independent chart slots. Each chart can be configured, saved and deleted without affecting the other charts.</div></div></div>
+  <div id="chartSlots" class="chart-slots"></div>
+  <div class="card cardpad" style="margin-bottom:16px">
+    <div class="ct" style="margin-bottom:4px">Saved Charts</div>
+    <div class="sub" style="margin-bottom:12px">Save any chart configuration for reuse. Saved charts are stored in Google Sheets and can be loaded or deleted later.</div>
+    <div id="savedChartsList" class="saved-chart-list"></div>
   </div>
-  <div class="card"><div id="customChartStage" class="custom-chart-stage"><canvas id="customChart"></canvas></div></div>
 </section>
 
 <section id="audit" class="page">
@@ -298,14 +318,14 @@ const LIB_URLS={chart:{src:"https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/cha
 const libPromises={};
 function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.resolve(window[LIB_URLS[key].global]);if(libPromises[key])return libPromises[key];libPromises[key]=new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src=LIB_URLS[key].src;sc.async=true;sc.onload=()=>window[LIB_URLS[key].global]?resolve(window[LIB_URLS[key].global]):reject(new Error(key+" library loaded but is unavailable"));sc.onerror=()=>reject(new Error("Could not load "+key+" library."));document.head.appendChild(sc)});return libPromises[key]}
 function ensureChartJs(){return loadScriptOnce("chart")}function ensureExcelJs(){return loadScriptOnce("excel")}function ensureHtml2Canvas(){return loadScriptOnce("canvas")}
-function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDefaultCharts==='function')renderDefaultCharts();if(document.getElementById("charts")?.classList.contains("active")){if(typeof renderChartGallery==='function')renderChartGallery();if(typeof renderCustomChart==='function')renderCustomChart()}}).catch(()=>{})}
+function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")){if(typeof renderChartGallery==='function')renderChartGallery()}}).catch(()=>{})}
 const REFRESH_MS = 10*60*1000;
 let rows=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL";
 
 const $=id=>document.getElementById(id);
 const n=v=>Number(v)||0;
 const total=r=>+(columns.filter(c=>c.active!==false&&c.includeTotal).reduce((s,c)=>s+n(r[c.key]),0)).toFixed(2);
-const liquid=r=>+(total(r)-columns.filter(c=>c.active!==false&&c.liquidExclude).reduce((s,c)=>s+n(r[c.key]),0)).toFixed(2);
+const liquid=r=>+columns.filter(c=>c.active!==false&&c.liquidInclude===true).reduce((s,c)=>s+n(r[c.key]),0).toFixed(2);
 const fmtNum=v=>{const x=Number(v)||0;return x<0?`(₹${Math.abs(x).toFixed(2)} Cr)`:`₹${x.toFixed(2)} Cr`};
 const fmtCell=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)})`:x.toFixed(2)};
 const fmtPct=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)}%)`:`${x.toFixed(2)}%`};
@@ -349,10 +369,11 @@ function restoreBootstrapCache(){
     rows=normalizeRows({data:b.data});
     entityMeta=Array.isArray(b.entityMeta)?b.entityMeta:[];
     entities=Array.isArray(b.entities)?b.entities:[];
-    columns=Array.isArray(b.columns)?b.columns.filter(x=>x.active!==false):defaultColumns();
+    columns=Array.isArray(b.columns)?b.columns.map(x=>({...x,liquidInclude:x.liquidInclude!==undefined?!!x.liquidInclude:(x.liquidExclude!==true)})):defaultColumns();
     if(!columns.length)columns=defaultColumns();
     projects=Array.isArray(b.projects)?b.projects.filter(x=>x.active!==false):[];
     audit=Array.isArray(b.audit)?b.audit:[];
+    savedCharts=Array.isArray(b.savedCharts)?b.savedCharts:[];
     officeHolidays=Array.isArray(b.holidays)?b.holidays:[];
     const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates.at(-1)):'';
@@ -363,7 +384,7 @@ function restoreBootstrapCache(){
   }catch(e){return false}
 }
 function saveBootstrapCache(b){
-  try{sessionStorage.setItem(BOOT_CACHE_KEY,JSON.stringify({data:b.data||[],entityMeta,entities,columns,projects,audit:b.audit||[],holidays:officeHolidays,ts:Date.now()}));}catch(e){}
+  try{sessionStorage.setItem(BOOT_CACHE_KEY,JSON.stringify({data:b.data||[],entityMeta,entities,columns,projects,audit:b.audit||[],savedCharts:b.savedCharts||[],holidays:officeHolidays,ts:Date.now()}));}catch(e){}
 }
 
 function toggleSidebar(){
@@ -375,15 +396,15 @@ function toggleSidebar(){
 }
 function syncHeaderDate(){const d=$("headerDate").value;if(!d)return;selectedDate=d;$("eDate").value=d;renderDashboard();loadEntry()}
 function defaultColumns(){return [
-  {key:"bank",label:"Bank Balance",active:true,sort:1,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"sweep",label:"Sweep Deposit",active:true,sort:2,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"fd",label:"Fixed Deposits",active:true,sort:3,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"mf",label:"Mutual Funds",active:true,sort:4,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"bonds",label:"Bonds / Debentures",active:true,sort:5,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"brs",label:"BRS",active:true,sort:6,custom:false,includeTotal:true,liquidExclude:false},
-  {key:"reserve",label:"Reserve Fund",active:true,sort:7,custom:false,includeTotal:false,liquidExclude:true},
-  {key:"restricted",label:"Restricted Fund",active:true,sort:8,custom:false,includeTotal:false,liquidExclude:true},
-  {key:"locked_funds",label:"Locked Funds",active:true,sort:9,custom:false,includeTotal:false,liquidExclude:true}
+  {key:"bank",label:"Bank Balance",active:true,sort:1,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"sweep",label:"Sweep Deposit",active:true,sort:2,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"fd",label:"Fixed Deposits",active:true,sort:3,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"mf",label:"Mutual Funds",active:true,sort:4,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"bonds",label:"Bonds / Debentures",active:true,sort:5,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"brs",label:"BRS",active:true,sort:6,custom:false,includeTotal:true,liquidInclude:true},
+  {key:"reserve",label:"Reserve Fund",active:true,sort:7,custom:false,includeTotal:false,liquidInclude:false},
+  {key:"restricted",label:"Restricted Fund",active:true,sort:8,custom:false,includeTotal:false,liquidInclude:false},
+  {key:"locked_funds",label:"Locked Funds",active:true,sort:9,custom:false,includeTotal:false,liquidInclude:false}
 ]}
 function letter(i){let s="";i++;while(i){let r=(i-1)%26;s=String.fromCharCode(97+r)+s;i=Math.floor((i-1)/26)}return s}
 function coreColumnMap(){return {bank:"a",sweep:"b",fd:"c",mf:"d",bonds:"e",brs:"f",reserve:"h",restricted:"i",locked_funds:"j"}}
@@ -402,7 +423,7 @@ async function loadAll(){
     // If the user previously had all entities selected, automatically include newly added entities.
     // If the user intentionally selected a subset, preserve that subset.
     if(hadAllEntities || !selectedEntities.length || selectedEntities.some(e=>!entities.includes(e))) selectedEntities=[...entities];
-    columns=(b.columns||[]).filter(x=>x.active!==false);
+    columns=(b.columns||[]).map(x=>({...x,liquidInclude:x.liquidInclude!==undefined?!!x.liquidInclude:(x.liquidExclude!==true)}));
     if(!columns.length)columns=defaultColumns();
     projects=(b.projects||[]).filter(x=>x.active!==false);
     // Do not invent a second "General" project on the client. The backend
@@ -410,6 +431,7 @@ async function loadAll(){
     audit=b.audit||[];
     officeHolidays=b.holidays||[];
     saveBootstrapCache(b);
+    savedCharts=Array.isArray(b.savedCharts)?b.savedCharts:savedCharts;
     const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates[dates.length-1]):"";
     populateControls(dates);
@@ -419,6 +441,7 @@ async function loadAll(){
     if(typeof renderAudit==='function')renderAudit();
     if(typeof renderEntityMaster==='function')renderEntityMaster();
     renderHolidayList();
+    renderSavedCharts();
     // Heavy charts load after the core dashboard is visible.
     warmChartLibrary();
     const sec=((performance.now()-started)/1000).toFixed(1);
@@ -470,7 +493,7 @@ function renderDashboard(){
   selectedDate=$('headerDate').value||selectedDate;
   const lu=$('headerLastUpdated');if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
   renderProjectFilter();
-  if(typeof Chart!=="undefined")renderDefaultCharts();
+  if(typeof Chart!=="undefined")renderDashboardCharts();
   if(typeof Chart!=="undefined" && $("charts")?.classList.contains("active") && typeof renderChartGallery==="function")renderChartGallery();
   const source=filteredRows(selectedDate);
   const prev=previousDataDate(selectedDate),pd=filteredRows(prev);
@@ -488,15 +511,15 @@ function renderDashboard(){
   // Always merge the six core balance types with Treasury_Columns. This prevents
   // an older backend response from accidentally hiding the core balances.
   const coreDefs=[
-    {key:'bank',label:'Bank Balance',sort:1,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'sweep',label:'Sweep Deposit',sort:2,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'fd',label:'Fixed Deposits',sort:3,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'mf',label:'Mutual Funds',sort:4,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'bonds',label:'Bonds / Debentures',sort:5,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'brs',label:'BRS',sort:6,custom:false,includeTotal:true,liquidExclude:false},
-    {key:'reserve',label:'Reserve Fund',sort:7,custom:false,includeTotal:false,liquidExclude:true},
-    {key:'restricted',label:'Restricted Fund',sort:8,custom:false,includeTotal:false,liquidExclude:true},
-    {key:'locked_funds',label:'Locked Funds',sort:9,custom:false,includeTotal:false,liquidExclude:true}
+    {key:'bank',label:'Bank Balance',sort:1,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'sweep',label:'Sweep Deposit',sort:2,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'fd',label:'Fixed Deposits',sort:3,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'mf',label:'Mutual Funds',sort:4,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'bonds',label:'Bonds / Debentures',sort:5,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'brs',label:'BRS',sort:6,custom:false,includeTotal:true,liquidInclude:true},
+    {key:'reserve',label:'Reserve Fund',sort:7,custom:false,includeTotal:false,liquidInclude:false},
+    {key:'restricted',label:'Restricted Fund',sort:8,custom:false,includeTotal:false,liquidInclude:false},
+    {key:'locked_funds',label:'Locked Funds',sort:9,custom:false,includeTotal:false,liquidInclude:false}
   ];
   const byKey=new Map();
   coreDefs.forEach(c=>byKey.set(c.key,{...c}));
@@ -508,21 +531,24 @@ function renderDashboard(){
   // Non-total custom balances are still balance columns and remain before Total Funds.
   const balanceDefsAll=[...balanceDefs0,...customNonTotal];
   const deductionDefs0=allDefs.filter(c=>c.includeTotal!==true&&c.custom!==true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+  const liquidDefs=allDefs.filter(c=>c.liquidInclude===true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
 
   let codeIndex=0;const codeFor=()=>letter(codeIndex++);
   const balanceDefs=balanceDefsAll.map(c=>({c,code:codeFor()}));
   const totalCode=codeFor();
   const deductionDefs=deductionDefs0.map(c=>({c,code:codeFor()}));
+  const liquidRefByKey=new Map([...balanceDefs,...deductionDefs].map(x=>[x.c.key,x.code]));
+  const liquidRefs=liquidDefs.map(x=>liquidRefByKey.get(x.key)).filter(Boolean);
   const liquidCode=codeFor(),movementCode=codeFor();
   const th=(name,code,formula='')=>`<th><span class="th-name">${esc(name)}</span>${formula?`<span class="th-formula">${esc(formula)}</span>`:''}<span class="th-code">(${code.toUpperCase()})</span></th>`;
   const thFormulaOnly=(name,formula)=>`<th><span class="th-name">${esc(name)}</span><span class="th-formula">${esc(formula)}</span></th>`;
   let head=`<tr class="treasury-head"><th><span class="th-name">ENTITY</span></th><th class="project-head"><span class="th-name">PROJECT NAME</span></th>`;
   balanceDefs.forEach(x=>head+=th(x.c.label,x.code));
-  const totalFormula=balanceDefs.length?`(${totalCode.toUpperCase()}) = (${balanceDefs[0].code.toUpperCase()}) TO (${balanceDefs[balanceDefs.length-1].code.toUpperCase()})`:`(${totalCode.toUpperCase()}) = (A) TO (A)`;
+  const totalFormula=balanceDefs.length?`(${balanceDefs[0].code.toUpperCase()}) TO (${balanceDefs[balanceDefs.length-1].code.toUpperCase()})`:'No components';
   // Total/Liquid references are shown once only: the formula itself carries the column reference.
   head+=thFormulaOnly('TOTAL FUNDS',totalFormula);
   deductionDefs.forEach(x=>head+=th(x.c.label,x.code));
-  const liquidFormula=deductionDefs.length?`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()}${deductionDefs.map(x=>` - ${x.code.toUpperCase()}`).join('')})`:`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()})`;
+  const excludedLiquidKeys=allDefs.filter(c=>c.active!==false&&c.liquidInclude!==true&&hasData(c)).map(c=>c.key);const codeMapAll=new Map([...balanceDefs,...deductionDefs].map(x=>[x.c.key,x.code]));const excludedFromLiquid=excludedLiquidKeys.map(k=>codeMapAll.get(k)).filter(Boolean).map(x=>x.toUpperCase());const liquidFormula=`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()}${excludedFromLiquid.map(x=>' - '+x).join('')})`;
   head+=thFormulaOnly('LIQUID FUNDS',liquidFormula);
   head+=`<th><span class="th-name">MOVEMENT</span><span class="th-formula">FROM ${prev?fmtDate(prev).toUpperCase():'—'}</span><span class="th-code">(${movementCode.toUpperCase()})</span></th></tr>`;
   $('dashHead').innerHTML=head;
@@ -572,7 +598,7 @@ function latestUpdatedForDate(date){
   const dt=new Date(v);if(isNaN(dt))return v;
   return dt.toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
 }
-function renderDefaultCharts(){
+function renderDashboardCharts(){
   if(typeof Chart!=="undefined"){
     Chart.defaults.font.family='"Times New Roman", Times, serif';
     Chart.defaults.font.size=12;
@@ -593,146 +619,292 @@ function renderDefaultCharts(){
   const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88","#8B6F47","#A84B4B","#5E6F82","#2D7A61","#C17C3A"];
   charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
 }
-function hasCellData(r,key){
-  return !!(r && r[key]!==undefined && r[key]!==null && String(r[key]).trim()!=="" && Number.isFinite(Number(r[key])));
+
+function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return Math.abs(n)>=100?n.toFixed(0):n.toFixed(2);}
+function splitChartLabel(label,maxLen=25,maxLines=3){
+  const text=String(label||''); if(text.length<=maxLen)return [text];
+  const words=text.split(/\s+/), lines=[''];
+  words.forEach(w=>{const last=lines.length-1;const candidate=(lines[last]?lines[last]+' ':'')+w;if(candidate.length<=maxLen||!lines[last])lines[last]=candidate;else if(lines.length<maxLines)lines.push(w);else lines[lines.length-1]+=' '+w;});
+  return lines.slice(0,maxLines);
 }
-function galleryRows(){return selectedDate?filteredRows(selectedDate):[];}
-function galleryDates(){return [...new Set(rows.map(r=>r.date).filter(Boolean))].sort().filter(d=>filteredRows(d).length).slice(-5);}
-function destroyGalleryChart(key){if(charts[key]){try{charts[key].destroy();}catch(e){}charts[key]=null;}}
-function galleryMessage(stageId,msg){const st=$(stageId);if(!st)return;st.innerHTML=`<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px">${esc(msg)}</div>`;}
-function resetGalleryStage(stageId,canvasId){const st=$(stageId);if(!st)return null;let c=$(canvasId);if(!c){st.innerHTML=`<canvas id="${canvasId}"></canvas>`;c=$(canvasId);}return c;}
-function galleryHeight(count,mode='bar'){
-  if(mode==='donut') return 430;
-  if(mode==='line') return 390;
-  return Math.max(430, Math.min(1250, 180 + count*48));
+function destroyChartKey(key){if(charts[key]){try{charts[key].destroy();}catch(e){}charts[key]=null;}}
+function makeCanvas(stageId,canvasId){
+  const st=$(stageId);if(!st)return null;
+  st.innerHTML=`<canvas id="${canvasId}"></canvas>`;
+  return $(canvasId);
 }
-function galleryBaseOptions(indexAxis='y',heightMode='bar'){
-  return {
-    responsive:true,maintainAspectRatio:false,indexAxis,
-    animation:{duration:350},
-    layout:{padding:{top:10,right:34,bottom:10,left:10}},
-    plugins:{
-      legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},
-      tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ${formatChartValue(c.raw)} Cr`}}
-    },
-    scales:{
-      x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},
-      y:{beginAtZero:true,grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis==='y'?'':'₹ Crores',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}
-    }
-  };
+function chartStageMessage(stageId,msg){const st=$(stageId);if(st)st.innerHTML=`<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px">${esc(msg)}</div>`;}
+function chartHeight(count,type='horizontal',extra=0){
+  if(type==='donut'||type==='polar'||type==='radar')return 440+extra;
+  if(type==='area'||type==='line')return Math.max(400,Math.min(720,400+Math.max(0,count-8)*16));
+  return Math.max(420,Math.min(1500,210+Math.max(count,1)*46+extra));
 }
-function galleryValuePlugin(id,stacked){
+const V38_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63','#9B7A2F','#4C6678'];
+function baseChartOptions(indexAxis='y'){
+  return {responsive:true,maintainAspectRatio:false,indexAxis,animation:{duration:0},resizeDelay:40,layout:{padding:{top:12,right:54,bottom:18,left:10}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ₹ ${formatChartCr(c.raw)} Cr`}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
+}
+function valueLabelPlugin(pluginId,opts={}){
+  return {id:pluginId,afterDatasetsDraw(chart){
+    if(opts.skip)return;
+    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
+    const type=chart.config.type,indexAxis=chart.options.indexAxis;
+    chart.data.datasets.forEach((ds,di)=>{const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{
+      const raw=Number(ds.data[i]);if(!Number.isFinite(raw))return;
+      if(opts.stacked && ds.data.length){const props=el.getProps(['base','x','y'],true);const span=indexAxis==='y'?Math.abs(props.x-(props.base??props.x)):Math.abs(props.y-(props.base??props.y));if(span<46)return;}
+      const p=el.tooltipPosition();let x=p.x,y=p.y-9;
+      if(indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
+      if(opts.percent)y-=2;
+      ctx.fillText(formatChartCr(opts.percent?raw:raw)+(opts.percent?'%':''),x,y);
+    });});ctx.restore();
+  }};
+}
+
+
+const CHART_SLOTS = 6;
+const CHART_TYPE_NAMES = {
+  columnBar:'Column Bar', horizontalBar:'Horizontal Bar', line:'Line', area:'Area',
+  doughnut:'Doughnut', stackedBar:'Stacked Bar', percentStackedBar:'100% Stacked Bar',
+  radar:'Radar', polarArea:'Polar Area'
+};
+const DEFAULT_SLOT_CONFIGS = [
+  {axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof'},
+  {axis:'entity',metric:'liquid',type:'horizontalBar',dateMode:'asof'},
+  {axis:'project',metric:'total',type:'horizontalBar',dateMode:'asof'},
+  {axis:'fund',metric:'amount',type:'doughnut',dateMode:'asof'},
+  {axis:'date',metric:'liquid',type:'line',dateMode:'latest5'},
+  {axis:'entity',metric:'total',type:'percentStackedBar',dateMode:'asof'}
+];
+let chartSlots = DEFAULT_SLOT_CONFIGS.map(x=>({...x}));
+let savedCharts = [];
+
+function chartDefsForView(){
+  const core=[
+    {key:'bank',label:'Bank Balance',sort:1,includeTotal:true,liquidInclude:true,active:true},
+    {key:'sweep',label:'Sweep Deposit',sort:2,includeTotal:true,liquidInclude:true,active:true},
+    {key:'fd',label:'Fixed Deposits',sort:3,includeTotal:true,liquidInclude:true,active:true},
+    {key:'mf',label:'Mutual Funds',sort:4,includeTotal:true,liquidInclude:true,active:true},
+    {key:'bonds',label:'Bonds / Debentures',sort:5,includeTotal:true,liquidInclude:true,active:true},
+    {key:'brs',label:'BRS',sort:6,includeTotal:true,liquidInclude:true,active:true},
+    {key:'reserve',label:'Reserve Fund',sort:7,includeTotal:false,liquidInclude:false,active:true},
+    {key:'restricted',label:'Restricted Fund',sort:8,includeTotal:false,liquidInclude:false,active:true},
+    {key:'locked_funds',label:'Locked Funds',sort:9,includeTotal:false,liquidInclude:false,active:true}
+  ];
+  const m=new Map(core.map(x=>[x.key,x]));
+  (columns||[]).forEach(c=>m.set(c.key,{...m.get(c.key),...c}));
+  return [...m.values()].filter(c=>c.active!==false).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+}
+function chartIncludeTotalDefs(){return chartDefsForView().filter(c=>c.includeTotal===true);}
+function chartIncludeLiquidDefs(){return chartDefsForView().filter(c=>c.liquidInclude===true);}
+function chartNonLiquidDefs(){return chartDefsForView().filter(c=>c.liquidInclude!==true);}
+function chartConfigDefaults(i){return {...DEFAULT_SLOT_CONFIGS[i]};}
+function hasNumberForKey(rs,key){return rs.some(r=>r[key]!==''&&r[key]!==null&&r[key]!==undefined&&Number.isFinite(Number(r[key])));}
+function aggregateMetric(rs,metric){
+  if(metric==='total')return +rs.reduce((s,r)=>s+total(r),0).toFixed(2);
+  if(metric==='liquid')return +rs.reduce((s,r)=>s+liquid(r),0).toFixed(2);
+  if(metric==='nonliquid')return +rs.reduce((s,r)=>s+(total(r)-liquid(r)),0).toFixed(2);
+  return +rs.reduce((s,r)=>s+n(r[metric]),0).toFixed(2);
+}
+function slotMetricOptions(axis){
+  if(axis==='fund')return [{v:'amount',l:'Amount'}];
+  const defs=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},{v:'nonliquid',l:'Non-Liquid Funds'}];
+  (columns||[]).filter(c=>c.active!==false).forEach(c=>{if(!defs.some(x=>x.v===c.key))defs.push({v:c.key,l:c.label});});
+  return defs;
+}
+function slotDateOptions(axis){
+  if(axis!=='date')return [{v:'asof',l:'As of Date'}];
+  return [{v:'latest5',l:'Latest 5 Available Dates'},{v:'latest10',l:'Latest 10 Available Dates'},{v:'last30',l:'Last 30 Days'},{v:'last90',l:'Last 90 Days'},{v:'custom',l:'Custom Date Range'}];
+}
+function validTypesForSlot(cfg){
+  const count=categoryCountForConfig(cfg);
+  if(cfg.axis==='date'){
+    const out=['line','area','columnBar','horizontalBar'];
+    if(count<=8)out.push('radar');
+    return out;
+  }
+  if(cfg.axis==='project'){
+    const out=['horizontalBar'];
+    if(cfg.metric==='total'){out.push('stackedBar','percentStackedBar');}
+    if(count<=6)out.push('doughnut','polarArea');
+    return out;
+  }
+  if(cfg.axis==='fund'){
+    const out=['horizontalBar'];
+    if(count<=6)out.push('doughnut','polarArea','radar');
+    return out;
+  }
+  const out=['columnBar','horizontalBar'];
+  if(cfg.metric==='total')out.push('stackedBar','percentStackedBar');
+  if(count<=6)out.push('doughnut','polarArea','radar');
+  return out;
+}
+function safeSlotConfig(cfg){
+  const c={...cfg};
+  const typeOptions=validTypesForSlot(c); if(!typeOptions.includes(c.type))c.type=typeOptions[0]||'horizontalBar';
+  if(c.axis==='fund')c.metric='amount';
+  if(c.axis!=='date'){c.dateMode='asof';c.asOf=c.asOf||maxDataDate();delete c.from;delete c.to;}
+  if(c.axis==='date' && !slotDateOptions('date').some(x=>x.v===c.dateMode))c.dateMode='latest5';
+  return c;
+}
+function splitLines(s,maxLen=26,maxLines=3){return splitChartLabel(s,maxLen,maxLines);}
+function chartValuePlugin(id,{percent=false,dense=false,skip=false}={}){
   return {id,afterDatasetsDraw(chart){
+    if(skip)return;
     const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
     chart.data.datasets.forEach((ds,di)=>{
-      if(stacked && di!==chart.data.datasets.length-1)return;
       const meta=chart.getDatasetMeta(di);
       meta.data.forEach((el,i)=>{
-        const v=ds.data[i];if(v===null||v===undefined||!Number.isFinite(Number(v)))return;
-        const p=el.tooltipPosition();let x=p.x,y=p.y,show=true;
-        if(stacked){
-          const w=Math.abs((el.base??p.x)-p.x);const h=Math.abs((el.base??p.y)-p.y);
-          const span=Math.max(w,h);
-          show=span>=34;
-        }
-        if(!show)return;
-        if(chart.options.indexAxis==='y'){x=p.x+8;ctx.textAlign='left';}else{y=p.y-9;ctx.textAlign='center';}
-        ctx.fillText(formatChartValue(v),x,y);
+        const raw=Number(ds.data[i]);if(!Number.isFinite(raw))return;
+        const p=el.tooltipPosition();let x=p.x,y=p.y-8;
+        if(chart.options.indexAxis==='y'){x=p.x+7;y=p.y;ctx.textAlign='left';}
+        else {ctx.textAlign='center';}
+        if(dense && chart.config.type==='line' && chart.data.labels.length>12 && i%Math.ceil(chart.data.labels.length/10)!==0)return;
+        ctx.fillText(percent?raw.toFixed(1)+'%':formatChartCr(raw),x,y);
       });
     });ctx.restore();
   }};
 }
-function entityChartRows(){
-  return getDashboardEntities().filter(e=>filteredRows(selectedDate).some(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()));
+function baseSlotOptions(indexAxis){
+  const o={responsive:true,maintainAspectRatio:false,animation:false,indexAxis,layout:{padding:{top:12,right:indexAxis==='y'?72:20,bottom:18,left:indexAxis==='y'?10:16}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ₹ ${formatChartCr(c.raw)} Cr`}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7}}}};
+  return o;
 }
-function projectChartRows(){
-  const cr=filteredRows(selectedDate),seen=new Set(),out=[];
-  cr.forEach(r=>{const entity=String(r.entity||'').toUpperCase(),project=String(r.project||'').toUpperCase(),key=entity+'|'+project;if(seen.has(key))return;seen.add(key);out.push({entity,project,label:`${entity} · ${projectName(r.project)}`});});
-  return out;
+function stageHeightForConfig(cfg,count){
+  if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')return Math.max(440,Math.min(760,440+Math.max(0,count-6)*18));
+  if(cfg.type==='line'||cfg.type==='area')return Math.max(400,Math.min(760,400+Math.max(0,count-10)*18));
+  return Math.max(430,Math.min(1400,250+Math.max(1,count)*45));
 }
-function renderChartGallery(){
+function renderChartStage(slot){
   if(typeof Chart==='undefined')return;
-  const stages=['g1Stage','g2Stage','g3Stage','g4Stage','g5Stage','g6Stage'];
-  if(!rows.length||!selectedDate){stages.forEach(s=>galleryMessage(s,'No Treasury data available.'));return;}
-  Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
-  const selected=selectedDate;
-  const entitiesNow=entityChartRows();
-  const projectsNow=projectChartRows();
-  const cr=filteredRows(selected);
-  const metricSum=(rs,key)=>+rs.reduce((s,r)=>s+n(r[key]),0).toFixed(2);
-  const commonHeightForEntities=galleryHeight(entitiesNow.length,'bar');
-  const commonHeightForProjects=galleryHeight(projectsNow.length,'bar');
-
-  // 1. Total Funds by Entity
-  destroyGalleryChart('g1'); let stage=$('g1Stage'); stage.style.height=commonHeightForEntities+'px'; let c=resetGalleryStage('g1Stage','g1');
-  if(!entitiesNow.length){galleryMessage('g1Stage','No entity data available for the selected date.');}
-  else {
-    const labels=entitiesNow;
-    const totals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
-    const o=galleryBaseOptions('y');o.scales.y.ticks.font={family:'Times New Roman',size:10};
-    charts.g1=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:totals,backgroundColor:'#1F5B45',borderColor:'#1F5B45',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g1v',false)]});
-  }
-
-  // 2. Liquid Funds by Entity
-  destroyGalleryChart('g2');stage=$('g2Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g2Stage','g2');
-  if(!entitiesNow.length){galleryMessage('g2Stage','No entity data available for the selected date.');}
-  else {
-    const labels=entitiesNow,vals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+liquid(r),0).toFixed(2));
-    const o=galleryBaseOptions('y');charts.g2=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Liquid Funds',data:vals,backgroundColor:'#B18A3A',borderColor:'#B18A3A',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g2v',false)]});
-  }
-
-  // 3. Total vs Liquid Funds by Entity — grouped horizontal bar
-  destroyGalleryChart('g3');stage=$('g3Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g3Stage','g3');
-  if(!entitiesNow.length){galleryMessage('g3Stage','No entity data available for the selected date.');}
-  else {
-    const labels=entitiesNow;
-    const totals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
-    const liquids=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+liquid(r),0).toFixed(2));
-    const o=galleryBaseOptions('y');o.scales.y.ticks.padding=8;
-    charts.g3=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:totals,backgroundColor:'#1F5B45',borderColor:'#1F5B45',borderWidth:1,barThickness:12,maxBarThickness:16},{label:'Liquid Funds',data:liquids,backgroundColor:'#B18A3A',borderColor:'#B18A3A',borderWidth:1,barThickness:12,maxBarThickness:16}]},options:o,plugins:[galleryValuePlugin('g3v',false)]});
-  }
-
-  // 4. Total Funds by Project — dynamic height avoids congestion with 18–20+ entities/projects
-  destroyGalleryChart('g4');stage=$('g4Stage');stage.style.height=commonHeightForProjects+'px';c=resetGalleryStage('g4Stage','g4');
-  if(!projectsNow.length){galleryMessage('g4Stage','No project data available for the selected date.');}
-  else {
-    const labels=projectsNow.map(x=>x.label),vals=projectsNow.map(x=>+cr.filter(r=>String(r.entity||'').toUpperCase()===x.entity&&String(r.project||'').toUpperCase()===x.project).reduce((s,r)=>s+total(r),0).toFixed(2));
-    const o=galleryBaseOptions('y');o.scales.y.ticks={font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8};
-    charts.g4=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:vals,backgroundColor:'#3D6F8E',borderColor:'#3D6F8E',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g4v',false)]});
-  }
-
-  // 5. Total Funds components by Entity — stacked horizontal
-  destroyGalleryChart('g5');stage=$('g5Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g5Stage','g5');
-  const componentDefs=columns.filter(c=>c.active!==false&&c.includeTotal===true&&cr.some(r=>hasCellData(r,c.key)));
-  if(!entitiesNow.length||!componentDefs.length){galleryMessage('g5Stage','No Total Funds component data available.');}
-  else {
-    const labels=entitiesNow;
-    const datasets=componentDefs.map((col,i)=>({label:col.label,data:labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+n(r[col.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1,barThickness:20,maxBarThickness:24}));
-    const o=galleryBaseOptions('y');o.scales.x.stacked=true;o.scales.y.stacked=true;
-    charts.g5=new Chart(c,{type:'bar',data:{labels,datasets},options:o,plugins:[galleryValuePlugin('g5v',true)]});
-  }
-
-  // 6. Fund concentration by Entity — doughnut for small entity counts; auto-fallback to horizontal bar for 9+
-  destroyGalleryChart('g6');stage=$('g6Stage');c=resetGalleryStage('g6Stage','g6');
-  const labels6=entitiesNow,vals6=labels6.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
-  if(!labels6.length||!vals6.some(v=>v!==0)){galleryMessage('g6Stage','No fund concentration data available.');}
-  else if(labels6.length<=8){
-    stage.style.height='430px';
-    const g6LegendLabels=function(chart){
-      const base=Chart.defaults.plugins.legend.labels.generateLabels(chart);
-      return base.map((it,i)=>({...it,text:`${labels6[i]} — ₹${vals6[i].toFixed(2)} Cr`}));
-    };
-    charts.g6=new Chart(c,{
-      type:'doughnut',
-      data:{labels:labels6,datasets:[{data:vals6,backgroundColor:labels6.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:3}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Times New Roman',size:11},padding:10,usePointStyle:true,generateLabels:g6LegendLabels}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.label}: ₹ ${Number(c.raw).toFixed(2)} Cr`}}}}
-    });
+  const cfg=safeSlotConfig(chartSlots[slot]);chartSlots[slot]=cfg;
+  const stage=$(`slotStage${slot+1}`);if(!stage)return;
+  destroyChartKey('slot'+slot);
+  const date=axisDateForConfig(cfg);const categories=cfg.axis==='date'?availableDatesForConfig(cfg).map(d=>({label:fmtDate(d),key:d})):categoryItems(cfg.axis,date);
+  stage.style.height=stageHeightForConfig(cfg,categories.length)+'px';stage.innerHTML='<canvas></canvas>';const canvas=stage.querySelector('canvas');
+  if(!categories.length){stage.innerHTML='<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center">No data available for this chart selection.</div>';return;}
+  let labels=categories.map(x=>x.label),datasets=[],chartType='bar',indexAxis='x',pluginOpts={};
+  if(cfg.axis==='fund'){
+    const rs=selectedRowsForChartDate(date);const data=categories.map(x=>+rs.reduce((s,r)=>s+n(r[x.key]),0).toFixed(2));
+    labels=categories.map(x=>x.label);
+    if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')chartType=cfg.type;
+    else chartType='bar';
+    datasets=[{label:'Amount',data,backgroundColor:labels.map((_,i)=>V38_PALETTE[i%V38_PALETTE.length]),borderColor:'#fff',borderWidth:cfg.type==='doughnut'||cfg.type==='polarArea'?3:1,borderRadius:4}];
+    if(cfg.type==='horizontalBar'){indexAxis='y';}
+  }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
+    const defs=chartIncludeTotalDefs().filter(d=>hasNumberForKey(selectedRowsForChartDate(date),d.key));
+    const ds=defs.map((d,i)=>({label:d.label,data:categories.map(c=>{const rs=cfg.axis==='entity'?rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.key).toUpperCase()&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())):rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||'').toUpperCase()&&String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase());return +rs.reduce((s,r)=>s+n(r[d.key]),0).toFixed(2);}),backgroundColor:V38_PALETTE[i%V38_PALETTE.length],borderColor:'#fff',borderWidth:1}));
+    datasets=ds;indexAxis='y';
+    if(cfg.type==='percentStackedBar'){
+      const sums=labels.map((_,i)=>datasets.reduce((s,d)=>s+(Number(d.data[i])||0),0));datasets=datasets.map(d=>({...d,data:d.data.map((v,i)=>sums[i]?+(Number(v)/sums[i]*100).toFixed(1):0)}));pluginOpts.percent=true;
+    }
   }else{
-    stage.style.height=galleryHeight(labels6.length,'bar')+'px';
-    const o=galleryBaseOptions('y');
-    charts.g6=new Chart(c,{type:'bar',data:{labels:labels6,datasets:[{label:'Total Funds',data:vals6,backgroundColor:'#7A5C8E',borderColor:'#7A5C8E',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g6v',false)]});
+    if(cfg.axis==='date'){
+      const data=categories.map(c=>aggregateMetric(rows.filter(r=>r.date===c.key),cfg.metric));labels=categories.map(c=>c.label);
+    }else{
+      const data=categories.map(c=>{const rs=rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||c.key).toUpperCase()&&(cfg.axis!=='project'||String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));return aggregateMetric(rs,cfg.metric);});
+      labels=categories.map(c=>cfg.axis==='project'?splitLines(c.label,30,3):c.label);
+    }
+    if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')chartType=cfg.type;
+    else if(cfg.type==='line'||cfg.type==='area')chartType='line';
+    else chartType='bar';
+    indexAxis=cfg.type==='horizontalBar'?'y':'x';
+    if(cfg.type==='area')datasets=[{label:metricLabel(cfg.metric),data,fill:true,tension:.25,borderWidth:3,borderColor:'#B58A3A',backgroundColor:'rgba(181,138,58,.18)',pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
+    else datasets=[{label:metricLabel(cfg.metric),data,backgroundColor:cfg.type==='line'?'#1F5B45':(labels.map((_,i)=>V38_PALETTE[i%V38_PALETTE.length])),borderColor:cfg.type==='line'?'#1F5B45':'#fff',borderWidth:cfg.type==='line'?3:1,borderRadius:4,pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
+    pluginOpts.dense=cfg.type==='line'||cfg.type==='area';
   }
+  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar')pluginOpts.skip=true;
+  const o=baseSlotOptions(indexAxis);
+  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar'){
+    delete o.scales;
+    o.plugins.legend.labels.generateLabels=chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(datasets[0].data[i])} Cr`}));
+    o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;
+    if(chartType==='doughnut')o.cutout='60%';
+  } else {
+    if(indexAxis==='y')o.scales.y.ticks.autoSkip=false;
+    if(cfg.axis==='date')o.scales.x.title={display:true,text:'Date',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'};
+    if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){o.scales.x.stacked=true;o.scales.y.stacked=true;}
+    if(cfg.type==='percentStackedBar'){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';}
+  }
+  charts['slot'+slot]=new Chart(canvas,{type:chartType,data:{labels,datasets},options:o,plugins:[chartValuePlugin('slotValue'+slot,pluginOpts)]});
+  const note=$(`slotNote${slot+1}`);if(note)note.textContent=slotSummary(cfg,categories.length,date);
 }
+function slotSummary(cfg,count,date){
+  const d=cfg.axis==='date'?cfg.dateMode==='custom'?`${fmtDate(cfg.from)} → ${fmtDate(cfg.to)}`:(slotDateOptions('date').find(x=>x.v===cfg.dateMode)?.l||'Date range'):`As of ${fmtDate(date)}`;
+  return `${categoryLabel(cfg.axis)} · ${metricLabel(cfg.metric)} · ${CHART_TYPE_NAMES[cfg.type]||cfg.type} · ${count} categories · ${d}`;
+}
+function categoryLabel(axis){return axis==='fund'?'Fund Type':axis.charAt(0).toUpperCase()+axis.slice(1);}
+function renderChartGallery(){
+  const box=$('chartSlots');if(!box)return;
+  box.innerHTML=chartSlots.map((cfg0,i)=>{const cfg=safeSlotConfig(cfg0);chartSlots[i]=cfg;return `<div class="card chart-slot-card"><div class="cardhead"><div class="chart-slot-head"><div><div class="ct">Chart ${i+1}</div><div class="cs">Independent dynamic chart</div></div></div><div class="chart-slot-actions"><button class="btn sm" onclick="resetChartSlot(${i})">Reset</button><button class="btn sm primary" onclick="saveChartSlot(${i})">Save Chart</button></div></div>
+    <div class="chart-slot-controls"><div class="control"><label>Category / Axis</label><select id="slotAxis${i+1}" onchange="slotControlChanged(${i})">${['date','entity','project','fund'].map(v=>`<option value="${v}" ${cfg.axis===v?'selected':''}>${categoryLabel(v)}</option>`).join('')}</select></div>
+    <div class="control"><label>Metric / Value</label><select id="slotMetric${i+1}" onchange="slotControlChanged(${i})"></select></div>
+    <div class="control"><label>Chart Type</label><select id="slotType${i+1}" onchange="slotControlChanged(${i})"></select></div></div>
+    <div id="slotDateWrap${i+1}" class="chart-slot-date"></div>
+    <div id="slotNote${i+1}" class="chart-slot-note"></div><div id="slotStage${i+1}" class="chart-slot-stage"></div></div>`;}).join('');
+  chartSlots.forEach((_,i)=>updateSlotControls(i,false));
+  chartSlots.forEach((_,i)=>renderChartStage(i));
+  renderSavedCharts();
+}
+function updateSlotControls(i,rerender=true){
+  const cfg=chartSlots[i];if(!cfg)return;
+  cfg.axis=$(`slotAxis${i+1}`)?.value||cfg.axis;
+  const mEl=$(`slotMetric${i+1}`),metrics=slotMetricOptions(cfg.axis);
+  if(mEl){const cur=cfg.metric;mEl.innerHTML=metrics.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');cfg.metric=metrics.some(x=>x.v===cur)?cur:(metrics[0]?.v||'total');mEl.value=cfg.metric;mEl.disabled=cfg.axis==='fund';}
+  const types=validTypesForSlot(cfg),tEl=$(`slotType${i+1}`);
+  if(tEl){const cur=cfg.type;tEl.innerHTML=types.map(x=>`<option value="${x}">${CHART_TYPE_NAMES[x]}</option>`).join('');cfg.type=types.includes(cur)?cur:(types[0]||'horizontalBar');tEl.value=cfg.type;}
+  const dWrap=$(`slotDateWrap${i+1}`),dates=uniqueDates();
+  if(dWrap){
+    if(cfg.axis==='date'){
+      if(!['latest5','latest10','last30','last90','custom'].includes(cfg.dateMode))cfg.dateMode='latest5';
+      cfg.from=cfg.from||dates[0]||'';cfg.to=cfg.to||maxDataDate();
+      dWrap.innerHTML=`<label style="font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800">Date Range</label><select id="slotDateMode${i+1}" onchange="slotControlChanged(${i})">${slotDateOptions('date').map(x=>`<option value="${x.v}" ${cfg.dateMode===x.v?'selected':''}>${x.l}</option>`).join('')}</select><span id="slotDateExtra${i+1}" style="display:${cfg.dateMode==='custom'?'flex':'none'};align-items:center;gap:6px"><span>From</span><input id="slotFrom${i+1}" type="date" value="${esc(cfg.from)}" onchange="slotControlChanged(${i})"><span>To</span><input id="slotTo${i+1}" type="date" value="${esc(cfg.to)}" onchange="slotControlChanged(${i})"></span>`;
+    }else{
+      cfg.dateMode='asof';cfg.asOf=cfg.asOf||maxDataDate();
+      dWrap.innerHTML=`<label style="font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800">Date</label><span style="font-size:10px;color:var(--muted);font-weight:700">As of Date</span><input id="slotAsOf${i+1}" type="date" value="${esc(cfg.asOf)}" onchange="slotControlChanged(${i})">`;
+    }
+  }
+  chartSlots[i]=safeSlotConfig(cfg);
+  if(rerender && document.getElementById(`slotStage${i+1}`))renderChartStage(i);
+}
+function slotControlChanged(i){
+  const cfg=chartSlots[i];
+  cfg.axis=$(`slotAxis${i+1}`)?.value||cfg.axis;
+  cfg.metric=$(`slotMetric${i+1}`)?.value||cfg.metric;
+  cfg.type=$(`slotType${i+1}`)?.value||cfg.type;
+  if(cfg.axis==='date'){
+    cfg.dateMode=$(`slotDateMode${i+1}`)?.value||cfg.dateMode;
+    cfg.from=$(`slotFrom${i+1}`)?.value||cfg.from;
+    cfg.to=$(`slotTo${i+1}`)?.value||cfg.to;
+  }else{
+    cfg.dateMode='asof';cfg.asOf=$(`slotAsOf${i+1}`)?.value||cfg.asOf;
+  }
+  updateSlotControls(i,true);
+}
+function resetChartSlot(i){chartSlots[i]=chartConfigDefaults(i);renderChartGallery();}
+async function saveChartSlot(i){
+  const name=prompt('Enter a name for this chart:');if(!name||!name.trim())return;
+  const cfg={...safeSlotConfig(chartSlots[i])};
+  if(cfg.axis==='date'&&cfg.dateMode==='custom'){cfg.from=$(`slotFrom${i+1}`)?.value||cfg.from;cfg.to=$(`slotTo${i+1}`)?.value||cfg.to;}
+  try{const r=await apiPost({action:'saveCustomChart',name:name.trim(),config:cfg,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not save chart');await loadSavedCharts();note('✓ Chart saved.');}catch(e){note(e.message,true);}
+}
+async function loadSavedCharts(){
+  try{const r=await apiGet('getSavedCharts');savedCharts=Array.isArray(r.savedCharts)?r.savedCharts:[];renderSavedCharts();}catch(e){savedCharts=[];renderSavedCharts();}
+}
+function renderSavedCharts(){
+  const box=$('savedChartsList');if(!box)return;
+  if(!savedCharts.length){box.innerHTML='<div class="empty">No saved charts yet.</div>';return;}
+  box.innerHTML=savedCharts.map((s,i)=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><select id="savedSlot_${esc(s.id)}">${Array.from({length:CHART_SLOTS},(_,j)=>`<option value="${j}">Slot ${j+1}</option>`).join('')}</select><button class="btn sm primary" onclick="loadSavedChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
+}
+function formatDateTime(v){const d=new Date(v);return isNaN(d)?String(v):d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function loadSavedChart(id){
+  const s=savedCharts.find(x=>x.id===id);if(!s)return;const slot=Number($(`savedSlot_${id}`)?.value||0);let cfg={};try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
+  chartSlots[slot]=safeSlotConfig({...chartConfigDefaults(slot),...cfg});renderChartGallery();note(`✓ ${s.name} loaded into Slot ${slot+1}.`);
+}
+async function deleteSavedChart(id){
+  if(!confirm('Delete this saved chart?'))return;
+  try{const r=await apiPost({action:'deleteSavedChart',id,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not delete saved chart');await loadSavedCharts();note('✓ Saved chart deleted.');}catch(e){note(e.message,true);}
+}
+function resetChartSettings(){chartSlots=DEFAULT_SLOT_CONFIGS.map(x=>({...x}));renderChartGallery();}
+function renderCustomChart(){/* retained for backward compatibility with older click handlers */renderChartGallery();}
+
 function renderEntryFields(){
   const wrap=$("entryFields");if(!wrap)return;
   wrap.innerHTML=columns.filter(c=>c.active!==false).map(c=>`<div class="fg"><label>${esc(c.label)}</label><input id="e_${esc(c.key)}" type="number" step=".01" oninput="preview()"></div>`).join("");
@@ -765,264 +937,36 @@ async function saveEntry(){
 
 function clearEntry(){columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=""});preview()}
 function renderCompare(){
-  const d1=$("c1").value,d2=$("c2").value;if(!d1||!d2)return;
-  const a=rowsForDate(d1),b=rowsForDate(d2),map={};
-  [...a,...b].forEach(r=>{
-    const e=String(r.entity||"").toUpperCase();if(!e)return;
-    if(!map[e])map[e]={rows1:[],rows2:[],projects:new Set()};
-    const is1=r.date===d1;(is1?map[e].rows1:map[e].rows2).push(r);
-    const pn=projectName(r.project);if(pn)map[e].projects.add(pn);
+  const d1=$('c1').value,d2=$('c2').value;if(!d1||!d2)return;
+  const a=rowsForDate(d1),b=rowsForDate(d2),es=getDashboardEntities(),rowsOut=[];
+  es.forEach(e=>{
+    const r1=a.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));
+    const r2=b.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));
+    if(!r1.length&&!r2.length)return;
+    const t1=r1.reduce((s,r)=>s+total(r),0),t2=r2.reduce((s,r)=>s+total(r),0),mv=+(t2-t1).toFixed(2),pctMove=t1?+(mv/Math.abs(t1)*100).toFixed(2):0;
+    rowsOut.push({entity:e,t1,t2,mv,pctMove});
   });
-  entities.forEach(e=>{
-    const key=String(e).toUpperCase();if(!map[key])map[key]={rows1:[],rows2:[],projects:new Set()};
-    projects.filter(p=>String(p.entityCode||"").toUpperCase()===key&&p.active!==false).forEach(p=>{if(p.projectName)map[key].projects.add(p.projectName)});
-  });
-  let total1=0,total2=0,move=0,h="";
-  entities.forEach(e=>{
-    const key=String(e).toUpperCase(),mdata=map[key]||{rows1:[],rows2:[],projects:new Set()};
-    const t1=+mdata.rows1.reduce((s,r)=>s+total(r),0).toFixed(2),t2=+mdata.rows2.reduce((s,r)=>s+total(r),0).toFixed(2);
-    const m=+(t2-t1).toFixed(2);total1+=t1;total2+=t2;move+=m;
-    const pn=[...mdata.projects].join(" / ")||"—";
-    const fcmp=v=>v<0?`(${Math.abs(v).toFixed(2)})`:v.toFixed(2);
-    const mpct=t1?((m/t1)*100):null;
-    h+=`<tr><td>${esc(e)}</td><td class="project-cell">${esc(pn)}</td><td>${fcmp(t1)}</td><td>${fcmp(t2)}</td><td class="${m>0?'pos':m<0?'neg':'zero'}">${m>0?'▲ ':m<0?'▼ ':''}${fcmp(Math.abs(m))}</td><td>${mpct===null?'—':(mpct<0?`(${Math.abs(mpct).toFixed(2)}%)`:`${mpct.toFixed(2)}%`)}</td></tr>`;
-  });
-  const ftotal=v=>v<0?`(${Math.abs(v).toFixed(2)})`:v.toFixed(2);
-  const totalPct=total1?((move/total1)*100):null;
-  h+=`<tr class="totalrow"><td>TOTAL</td><td class="project-cell"></td><td>${ftotal(total1)}</td><td>${ftotal(total2)}</td><td class="${move>0?'pos':move<0?'neg':'zero'}">${move>0?'▲ ':move<0?'▼ ':''}${ftotal(Math.abs(move))}</td><td>${totalPct===null?'—':(totalPct<0?`(${Math.abs(totalPct).toFixed(2)}%)`:`${totalPct.toFixed(2)}%`)}</td></tr>`;
-  $("compareTable").innerHTML=h;
-  $("compareDate1Head").textContent=fmtDate(d1);
-  $("compareDate2Head").textContent=fmtDate(d2);
-  $("compareSub").textContent=fmtDate(d1)+" vs "+fmtDate(d2);
-  $("compareSummary").innerHTML=[[fmtDate(d1),"₹"+total1.toFixed(2)+" Cr"],[fmtDate(d2),"₹"+total2.toFixed(2)+" Cr"],["Net Movement",(move>=0?"+":"")+"₹"+move.toFixed(2)+" Cr"]].map(x=>`<div class="sum"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("");
+  const box=$('compareTable');if(!box)return;
+  box.innerHTML=rowsOut.map(x=>`<tr><td><b>${esc(x.entity)}</b></td><td class="project-cell">TOTAL</td><td>${fmtCell(x.t1)}</td><td>${fmtCell(x.t2)}</td><td class="${x.mv>0?'pos':x.mv<0?'neg':'zero'}">${fmtCell(x.mv)}</td><td class="${x.pctMove>0?'pos':x.pctMove<0?'neg':'zero'}">${fmtPct(x.pctMove)}</td><td></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No comparison data.</td></tr>';
+  const h1=$('compareDate1Head'),h2=$('compareDate2Head');if(h1)h1.textContent=fmtDate(d1);if(h2)h2.textContent=fmtDate(d2);
+  const sub=$('compareSub');if(sub)sub.textContent=`Total Funds only · ${fmtDate(d1)} to ${fmtDate(d2)}`;
 }
-function compareExportRows(){
-  const d1=$("c1").value,d2=$("c2").value;
-  const trs=[...document.querySelectorAll("#compareTable tr")];
-  return trs.map((tr,i)=>{const cells=[...tr.querySelectorAll("td")].map(td=>td.textContent.trim());return {entity:cells[0]||"",project:cells[1]||"",date1:cells[2]||"",date2:cells[3]||"",movement:cells[4]||"",pct:cells[5]||"",d1,d2,total:i===trs.length-1};});
-}
-function openCompareExport(type){
-  const d1=$("c1").value,d2=$("c2").value;if(!d1||!d2){alert("Please select both comparison dates first.");return}
-  const rowsEx=compareExportRows();
-  const nonTotal=rowsEx.filter(r=>!r.total);
-  const modal=document.createElement("div");modal.className="export-modal";modal.id="compareExportModal";
-  modal.innerHTML=`<div class="export-dialog"><div class="export-head"><b>Export Movement Analysis</b><button class="btn sm" onclick="closeCompareExport()">✕</button></div><div class="export-body"><div class="export-note">Add optional remarks for the export. These remarks are included only in the exported file and are not saved to the audit log.</div><table class="remarks-table"><thead><tr><th>Entity</th><th>Project Name</th><th>Movement</th><th>Remarks</th></tr></thead><tbody>${nonTotal.map((r,i)=>`<tr><td><b>${esc(r.entity)}</b></td><td>${esc(r.project)}</td><td>${esc(r.movement)}</td><td><input id="exportRemark_${i}" placeholder="Enter remarks"></td></tr>`).join("")}</tbody></table></div><div class="export-foot"><button class="btn" onclick="closeCompareExport()">Cancel</button><button class="btn primary" onclick="performCompareExport('${type}')">Download ${type.toUpperCase()}</button></div></div>`;
-  document.body.appendChild(modal);
-}
-function closeCompareExport(){const m=$("compareExportModal");if(m)m.remove()}
-function collectCompareRemarks(rowsEx){let i=0;return rowsEx.map(r=>{if(r.total)return {...r,remarks:"Consolidated movement"};const el=$("exportRemark_"+(i++));return {...r,remarks:el?el.value.trim():""};});}
-async function performCompareExport(type){
-  const rowsEx=collectCompareRemarks(compareExportRows());
-  try{
-    if(type==='jpg'){
-      closeCompareExport();await exportCompareJPG(rowsEx);return;
-    }
-    await exportCompareExcel(rowsEx);closeCompareExport();
-  }catch(e){alert(e.message||"Export failed.")}
-}
-async function exportCompareExcel(rowsEx){
-  await ensureExcelJs();
-  const d1=$("c1").value,d2=$("c2").value;
-  const wb=new ExcelJS.Workbook();wb.creator="MAIA Treasury Dashboard";wb.created=new Date();
-  const ws=wb.addWorksheet("Movement Analysis",{views:[{showGridLines:false}]});
-  ws.columns=[{width:15},{width:28},{width:16},{width:16},{width:15},{width:14},{width:42}];
-  ws.mergeCells("A1:G1");ws.getCell("A1").value="MAIA Treasury Dashboard";ws.getCell("A1").font={name:"Times New Roman",size:20,bold:true,color:{argb:"1F513B"}};ws.getCell("A1").alignment={vertical:"middle"};ws.getRow(1).height=30;
-  ws.mergeCells("A2:G2");ws.getCell("A2").value="Movement Analysis — Entity-wise Comparison";ws.getCell("A2").font={name:"Times New Roman",size:13,italic:true,color:{argb:"6D7B73"}};ws.getRow(2).height=22;
-  ws.mergeCells("A3:G3");ws.getCell("A3").value=`Comparison: ${fmtDate(d1)} vs ${fmtDate(d2)}`;ws.getCell("A3").font={name:"Times New Roman",size:11,bold:true,color:{argb:"B18A3A"}};ws.getRow(3).height=20;
-  ws.addRow([]);const hdr=ws.addRow(["Entity","Project Name",fmtDate(d1),fmtDate(d2),"Movement","% Movement","Remarks"]);
-  hdr.height=24;hdr.eachCell(c=>{c.font={name:"Times New Roman",size:11,bold:true,color:{argb:"FFFFFF"}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"1F513B"}};c.alignment={vertical:"middle",horizontal:c.col>=3?"right":"left"};c.border={bottom:{style:"thin",color:{argb:"D5BD7B"}}}});
-  rowsEx.forEach(r=>{const row=ws.addRow([r.entity,r.project,r.date1,r.date2,r.movement,r.pct,r.remarks]);row.eachCell((c,i)=>{c.font={name:"Times New Roman",size:11,bold:r.total,color:{argb:r.total?"1F513B":"17221C"}};c.alignment={vertical:"middle",horizontal:i>=3&&i<=6?"right":"left",wrapText:i===2||i===7};c.border={bottom:{style:"thin",color:{argb:"E3EAE5"}}};if(r.total)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"EEF4EF"}}});row.height=22});
-  ws.autoFilter={from:{row:5,column:1},to:{row:4+rowsEx.length,column:7}};ws.views=[{state:"frozen",ySplit:5,showGridLines:false}];
-  const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`MAIA_Movement_Analysis_${d1}_to_${d2}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-async function exportCompareJPG(rowsEx){
-  await ensureHtml2Canvas();
-  const d1=$("c1").value,d2=$("c2").value;const wrap=document.createElement("div");wrap.style.position="fixed";wrap.style.left="-100000px";wrap.style.top="0";wrap.style.background="#fff";wrap.style.padding="24px";wrap.style.width="1250px";wrap.style.fontFamily='"Times New Roman",Times,serif';
-  wrap.innerHTML=`<div style="font-size:22px;font-weight:700;color:#1f513b">MAIA Treasury Dashboard</div><div style="font-size:16px;color:#17221c;margin-top:4px">Movement Analysis — Entity-wise Comparison</div><div style="font-size:12px;color:#b18a3a;margin:6px 0 14px">${fmtDate(d1)} vs ${fmtDate(d2)}</div>`;
-  const table=document.createElement("table");table.style.width="100%";table.style.borderCollapse="collapse";table.style.fontFamily='"Times New Roman",Times,serif';
-  const thead=document.createElement("thead"),hr=document.createElement("tr");["Entity","Project Name",fmtDate(d1),fmtDate(d2),"Movement","% Movement","Remarks"].forEach(x=>{const th=document.createElement("th");th.textContent=x;th.style.background="#1f513b";th.style.color="#fff";th.style.padding="9px";th.style.textAlign="left";hr.appendChild(th)});thead.appendChild(hr);table.appendChild(thead);
-  const tb=document.createElement("tbody");rowsEx.forEach(r=>{const tr=document.createElement("tr");[r.entity,r.project,r.date1,r.date2,r.movement,r.pct,r.remarks].forEach((x,i)=>{const td=document.createElement("td");td.textContent=x;td.style.padding="8px";td.style.borderBottom="1px solid #dfe7e2";td.style.textAlign=i>=2&&i<=5?"right":"left";if(r.total)td.style.fontWeight="700";tr.appendChild(td)});tb.appendChild(tr)});table.appendChild(tb);wrap.appendChild(table);document.body.appendChild(wrap);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const canvas=await html2canvas(wrap,{backgroundColor:"#fff",scale:2,useCORS:true,logging:false,width:wrap.scrollWidth,height:wrap.scrollHeight,windowWidth:wrap.scrollWidth,windowHeight:wrap.scrollHeight});document.body.removeChild(wrap);const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.95);a.download=`MAIA_Movement_Analysis_${d1}_to_${d2}.jpg`;a.click();
-}
-function metricLabel(m){if(m==="total")return "Total Funds";if(m==="liquid")return "Liquid Funds";const c=columns.find(x=>x.key===m);return c?c.label:m}
-function updateDashChartControls(){
-  const axisEl=$("dashChartAxis"),typeEl=$("dashChartType"); if(!axisEl||!typeEl)return; const axis=axisEl.value,type=typeEl.value;
-  $("dashChartEntityWrap").style.display=(axis==="fund"||axis==="date")?"block":"none";
-  $("dashChartMetric2").disabled=(type==="doughnut"||axis==="fund");
-  if(type==="doughnut")$("dashChartMetric2").value="none";
-}
-function resetDashboardCustomChart(){
-  if(!$("dashChartType")||!$("dashChartAxis"))return;
-  $("dashChartType").value="bar";$("dashChartAxis").value="entity";$("dashChartMetric1").value="total";$("dashChartMetric2").value="none";$("dashChartEntityScope").value="ALL";
-  const dates=[...new Set(rows.map(r=>r.date))].sort();$("dashChartFrom").value=dates[0]||"";$("dashChartTo").value=dates.at(-1)||"";updateDashChartControls();renderDashboardCustomChart();
-}
-function renderDashboardCustomChart(){
-  if(!rows.length||!$("dashboardCustomChart")||!$("dashChartType"))return;
-  const type=$("dashChartType").value,axis=$("dashChartAxis").value,m1=$("dashChartMetric1").value,m2=$("dashChartMetric2").value,scope=$("dashChartEntityScope").value,from=$("dashChartFrom").value,to=$("dashChartTo").value;
-  const dates=[...new Set(rows.map(r=>r.date))].sort().filter(d=>(!from||d>=from)&&(!to||d<=to));
-  if(charts.dashboardCustom)charts.dashboardCustom.destroy();
-  let labels=[],d1=[],d2=[];
-  if(axis==="entity"){
-    const source=scope==="ALL"?entities:[scope];labels=source;const d=rowsForDate(selectedDate);d1=source.map(e=>metricValue(d[e]||{},m1));if(m2!=="none")d2=source.map(e=>metricValue(d[e]||{},m2));
-  }else if(axis==="date"){
-    labels=dates.map(fmtDate);d1=dates.map(d=>{const rs=scope==="ALL"?rows.filter(r=>r.date===d):rows.filter(r=>r.date===d&&r.entity===scope);return +rs.reduce((s,r)=>s+metricValue(r,m1),0).toFixed(2)});if(m2!=="none")d2=dates.map(d=>{const rs=scope==="ALL"?rows.filter(r=>r.date===d):rows.filter(r=>r.date===d&&r.entity===scope);return +rs.reduce((s,r)=>s+metricValue(r,m2),0).toFixed(2)});
-  }else{
-    const d=rowsForDate(selectedDate),source=scope==="ALL"?entities:[scope];const fundMap={Bank:"bank",Sweep:"sweep",FD:"fd","Mutual Funds":"mf","Bonds / Debentures":"bonds",BRS:"brs",Reserve:"reserve",Restricted:"restricted",Locked:"locked_funds"};labels=Object.keys(fundMap);d1=labels.map(k=>{let sum=0;source.forEach(e=>sum+=n((d[e]||{})[fundMap[k]]));return +sum.toFixed(2)});
-  }
-  const datasets=[{label:metricLabel(m1),data:d1,backgroundColor:CHART_PALETTE[0],borderColor:CHART_PALETTE[0],borderWidth:2}];if(m2!=="none"&&axis!=="fund")datasets.push({label:metricLabel(m2),data:d2,backgroundColor:CHART_PALETTE[1],borderColor:CHART_PALETTE[1],borderWidth:2});
-  if(type==="doughnut"){
-    charts.dashboardCustom=new Chart($("dashboardCustomChart"),{type:"doughnut",data:{labels,datasets:[{label:metricLabel(m1),data:d1,backgroundColor:CHART_PALETTE.slice(0,Math.max(d1.length,1)),borderColor:"#ffffff",borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}}}});
-  }else{
-    charts.dashboardCustom=new Chart($("dashboardCustomChart"),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:{x:{title:{display:true,text:axis==="entity"?"Entity":axis==="date"?"Date":"Fund Type"}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores"}}}}});
-  }
-}
-const chartValueLabelsPlugin={id:"valueLabels",afterDatasetsDraw(chart){
-  const ctx=chart.ctx; ctx.save(); ctx.font='700 10px "Times New Roman"'; ctx.fillStyle="#35584a"; ctx.textBaseline="middle";
-  const type=chart.config.type;
-  // Doughnut / polar values are kept in the legend to avoid slice-label collisions.
-  if(type==="doughnut" || type==="polarArea" || type==="radar"){ctx.restore();return;}
-  chart.data.datasets.forEach((ds,di)=>{const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{
-    const v=ds.data[i]; if(v===null||v===undefined||v===0)return;
-    const p=el.tooltipPosition(); let x=p.x,y=p.y-10;
-    if(chart.options.indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
-    if(chart.config.type==='radar'){y=p.y-8;}
-    ctx.fillText(formatChartValue(v, chart.config.type==="bar" && chart.options.scales?.y?.max===100),x,y);
-  });}); ctx.restore();
-}};
-function formatChartValue(v,isPct=false){const num=Number(v);if(!Number.isFinite(num))return "";return isPct?num.toFixed(0)+"%":(Math.abs(num)>=100?num.toFixed(0):num.toFixed(2));}
-function chartSettingKey(){return "maia_treasury_chart_settings_v4"}
-function getChartSettings(){try{return JSON.parse(localStorage.getItem(chartSettingKey())||"{}")||{}}catch(e){return {}}}
-const CHART_PALETTE=["#1F5B45","#B58A3A","#3D6F8E","#7A5C8E","#8C633E","#4D8A80","#A34F4F","#6B7D3A","#C06C3D","#5B6E8C","#7B4F6D","#3F7C63","#9B7A2F","#4C6678"];
-function chartAllowedTypes(axis,count=0){
-  if(axis==='date') return ['line','area','bar','horizontalBar','radar'];
-  if(axis==='project') return count<=6?['horizontalBar','stackedBar','100StackedBar','doughnut']:['horizontalBar','stackedBar','100StackedBar'];
-  if(axis==='entity') return count<=8?['bar','horizontalBar','doughnut','stackedBar','100StackedBar','radar','polarArea']:count<=12?['horizontalBar','stackedBar','100StackedBar','polarArea']:['horizontalBar','stackedBar','100StackedBar'];
-  return count<=6?['horizontalBar','doughnut','polarArea','radar']:count<=8?['horizontalBar','polarArea','radar']:['horizontalBar'];
-}
-const CHART_TYPE_NAMES={bar:'Column Bar',horizontalBar:'Horizontal Bar',line:'Line',area:'Area',doughnut:'Doughnut',stackedBar:'Stacked Bar','100StackedBar':'100% Stacked Bar',radar:'Radar',polarArea:'Polar Area'};
-function chartCategoryCount(axis){
-  if(axis==='entity')return getDashboardEntities().length||entities.length;
-  if(axis==='project')return chartRowsForAxis('project').labels.length;
-  if(axis==='fund')return columns.filter(c=>c.active!==false&&rsHasAnyFundData(c.key)).length;
-  return [...new Set(rows.map(r=>r.date).filter(Boolean))].length;
-}
-function populateChartTypes(axis){
-  const el=$('chartType');if(!el)return;
-  const count=chartCategoryCount(axis),allowed=chartAllowedTypes(axis,count),current=el.value;
-  el.innerHTML=allowed.map(v=>`<option value="${v}">${CHART_TYPE_NAMES[v]}</option>`).join('');
-  el.value=allowed.includes(current)?current:allowed[0];
-}
-function populateChartMetrics(){
-  const el=$('chartMetric');if(!el)return;
-  const active=columns.filter(c=>c.active!==false);
-  const defs=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},...active.map(c=>({v:c.key,l:c.label}))];
-  const cur=el.value;el.innerHTML=defs.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');el.value=defs.some(x=>x.v===cur)?cur:'total';
-}
-function updateCustomChartControls(){
-  const axis=$('chartAxis')?.value||'date';populateChartMetrics();populateChartTypes(axis);
-  const note=$('chartLogicNote');if(note){
-    const count=chartCategoryCount(axis);
-    const msg={
-      date:'Date is the category. Line and Area are for trends; bars compare dates; Radar is available for a small number of dates.',
-      entity:`Entity is the category. ${count>12?'Large entity lists use Horizontal Bar / Stacked options to avoid congestion.':'Horizontal Bar is preferred for readability.'}`,
-      project:`Project is the category. Horizontal Bar is used to keep project names horizontal; stacked options compare Total Funds components.`,
-      fund:`Fund Type is the category. Doughnut is available only when there are few fund types; larger lists use Horizontal Bar.`
-    }[axis]||'';note.textContent=msg;
-  }
-}
-function applyChartSettings(){updateCustomChartControls();renderCustomChart();}
-function resetChartSettings(){localStorage.removeItem(chartSettingKey());$('chartAxis').value='date';$('chartMetric').value='total';updateCustomChartControls();renderCustomChart();}
-function rsHasAnyFundData(key){return rows.some(r=>r.date===selectedDate&&r.__present&&r.__present[key]);}
-function chartRowsForAxis(axis){
-  const selected=selectedDate||[...new Set(rows.map(r=>r.date).filter(Boolean))].sort().at(-1)||'';
-  if(axis==='date'){const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort().slice(-5);return {labels:dates.map(fmtDate),values:dates};}
-  if(axis==='entity'){const source=getDashboardEntities();return {labels:source,values:source};}
-  if(axis==='project'){const source=rows.filter(r=>r.date===selected),seen=new Set(),items=[];source.forEach(r=>{const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').toUpperCase();if(seen.has(key))return;seen.add(key);items.push({label:`${r.entity} · ${projectName(r.project)}`,entity:r.entity,project:r.project});});return {labels:items.map(x=>x.label),values:items};}
-  const defs=columns.filter(c=>c.active!==false&&rsHasAnyFundData(c.key));return {labels:defs.map(c=>c.label),values:defs.map(c=>c.key)};
-}
-function stackComponents(axis,selected){
-  const defs=columns.filter(c=>c.active!==false&&c.includeTotal===true);
-  if(axis==='entity'){
-    const es=getDashboardEntities();return {labels:es,datasets:defs.map((c,i)=>({label:c.label,data:es.map(e=>+rows.filter(r=>r.date===selected&&r.entity===e).reduce((s,r)=>s+n(r[c.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1}))};
-  }
-  if(axis==='project'){
-    const cfg=chartRowsForAxis('project');return {labels:cfg.labels,datasets:defs.map((c,i)=>({label:c.label,data:cfg.values.map(x=>+rows.filter(r=>r.date===selected&&r.entity===x.entity&&r.project===x.project).reduce((s,r)=>s+n(r[c.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1}))};
-  }
-  return null;
-}
-function showCustomStageMessage(msg){const stage=$('customChartStage');if(!stage)return;stage.innerHTML=`<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px">${esc(msg)}</div>`;}
-function ensureChartCanvas(){const stage=$('customChartStage');if(!stage)return null;let c=$('customChart');if(!c){stage.innerHTML='<canvas id="customChart"></canvas>';c=$('customChart');}return c;}
-function customStageHeight(count,type){
-  if(type==='doughnut'||type==='polarArea'||type==='radar')return 500;
-  if(type==='line'||type==='area')return 430;
-  const horizontal=type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar';
-  return horizontal?Math.max(430,Math.min(1250,190+count*50)):Math.max(430,Math.min(650,430+Math.max(0,count-8)*10));
-}
-function renderCustomChart(){
-  if(!rows.length)return;
-  updateCustomChartControls();
-  const axis=$('chartAxis')?.value||'date',metric=$('chartMetric')?.value||'total',type=$('chartType')?.value||'line',selected=selectedDate||'';
-  const cfg=chartRowsForAxis(axis);let labels=[...cfg.labels],data=[];
-  const valueForRows=rs=>+rs.reduce((s,r)=>s+metricValue(r,metric),0).toFixed(2);
-  if(axis==='date')data=cfg.values.map(d=>valueForRows(rows.filter(r=>r.date===d)));
-  else if(axis==='entity')data=cfg.values.map(e=>valueForRows(rows.filter(r=>r.date===selected&&String(r.entity||'').toUpperCase()===String(e).toUpperCase())));
-  else if(axis==='project')data=cfg.values.map(x=>valueForRows(rows.filter(r=>r.date===selected&&String(r.entity||'').toUpperCase()===String(x.entity).toUpperCase()&&String(r.project||'').toUpperCase()===String(x.project).toUpperCase())));
-  else data=cfg.values.map(k=>+rows.filter(r=>r.date===selected).reduce((s,r)=>s+n(r[k]),0).toFixed(2));
 
-  if(!labels.length||!data.some(v=>Number.isFinite(Number(v)))){showCustomStageMessage('No data available for the selected category and filters.');return;}
-  const count=labels.length,allowed=chartAllowedTypes(axis,count);
-  if(!allowed.includes(type)){$('chartType').value=allowed[0];return renderCustomChart();}
-  if(charts.custom){try{charts.custom.destroy();}catch(e){}charts.custom=null;}
-  const canvas=ensureChartCanvas();if(!canvas)return;
-  const stage=canvas.parentElement;stage.style.height=customStageHeight(count,type)+'px';
-  const isHorizontal=type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar'||axis==='project';
-  const chartType=type==='area'||type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar'?'bar':type==='doughnut'?'doughnut':type==='radar'?'radar':type==='polarArea'?'polarArea':'line';
-  const indexAxis=isHorizontal?'y':'x';
-  let datasets=[];
-  if(type==='stackedBar'||type==='100StackedBar'){
-    const st=stackComponents(axis,selected);if(!st||!st.datasets.length){showCustomStageMessage('No Total Funds components have data for this selection.');return;}
-    labels=st.labels;datasets=st.datasets;
-    if(type==='100StackedBar'){const totals=labels.map((_,i)=>st.datasets.reduce((s,ds)=>s+(Number(ds.data[i])||0),0));datasets=datasets.map(ds=>({...ds,data:ds.data.map((v,i)=>totals[i]?+(Number(v)/totals[i]*100).toFixed(2):0)}));}
-  }else if(axis==='fund'){
-    datasets=[{label:'Amount',data,backgroundColor:labels.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:2}];
-  }else{
-    const c=CHART_PALETTE[0];datasets=[{label:metricLabel(metric),data,borderColor:c,backgroundColor:type==='area'?'rgba(31,91,69,.22)':c,pointBackgroundColor:CHART_PALETTE[1],pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:3,tension:.25,fill:type==='area'}];
-  }
-  if(type==='doughnut'||type==='polarArea')datasets=[{label:metricLabel(metric),data,backgroundColor:labels.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:3}];
-
-  const valueLabelsPlugin={id:'customValueLabelsV38',afterDatasetsDraw(chart){
-    if(chart.config.type==='doughnut'||chart.config.type==='polarArea'||chart.config.type==='radar')return;
-    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
-    chart.data.datasets.forEach((ds,di)=>{const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{const v=ds.data[i];if(v===null||v===undefined||!Number.isFinite(Number(v)))return;let show=true;if((type==='stackedBar'||type==='100StackedBar')){const p=el.tooltipPosition();const props=el.getProps(['base','x','y'],true);const span=Math.abs((props.base??p.x)-p.x)||0;show=span>=34;if(di!==chart.data.datasets.length-1&&span<48)show=false;}if(!show)return;const p=el.tooltipPosition();let x=p.x,y=p.y-9;if(chart.options.indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else ctx.textAlign='center';ctx.fillText(formatChartValue(v,type==='100StackedBar'),x,y);});});ctx.restore();
-  }};
-  const legendValueLabels=(chart)=>{
-    const base=Chart.defaults.plugins.legend.labels.generateLabels(chart);
-    if(chart.config.type==='radar')return labels.map((lab,i)=>({...base[0],text:`${lab} — ${formatChartValue(data[i])} Cr`,index:i,datasetIndex:0,hidden:false}));
-    if(chart.config.type==='doughnut'||chart.config.type==='polarArea')return base.map((item,i)=>({...item,text:`${labels[i]} — ${formatChartValue(data[i])} Cr`}));
-    return base.map((item,i)=>item);
-  };
-  const opts={responsive:true,maintainAspectRatio:false,indexAxis,animation:{duration:350},layout:{padding:{top:10,right:40,bottom:12,left:12}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:11,usePointStyle:true,boxWidth:12,generateLabels:legendValueLabels}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ${formatChartValue(c.raw,type==='100StackedBar')} ${type==='100StackedBar'?'':'Cr'}`}}},scales:{x:{stacked:type==='stackedBar'||type==='100StackedBar',grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:axis==='date',maxRotation:0,minRotation:0,maxTicksLimit:12},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':axis==='entity'?'Entity':axis==='project'?'Project':axis==='fund'?'Fund Type':'Date',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{stacked:type==='stackedBar'||type==='100StackedBar',beginAtZero:true,grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7},title:{display:indexAxis!=='y',text:indexAxis!=='y'?(axis==='date'?'Date':axis==='entity'?'Entity':axis==='project'?'Project':'Fund Type'):'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
-  if(type==='100StackedBar'){if(indexAxis==='y'){opts.scales.x.min=0;opts.scales.x.max=100;opts.scales.x.ticks={callback:v=>v+'%',font:{family:'Times New Roman',size:10},color:'#35584a'}}else{opts.scales.y.min=0;opts.scales.y.max=100;opts.scales.y.ticks={callback:v=>v+'%',font:{family:'Times New Roman',size:10},color:'#35584a'}}}
-  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar'){delete opts.scales;}
-  if(chartType==='doughnut'||chartType==='polarArea'){opts.cutout=chartType==='doughnut'?'58%':undefined;}
-  try{charts.custom=new Chart(canvas,{type:chartType,data:{labels,datasets},options:opts,plugins:[valueLabelsPlugin]});}
-  catch(e){console.error(e);showCustomStageMessage('This chart could not be rendered. Please choose another valid chart type.');}
+function renderColumnManager(){
+  const box=$('columnManager');if(!box)return;
+  const list=[...columns].sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+  box.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Key</th><th>Column Name</th><th>Active</th><th>Include in Total</th><th>Include in Liquid</th><th>Action</th></tr></thead><tbody>${list.map(c=>{const inc= c.liquidInclude===true;return `<tr><td>${esc(c.key)}</td><td><input value="${esc(c.label)}" data-col-label="${esc(c.key)}" style="min-width:180px"></td><td><select data-col-active="${esc(c.key)}"><option value="yes" ${c.active!==false?'selected':''}>Yes</option><option value="no" ${c.active===false?'selected':''}>No</option></select></td><td><select data-col-total="${esc(c.key)}"><option value="no" ${c.includeTotal?'':'selected'}>No</option><option value="yes" ${c.includeTotal?'selected':''}>Yes</option></select></td><td><select data-col-liquid="${esc(c.key)}"><option value="no" ${inc?'':'selected'}>No</option><option value="yes" ${inc?'selected':''}>Yes</option></select></td><td><button class="btn sm primary" onclick="saveColumn('${esc(c.key)}')">Save</button></td></tr>`}).join('')}</tbody></table></div>`;
 }
-function metricValue(r,m){return m==='total'?total(r):m==='liquid'?liquid(r):n(r[m])}
-function renderAudit(){
-  const ent=$("aEntity").value,from=$("aFrom").value,to=$("aTo").value,act=$("aAction").value;
-  let ar=audit.filter(x=>(ent==="ALL"||String(x.entity||"").toUpperCase()===ent)&&(!from||String(x.date||"").slice(0,10)>=from)&&(!to||String(x.date||"").slice(0,10)<=to)&&(act==="ALL"||x.action===act)).sort((a,b)=>String(b.timestamp||"").localeCompare(String(a.timestamp||"")));
-  $("auditTable").innerHTML=ar.length?ar.map(x=>`<tr><td>${esc(x.timestamp||"—")}</td><td><span class="tag">${esc(x.action||"")}</span></td><td>${fmtDate(x.date)}</td><td>${esc(x.entity||"")}</td><td class="audit-detail">${esc(x.details||x.changedFields||"—")}</td><td class="${n(x.movement)>0?'pos':n(x.movement)<0?'neg':'zero'}">${x.movement===""||x.movement==null?"—":(n(x.movement)>0?"+":"")+n(x.movement).toFixed(2)}</td><td class="reasontext">${esc(x.reason||x.remarks||"—")}</td><td>${esc(x.ip||"Unavailable")}</td><td class="audit-detail">${esc(x.userAgent||"—")}</td></tr>`).join(""):`<tr><td colspan="9" class="empty">No audit records for selected filters.</td></tr>`
+async function saveColumn(key){
+  const label=document.querySelector(`[data-col-label="${CSS.escape(key)}"]`)?.value.trim();if(!label){note('Column name is required.',true);return}
+  const tEl=document.querySelector(`[data-col-total="${CSS.escape(key)}"]`),lEl=document.querySelector(`[data-col-liquid="${CSS.escape(key)}"]`),aEl=document.querySelector(`[data-col-active="${CSS.escape(key)}"]`);
+  try{const r=await apiPost({action:'updateColumn',key,label,includeTotal:tEl?tEl.value==='yes':undefined,liquidInclude:lEl?lEl.value==='yes':undefined,active:aEl?aEl.value==='yes':undefined,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not update column');await loadAll();note('✓ Column updated.');}catch(e){note(e.message,true)}
 }
-function renderProjectManager(){const box=$("projectManager");if(!box)return;box.innerHTML=(projects||[]).map(p=>`<div class="project-master-row"><div><b>${esc(p.projectCode)}</b><span class="meta">${esc(p.projectName)} · ${esc(p.entityCode)} · Data From <input type="date" id="pstart_${esc(p.projectCode)}" value="${esc(p.startDate||"")}"> <button class="btn sm" onclick="updateProjectDate('${esc(p.projectCode)}')">Save Date</button></span></div><button class="btn sm danger" onclick="deactivateProject('${esc(p.projectCode)}')">×</button></div>`).join('')||'<div class="empty">No projects yet.</div>'}
-async function addProject(){const projectCode=$("newProjectCode").value.trim().toUpperCase(),projectName=$("newProjectName").value.trim(),entityCode=$("newProjectEntity").value,startDate=$("newProjectStartDate").value;if(!projectCode||!projectName||!entityCode||!startDate){note("Project Code, Project Name, Entity and Data From date are required.",true);return}try{const r=await apiPost({action:"addProject",projectCode,projectName,entityCode,startDate,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||"Could not add project");await loadAll();$("newProjectCode").value='';$("newProjectName").value='';$("newProjectStartDate").value='';note('✓ Project added.')}catch(e){note(e.message,true)}}
-async function updateProjectDate(code){const el=$("pstart_"+code),startDate=el?el.value:'';if(!startDate){note('Select a Data From date.',true);return}try{const r=await apiPost({action:'updateProjectStartDate',projectCode:code,startDate,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||'Could not update project date');await loadAll()}catch(e){note(e.message,true)}}
-async function deactivateProject(code){if(!confirm('Deactivate project '+code+'? Historical data will remain.'))return;try{const r=await apiPost({action:'deactivateProject',projectCode:code,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||'Could not deactivate project');await loadAll()}catch(e){note(e.message,true)}}
+async function addColumn(){
+  const key=$('newColKey').value.trim().toLowerCase().replace(/[^a-z0-9_]+/g,'_'),label=$('newColLabel').value.trim();if(!key||!label){note('New column key and name are required.',true);return}
+  try{const r=await apiPost({action:'addColumn',key,label,includeTotal:$('newColTotal').value==='yes',liquidInclude:$('newColLiquid').value==='yes',userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add column');$('newColKey').value='';$('newColLabel').value='';await loadAll();note('✓ New column added.');}catch(e){note(e.message,true)}
+}
 
-function renderColumnManager(){const box=$("columnManager");if(!box)return;box.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Key</th><th>Column Name</th><th>Include in Total</th><th>Include in Liquid</th><th>Action</th></tr></thead><tbody>${columns.map(c=>{const incLiquid=c.liquidExclude!==true;return `<tr><td>${esc(c.key)}</td><td><input value="${esc(c.label)}" data-col-label="${esc(c.key)}" style="min-width:180px"></td><td>${c.custom?`<select data-col-total="${esc(c.key)}"><option value="no" ${c.includeTotal?'':'selected'}>No</option><option value="yes" ${c.includeTotal?'selected':''}>Yes</option></select>`:"Yes"}</td><td>${c.custom?`<select data-col-liquid="${esc(c.key)}"><option value="no" ${incLiquid?'':'selected'}>No</option><option value="yes" ${incLiquid?'selected':''}>Yes</option></select>`:"Yes"}</td><td><button class="btn sm" onclick="saveColumn('${esc(c.key)}')">${c.custom?'Save':'Rename'}</button> <button class="btn sm" onclick="${c.active===false?`reactivateColumn('${esc(c.key)}')`:`deactivateColumn('${esc(c.key)}')`}">${c.active===false?'Reactivate':'Deactivate'}</button></td></tr>`}).join("")}</tbody></table></div>`}
-async function saveColumn(key){const label=document.querySelector(`[data-col-label="${CSS.escape(key)}"]`)?.value.trim();if(!label){note("Column name is required.",true);return}const t=document.querySelector(`[data-col-total="${CSS.escape(key)}"]`),l=document.querySelector(`[data-col-liquid="${CSS.escape(key)}"]`);try{const r=await apiPost({action:"updateColumn",key,label,includeTotal:t?t.value==="yes":undefined,liquidExclude:l?l.value!=="yes":undefined});if(r.status!=="ok")throw Error(r.message||"Could not update column");note("✓ Column updated.");await loadAll();renderColumnManager()}catch(e){note(e.message,true)}}
-async function addColumn(){const key=$("newColKey").value.trim().toLowerCase().replace(/[^a-z0-9_]+/g,"_");const label=$("newColLabel").value.trim();if(!key||!label){note("New column key and name are required.",true);return}try{const r=await apiPost({action:"addColumn",key,label,includeTotal:$("newColTotal").value==="yes",liquidExclude:$("newColLiquid").value!=="yes"});if(r.status!=="ok")throw Error(r.message||"Could not add column");$("newColKey").value="";$("newColLabel").value="";note("✓ New column added.");await loadAll();renderColumnManager();renderEntryFields()}catch(e){note(e.message,true)}}
-async function reactivateColumn(key){try{const r=await apiPost({action:'updateColumn',key,active:true});if(r.status!=='ok')throw Error(r.message||'Could not reactivate column');note('✓ Column reactivated.');await loadAll();renderColumnManager();renderEntryFields()}catch(e){note(e.message,true)}}
-async function deactivateColumn(key){if(!confirm("Remove this column from the dashboard and data entry? Existing Google Sheet values will be retained."))return;try{const r=await apiPost({action:"deactivateColumn",key});if(r.status!=="ok")throw Error(r.message||"Could not remove column");note("✓ Column removed from active view.");await loadAll();renderColumnManager()}catch(e){note(e.message,true)}}
 function renderEntityMaster(){
   renderColumnManager();
   const metaByCode=Object.fromEntries(entityMeta.map(x=>[x.entityCode,x]));
@@ -1065,6 +1009,23 @@ async function saveMasterRow(index){
   }catch(e){note(e.message,true)}
 }
 
+async function openCompareExport(format){
+  const table=document.querySelector('#compareExportTable');if(!table){note('Comparison table not found.',true);return;}
+  const source=table.cloneNode(true);
+  if(format==='excel'){
+    try{await ensureExcelJs();}catch(e){alert(e.message);return}
+    const wb=new ExcelJS.Workbook();const ws=wb.addWorksheet('Total Funds Comparison',{views:[{showGridLines:false}]});
+    const rowsData=[...source.querySelectorAll('tr')].map(tr=>[...tr.querySelectorAll('th,td')].map(c=>c.innerText.replace(/\s+/g,' ').trim()));
+    const cols=Math.max(...rowsData.map(r=>r.length));ws.columns=Array.from({length:cols},(_,i)=>({width:i===1?34:i<2?18:16}));
+    const hdr=ws.addRow(rowsData[0]);hdr.eachCell((c,i)=>{c.font={name:'Times New Roman',size:10,bold:true,color:{argb:'FFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'1F513B'}};c.alignment={horizontal:i<2?'left':'right',vertical:'middle',wrapText:true}});
+    rowsData.slice(1).forEach((r,ri)=>{const row=ws.addRow(r);row.eachCell((c,i)=>{c.font={name:'Times New Roman',size:10,bold:i<2};c.alignment={horizontal:i<2?'left':'right',vertical:'middle',wrapText:i===1};if(ri%2===1)c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FAFCFB'}}})});
+    const buf=await wb.xlsx.writeBuffer();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download=`MAIA_Total_Funds_Comparison_${$('c1').value}_${$('c2').value}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }else{
+    try{await ensureHtml2Canvas();}catch(e){alert(e.message);return}
+    const wrap=document.createElement('div');wrap.style.position='fixed';wrap.style.left='-100000px';wrap.style.top='0';wrap.style.background='#fff';wrap.style.padding='24px';wrap.style.width=Math.max(table.scrollWidth,1200)+'px';wrap.style.fontFamily='Times New Roman,Times,serif';
+    wrap.innerHTML=`<div style="font-size:20px;font-weight:700;color:#1f513b;margin-bottom:3px">MAIA Treasury Dashboard</div><div style="font-size:14px;color:#17221c;margin-bottom:12px">Total Funds Comparison · ${fmtDate($('c1').value)} to ${fmtDate($('c2').value)}</div>`;const c=source;c.style.width='100%';c.style.minWidth='0';wrap.appendChild(c);document.body.appendChild(wrap);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const canvas=await html2canvas(wrap,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,width:wrap.scrollWidth,height:wrap.scrollHeight,windowWidth:wrap.scrollWidth,windowHeight:wrap.scrollHeight});document.body.removeChild(wrap);const a=document.createElement('a');a.href=canvas.toDataURL('image/jpeg',.95);a.download=`MAIA_Total_Funds_Comparison_${$('c1').value}_${$('c2').value}.jpg`;a.click();
+  }
+}
 function currentTableData(){
   const table=document.querySelector('#dashboard .tablewrap table');
   if(!table)return [];
@@ -1108,8 +1069,8 @@ document.querySelectorAll(".side-link").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
   const page=t.dataset.page;$(page).classList.add("active");
-  if(page==="dashboard"){if(typeof Chart!=="undefined")renderDefaultCharts();else warmChartLibrary();}
-  if(page==="charts"){if(typeof Chart!=="undefined"){renderChartGallery();renderCustomChart();}else ensureChartJs().then(()=>{renderChartGallery();renderCustomChart();}).catch(e=>note(e.message,true));}
+  if(page==="dashboard"){if(typeof Chart!=="undefined")renderDashboardCharts();else warmChartLibrary();}
+  if(page==="charts"){if(typeof Chart!=="undefined"){renderChartGallery();}else ensureChartJs().then(()=>{renderChartGallery();}).catch(e=>note(e.message,true));}
   if(window.innerWidth<=700)$("sidebar").classList.remove("mobile-open");
 });document.body.classList.add("sidebar-open");
 $("eDate").addEventListener("change",loadEntry);
