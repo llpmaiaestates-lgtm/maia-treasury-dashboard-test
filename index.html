@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MAIA Treasury Dashboard V38 Final</title>
+<title>MAIA Treasury Dashboard V38 Final - Secure</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin>
@@ -183,8 +183,35 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
 /* FINAL ONE CUSTOM CHART UI */
 .custom-one-card{overflow:visible!important}.custom-one-card .cardhead{align-items:center}.custom-chart-actions{display:flex;gap:7px;align-items:center}.custom-one-controls{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;padding:16px 18px 8px}.custom-one-controls .control label,.custom-one-date .control label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800;margin-bottom:5px}.custom-one-controls select,.custom-one-date select,.custom-one-date input{width:100%;height:40px}.custom-one-date{display:flex;gap:12px;align-items:end;flex-wrap:wrap;padding:0 18px 8px}.custom-one-date .control{min-width:200px;flex:1}.one-date-fixed{height:40px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;display:flex;align-items:center;gap:9px;padding:0 10px;color:var(--muted);font-weight:700}.one-date-fixed input{border:0;padding:0;height:38px;flex:1;min-width:145px;box-shadow:none!important}.custom-one-note{padding:0 18px 8px;color:var(--muted);font-size:11px;min-height:22px}.custom-one-stage{min-height:480px;height:auto;padding:4px 18px 18px;position:relative;overflow:visible}.one-chart-scroller{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:5px}.one-chart-scroller canvas{display:block;height:470px!important}.custom-saved-card{margin-bottom:0!important}.saved-chart-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.saved-chart-row:last-child{border-bottom:0}.saved-chart-name{font-weight:700;color:var(--forest)}.saved-chart-meta{font-size:10px;color:var(--muted);margin-top:2px}@media(max-width:950px){.custom-one-controls{grid-template-columns:1fr 1fr}.custom-one-date .control{min-width:180px}}@media(max-width:650px){.custom-one-controls{grid-template-columns:1fr}.custom-one-date{flex-direction:column;align-items:stretch}.custom-one-stage{padding-left:10px;padding-right:10px}.saved-chart-row{grid-template-columns:1fr}.custom-chart-actions{align-self:flex-end}}
+</style><style>/* Firebase Authentication */
+#loginScreen{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#eef4f0 0%,#f7f8f6 52%,#f3eee2 100%)}
+#loginScreen.hidden{display:none!important}
+.login-shell{width:min(430px,94vw);background:#fff;border:1px solid #dfe7e2;border-radius:16px;box-shadow:0 18px 60px rgba(25,55,40,.14);overflow:hidden}
+.login-top{background:linear-gradient(135deg,#073e2f,#1f513b);color:#fff;padding:26px 28px 22px}
+.login-brand{display:flex;align-items:center;gap:12px}.login-logo{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:10px;padding:4px}.login-title{font:700 23px "Times New Roman",Times,serif}.login-sub{font-size:12px;opacity:.86;margin-top:3px}
+.login-body{padding:25px 28px 28px}.login-body .fg{margin-bottom:14px}.login-body label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.75px;color:var(--muted);font-weight:800;margin-bottom:6px}.login-body input{width:100%;height:42px}.login-btn{width:100%;height:43px;margin-top:4px}.login-error{min-height:18px;color:var(--red);font-size:11px;margin:9px 0 0;line-height:1.35}.login-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:12px}.auth-user{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:1000px){.auth-user{display:none}}
+body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{display:none!important}
 </style></head>
-<body>
+<body class="auth-locked">
+<div id="loginScreen">
+  <div class="login-shell">
+    <div class="login-top">
+      <div class="login-brand">
+        <img class="login-logo" src="data:image/png;base64,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">
+        <div><div class="login-title">MAIA Treasury Dashboard</div><div class="login-sub">Secure Finance &amp; Treasury Access</div></div>
+      </div>
+    </div>
+    <div class="login-body">
+      <div class="fg"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="Enter your email"></div>
+      <div class="fg"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')signInUser()"></div>
+      <button id="loginBtn" class="btn primary login-btn" onclick="signInUser()">Sign In</button>
+      <div id="loginError" class="login-error"></div>
+      <div class="login-hint">Use the email and password created in Firebase Authentication.</div>
+    </div>
+  </div>
+</div>
+
 <header class="top">
   <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
   <div class="brand">
@@ -205,6 +232,8 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
     </div>
     <div class="header-project-filter"><select id="headerProject" onchange="syncHeaderProject()"><option value="ALL">All Projects</option></select></div>
     <div class="last-updated"><small>Last Updated</small><b id="headerLastUpdated">—</b></div>
+     <div class="auth-user" id="authUser" title="Signed-in user"></div>
+     <button class="btn" onclick="signOutUser()">Logout</button>
     <button class="btn primary" onclick="loadAll()">↻ Refresh Data</button>
   </div>
 </header>
@@ -347,8 +376,65 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 <div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz5FeeE5v5tGh7beoKX3Hx3ZTjPFD9CB6Xov9_QDSYrdfzxLjfunW_a0tcpxSarDFIL/exec";
+
+// Firebase Authentication
+const firebaseConfig = {
+  apiKey: "AIzaSyA9dkMh4Sla3aUG6cSP2sqM8kisyzNQoqE",
+  authDomain: "maia-treasury-dashboard.firebaseapp.com",
+  projectId: "maia-treasury-dashboard",
+  storageBucket: "maia-treasury-dashboard.firebasestorage.app",
+  messagingSenderId: "421524560340",
+  appId: "1:421524560340:web:574861ef7485d91e1c1e41"
+};
+
+firebase.initializeApp(firebaseConfig);
+const maiaAuth = firebase.auth();
+let maiaCurrentUser = null;
+let authBootstrapStarted = false;
+
+function setLoginError(msg){ const e=document.getElementById("loginError"); if(e)e.textContent=msg||""; }
+function setLoginBusy(busy){ const b=document.getElementById("loginBtn"); if(!b)return; b.disabled=busy; b.textContent=busy?"Signing In…":"Sign In"; }
+async function signInUser(){
+  const email=String(document.getElementById("loginEmail")?.value||"").trim();
+  const password=String(document.getElementById("loginPassword")?.value||"");
+  setLoginError("");
+  if(!email||!password){setLoginError("Please enter your email and password.");return;}
+  setLoginBusy(true);
+  try{ await maiaAuth.signInWithEmailAndPassword(email,password); }
+  catch(err){
+    const code=String(err?.code||"");
+    const msg=(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found"))
+      ? "Incorrect email or password." : (err?.message||"Unable to sign in. Please try again.");
+    setLoginError(msg);
+  }
+  finally{ setLoginBusy(false); }
+}
+function signOutUser(){ return maiaAuth.signOut(); }
+function showDashboardForUser(user){
+  maiaCurrentUser=user;
+  window.maiaCurrentUser=user;
+  document.body.classList.remove("auth-locked");
+  document.getElementById("loginScreen")?.classList.add("hidden");
+  const u=document.getElementById("authUser"); if(u)u.textContent=user?.email||"Signed in";
+  if(!authBootstrapStarted){
+    authBootstrapStarted=true;
+    restoreBootstrapCache();
+    loadAll();
+  }
+}
+function showLoginScreen(){
+  maiaCurrentUser=null; window.maiaCurrentUser=null;
+  authBootstrapStarted=false;
+  document.body.classList.add("auth-locked");
+  document.getElementById("loginScreen")?.classList.remove("hidden");
+  const u=document.getElementById("authUser"); if(u)u.textContent="";
+}
+maiaAuth.onAuthStateChanged(user=>{ if(user)showDashboardForUser(user); else showLoginScreen(); });
+
 const LIB_URLS={chart:{src:"https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js",global:"Chart"},excel:{src:"https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js",global:"ExcelJS"},canvas:{src:"https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",global:"html2canvas"}};
 const libPromises={};
 function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.resolve(window[LIB_URLS[key].global]);if(libPromises[key])return libPromises[key];libPromises[key]=new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src=LIB_URLS[key].src;sc.async=true;sc.onload=()=>window[LIB_URLS[key].global]?resolve(window[LIB_URLS[key].global]):reject(new Error(key+" library loaded but is unavailable"));sc.onerror=()=>reject(new Error("Could not load "+key+" library."));document.head.appendChild(sc)});return libPromises[key]}
@@ -371,6 +457,7 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&
 function note(msg,bad=false){const e=$("notice");e.textContent=msg;e.className="note "+(bad?"warn":"");e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),5000)}
 function status(msg){const e=$("sync");if(e)e.textContent="● "+msg;const b=$("headerStatus");if(b)b.textContent=msg}
 async function apiGet(action){
+  if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");
   const url=API_URL+"?action="+encodeURIComponent(action)+"&_ts="+Date.now();
   const FETCH_TIMEOUT_MS=20000;
   try{
@@ -393,6 +480,7 @@ async function apiGet(action){
   }
 }
 function apiGetJSONP(action){
+  if(!maiaCurrentUser)return Promise.reject(Error("Please sign in to access the dashboard."));
   return new Promise((resolve,reject)=>{
     const cb="maiaJsonp_"+Date.now()+"_"+Math.floor(Math.random()*100000);
     const script=document.createElement("script");
@@ -405,7 +493,7 @@ function apiGetJSONP(action){
     document.head.appendChild(script);
   });
 }
-async function apiPost(payload){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
+async function apiPost(payload){if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
 function normalizeRows(data){const arr=data.data||data.rows||data.records||[];return arr.map(x=>({...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()})).filter(x=>x.date&&x.entity)}
 const BOOT_CACHE_KEY='maiaTreasuryBootstrapV39_FAST';
 const BOOT_CACHE_MAX_AGE_MS=60*60*1000;
@@ -1132,13 +1220,11 @@ $("eDate").addEventListener("change",loadEntry);
 // doesn't hit the Apps Script backend in the same instant every 10 minutes.
 (function scheduleAutoRefresh(){
   const jitter=Math.floor(Math.random()*90000);
-  setTimeout(function tick(){loadAll();setTimeout(tick,REFRESH_MS);},REFRESH_MS+jitter);
+  setTimeout(function tick(){if(maiaCurrentUser)loadAll();setTimeout(tick,REFRESH_MS);},REFRESH_MS+jitter);
 })();
 if(typeof updateOneChartControls==='function')updateOneChartControls(false);
 // Begin downloading Chart.js immediately on page open.
 ensureChartJs().catch(()=>{});
-restoreBootstrapCache();
-loadAll();
 </script>
 </body>
 </html>
