@@ -728,6 +728,48 @@ function slotDateOptions(axis){
   if(axis!=='date')return [{v:'asof',l:'As of Date'}];
   return [{v:'latest5',l:'Latest 5 Available Dates'},{v:'latest10',l:'Latest 10 Available Dates'},{v:'last30',l:'Last 30 Days'},{v:'last90',l:'Last 90 Days'},{v:'custom',l:'Custom Date Range'}];
 }
+function uniqueDates(){return [...new Set(rows.map(r=>r.date).filter(Boolean))].sort();}
+function maxDataDate(){const ds=uniqueDates();return ds.length?ds[ds.length-1]:'';}
+function addDaysToDateStr(dateStr,days){const d=new Date(dateStr+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
+function axisDateForConfig(cfg){return cfg.axis==='date'?maxDataDate():(cfg.asOf||maxDataDate());}
+function availableDatesForConfig(cfg){
+  const all=uniqueDates();
+  if(!all.length)return [];
+  const max=maxDataDate();
+  if(cfg.dateMode==='latest10')return all.slice(-10);
+  if(cfg.dateMode==='last30'){const cutoff=addDaysToDateStr(max,-30);return all.filter(d=>d>=cutoff&&d<=max);}
+  if(cfg.dateMode==='last90'){const cutoff=addDaysToDateStr(max,-90);return all.filter(d=>d>=cutoff&&d<=max);}
+  if(cfg.dateMode==='custom'){const from=cfg.from||all[0],to=cfg.to||max;return all.filter(d=>d>=from&&d<=to);}
+  return all.slice(-5);
+}
+function selectedRowsForChartDate(date){return filteredRows(date);}
+function categoryItems(axis,date){
+  if(axis==='fund'){
+    const rs=selectedRowsForChartDate(date);
+    return chartIncludeTotalDefs().filter(c=>hasNumberForKey(rs,c.key)).map(c=>({key:c.key,label:c.label}));
+  }
+  if(axis==='project'){
+    const es=new Set(getDashboardEntities());
+    return (projects||[]).filter(p=>p.active!==false&&es.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode).toUpperCase()===String(selectedProject).toUpperCase()))
+      .map(p=>({key:p.projectCode,label:p.projectName||p.projectCode,entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase()}));
+  }
+  return getDashboardEntities().map(code=>{
+    const meta=(entityMeta||[]).find(e=>e.entityCode===code);
+    return {key:code,label:meta&&meta.entityName?meta.entityName:code,entity:code};
+  });
+}
+function metricLabel(metric){
+  if(metric==='total')return 'Total Funds';
+  if(metric==='liquid')return 'Liquid Funds';
+  if(metric==='nonliquid')return 'Non-Liquid Funds';
+  if(metric==='amount')return 'Amount';
+  const c=(columns||[]).find(x=>x.key===metric);
+  return c?c.label:metric;
+}
+function categoryCountForConfig(cfg){
+  if(cfg.axis==='date')return availableDatesForConfig(cfg).length;
+  return categoryItems(cfg.axis,axisDateForConfig(cfg)).length;
+}
 function validTypesForSlot(cfg){
   const count=categoryCountForConfig(cfg);
   if(cfg.axis==='date'){
@@ -810,10 +852,10 @@ function renderChartStage(slot){
       const sums=labels.map((_,i)=>datasets.reduce((s,d)=>s+(Number(d.data[i])||0),0));datasets=datasets.map(d=>({...d,data:d.data.map((v,i)=>sums[i]?+(Number(v)/sums[i]*100).toFixed(1):0)}));pluginOpts.percent=true;
     }
   }else{
-    if(cfg.axis==='date'){
-      const data=categories.map(c=>aggregateMetric(rows.filter(r=>r.date===c.key),cfg.metric));labels=categories.map(c=>c.label);
+    let data;if(cfg.axis==='date'){
+      data=categories.map(c=>aggregateMetric(rows.filter(r=>r.date===c.key),cfg.metric));labels=categories.map(c=>c.label);
     }else{
-      const data=categories.map(c=>{const rs=rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||c.key).toUpperCase()&&(cfg.axis!=='project'||String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));return aggregateMetric(rs,cfg.metric);});
+      data=categories.map(c=>{const rs=rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||c.key).toUpperCase()&&(cfg.axis!=='project'||String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));return aggregateMetric(rs,cfg.metric);});
       labels=categories.map(c=>cfg.axis==='project'?splitLines(c.label,30,3):c.label);
     }
     if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')chartType=cfg.type;
