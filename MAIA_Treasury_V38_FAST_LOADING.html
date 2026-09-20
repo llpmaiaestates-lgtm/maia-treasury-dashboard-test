@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MAIA Treasury Dashboard V38</title>
+<style>
+:root{--forest:#1f513b;--forest2:#2f6b50;--forest3:#e9f1ec;--gold:#b18a3a;--gold2:#d5bd7b;--ink:#17221c;--muted:#6d7b73;--line:#dfe7e2;--bg:#f5f7f5;--white:#fff;--red:#a33b3b;--shadow:0 8px 28px rgba(25,55,40,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px "Times New Roman",Times,serif}
+.top{height:72px;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;box-shadow:0 2px 12px #0000000b}
+.brand{display:flex;align-items:center;gap:13px}.logo{height:52px;width:auto;object-fit:contain;display:block}.brandline{height:34px;border-left:1px solid #d9dfdb;padding-left:14px}.brandline b{font:700 16px "Times New Roman",Times,serif;color:var(--forest)}.brandline span{font-size:9px;letter-spacing:1.7px;color:var(--gold);display:block;margin-top:3px}
+.topright{display:flex;align-items:center;gap:9px}.pill{padding:6px 10px;border-radius:18px;background:var(--forest3);border:1px solid #cfe0d5;color:var(--forest);font-size:11px}.btn{border:1px solid var(--line);background:#fff;color:var(--forest);border-radius:7px;padding:8px 12px;font-weight:700;cursor:pointer}.btn:hover{box-shadow:0 3px 12px #00000012}.btn.primary{background:var(--forest);color:#fff;border-color:var(--forest)}.btn.gold{background:#f7f1df;border-color:#ddca94;color:#70551b}.btn.danger{color:var(--red);border-color:#e7bcbc;background:#fff}.btn.sm{padding:6px 9px;font-size:11px}
+.wrap{max-width:1500px;margin:auto;padding:20px 24px 36px}.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px}.tab{padding:9px 14px;border:1px solid var(--line);background:#fff;border-radius:7px;color:var(--muted);font-weight:700;cursor:pointer}.tab.active{background:var(--forest);border-color:var(--forest);color:#fff}
+.page{display:none}.page.active{display:block}.head{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:16px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:var(--gold);font-weight:800}.title{font:700 25px "Times New Roman",Times,serif;margin-top:3px}.sub{color:var(--muted);margin-top:4px}.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input,select,textarea{font-family:"Times New Roman",Times,serif;font-size:inherit;border:1px solid #ccd8d0;border-radius:7px;background:#fff;padding:9px 10px;outline:none;color:var(--ink)}input:focus,select:focus,textarea:focus{border-color:var(--forest);box-shadow:0 0 0 3px #2f6b5015}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}.cardpad{padding:17px}.cardhead{padding:14px 17px;border-bottom:1px solid #edf1ee;display:flex;justify-content:space-between;align-items:center;gap:12px}.ct{font-weight:800;font-size:14px}.cs{font-size:11px;color:var(--muted);margin-top:3px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--forest);border-radius:9px;padding:14px 15px;box-shadow:var(--shadow)}.kpi:nth-child(2){border-top-color:var(--gold)}.kpi:nth-child(3){border-top-color:#567f68}.kpi:nth-child(4){border-top-color:#9a7a38}.kpi:nth-child(5){border-top-color:#84968b}.kl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}.kv{font:700 21px "Times New Roman",Times,serif;margin-top:7px}.ks{font-size:10px;color:var(--muted);margin-top:3px}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}.chart{height:270px;padding:12px 17px 17px}.chart.tall{height:320px}
+.tablewrap{overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-gutter:stable}table{width:max-content;min-width:100%;border-collapse:collapse}th{background:#f1f5f2;color:#52635a;text-transform:uppercase;font-size:10px;letter-spacing:.5px;padding:10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left!important}th.project-head,td.project-cell{text-align:left!important}td{padding:10px;border-bottom:1px solid #eef2ef;text-align:right;white-space:nowrap}td:first-child{font-weight:800;color:var(--forest)}#compareExportTable th:nth-child(2),#compareExportTable td:nth-child(2){text-align:left!important}tr:hover td{background:#fafcfb}.totalrow td{background:#eef4ef;font-weight:800;border-top:2px solid var(--forest)}.treasury-head th{white-space:normal!important;line-height:1.12;height:52px;vertical-align:middle}.treasury-head .th-name{display:block}.treasury-head .th-code{display:block;margin-top:2px;font-size:9px;color:#7a8a82;font-weight:700}.entity-cell{text-align:left!important;min-width:135px;width:135px}.entity-status{display:inline-block;min-width:15px;margin-right:4px}.project-cell{text-align:left!important;min-width:220px;width:220px}.chart-value-note{padding:9px 0;color:var(--forest);font-weight:700}
+.pos{color:#267447;font-weight:800}.neg{color:var(--red);font-weight:800}.zero{color:#89958e}.tag{display:inline-block;padding:4px 7px;border-radius:12px;background:var(--forest3);color:var(--forest);font-size:10px;font-weight:800}
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.fg{display:flex;flex-direction:column;gap:5px}.fg label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800}.wide{grid-column:span 2}.reason{grid-column:1/-1}.reason textarea{min-height:75px;resize:vertical}
+.preview{background:#f6f2e6;border:1px solid #e4d5ad;border-radius:8px;padding:11px;color:#654e1d;font-weight:800}
+.note{padding:10px 12px;background:var(--forest3);border:1px solid #cfe0d5;border-radius:8px;color:#315542;margin-bottom:13px;font-size:12px}.warn{background:#fbf5e6;border-color:#ead8a9;color:#71551c}
+.compare-controls{display:flex;gap:9px;align-items:end;flex-wrap:wrap}.control label{display:block;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}
+.compare-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.sum{padding:14px;background:#fff;border:1px solid var(--line);border-radius:9px}.sum b{font:700 19px "Times New Roman",Times,serif}.sum span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+ .auditfilters{display:flex;gap:8px;flex-wrap:wrap}.audit-detail,.reasontext{font-size:11px;color:#46564d;max-width:330px;white-space:normal;text-align:left}
+.export-modal{position:fixed;inset:0;background:rgba(10,35,25,.42);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}.export-dialog{width:min(920px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:12px;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.2)}.export-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.export-head b{font-size:17px;color:var(--forest)}.export-body{padding:14px 18px}.remarks-table{width:100%;min-width:0}.remarks-table th{background:#f1f5f2}.remarks-table td,.remarks-table th{padding:8px}.remarks-table td{text-align:left}.remarks-table input{width:100%;padding:7px 8px}.export-foot{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.export-note{font-size:11px;color:var(--muted);margin-bottom:10px}
+.entitygrid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px}.list{display:flex;flex-wrap:wrap;gap:8px}.entitychip{border:1px solid var(--line);padding:8px 10px;border-radius:8px;background:#fafcfb;display:flex;gap:7px;align-items:center}.entitychip b{color:var(--forest)}.entitychip button{border:0;background:none;cursor:pointer;color:var(--red)}
+.empty{text-align:center;padding:38px;color:var(--muted)}.hidden{display:none!important}.footer{text-align:center;color:#98a49d;font-size:10px;padding-top:10px}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.entitygrid{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.top{padding:0 14px}.logo{height:43px}.brandline{display:none}.topright .pill{display:none}.wrap{padding:15px 11px}.kpis{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.wide{grid-column:span 1}.head{align-items:flex-start;flex-direction:column}.compare-summary{grid-template-columns:1fr}}
+.custom-chart-box{background:linear-gradient(180deg,#fff,#fbfcfb);border:1px solid var(--line);border-radius:10px;padding:14px 16px}.custom-chart-controls{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;align-items:end}.custom-chart-controls .control{min-width:0}.custom-chart-controls .control label{display:block;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}.custom-chart-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.custom-chart-note{font-size:10px;color:var(--muted);margin-top:8px}.custom-chart-stage{height:330px;padding:10px 4px 2px}.custom-chart-stage canvas{width:100%!important;height:100%!important}@media(max-width:1000px){.custom-chart-controls{grid-template-columns:repeat(2,minmax(150px,1fr))}}@media(max-width:650px){.custom-chart-controls{grid-template-columns:1fr}.custom-chart-stage{height:300px}}
+/* Chart typography + MAIA chart palette */
+.chart canvas,.default-chart canvas,.allocation-chart canvas{font-family:"Times New Roman",Times,serif!important}
+/* FINAL HEADER / SIDEBAR / DASHBOARD REFINEMENTS */
+body{font-family:"Times New Roman",Times,serif!important}
+input,select,textarea,button{font-family:"Times New Roman",Times,serif!important}
+.top{height:80px;padding:0 24px 0 14px;justify-content:flex-start;gap:14px}
+.menu-btn{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--forest);font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.menu-btn:hover{background:var(--forest3)}
+.brand{gap:13px;min-width:0;flex:1;align-items:center;height:100%}
+.logo{height:52px;width:64px;object-fit:contain;object-position:center;flex:0 0 auto}
+.brandcopy{display:flex;flex-direction:column;min-width:0}
+.brandtitle{font:700 24px "Times New Roman",Times,serif;color:var(--forest);white-space:nowrap}
+.brandsub{font:13px "Times New Roman",Times,serif;color:var(--muted);margin-top:3px;white-space:nowrap}
+.header-controls{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.header-date{display:flex;align-items:center;gap:7px}
+.header-date label{font-weight:700;color:var(--forest);white-space:nowrap}
+.header-date input{height:38px;min-width:145px}
+.last-updated{padding:7px 12px;border-left:1px solid #d9dfdb;min-width:145px}
+.last-updated small{display:block;font-size:10px;color:var(--muted)}
+.last-updated b{font-size:13px;color:var(--forest)}
+.sidebar{position:fixed;left:0;top:80px;bottom:0;width:205px;background:linear-gradient(180deg,#073e2f,#0d4e3d 55%,#063a2d);padding:18px 12px;z-index:18;transition:width .22s ease;box-shadow:4px 0 18px rgba(0,0,0,.08)}
+.side-link{width:100%;display:flex;align-items:center;gap:12px;padding:12px 13px;margin-bottom:6px;border:0;background:transparent;color:#fff;border-radius:8px;cursor:pointer;font-size:15px;text-align:left}
+.side-link .ico{width:22px;text-align:center;font-size:17px}.side-link.active{background:var(--gold);color:#fff}.side-link:hover:not(.active){background:#ffffff12}
+.sidebar.collapsed{width:68px}.sidebar.collapsed .side-text{display:none}.sidebar.collapsed .side-link{justify-content:center;padding-left:0;padding-right:0}
+body.sidebar-open .wrap{margin-left:205px;max-width:none}body.sidebar-closed .wrap{margin-left:68px;max-width:none}
+.wrap{transition:margin-left .22s ease}
+.tabs{display:none!important}
+.dash-header{align-items:center;margin-bottom:15px}.dash-title-block{min-width:0}.dash-title{font:700 27px "Times New Roman",Times,serif;color:#0c3c30}.dash-subtitle{font-size:15px;color:var(--muted);margin-top:4px}
+.dash-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.dash-controls label{font-weight:700;color:#0c3c30}.dash-controls input{height:40px;min-width:155px}
+.default-charts{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px}.default-charts .card{margin-bottom:0}.default-chart{height:300px;padding:10px 18px 18px}.allocation-chart{height:300px;padding:8px 18px 18px}.chart-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:16px}.chart-gallery-card{min-width:0;overflow:hidden}.chart-gallery-canvas{height:430px;padding:10px 16px 18px;position:relative;overflow:hidden}.chart-gallery-canvas.tall{height:430px}.chart-card-note{padding:0 16px 10px;color:var(--muted);font-size:10px}.custom-chart-stage{height:480px;padding:12px 18px 18px;position:relative}@media(max-width:1100px){.chart-gallery{grid-template-columns:1fr}.chart-gallery-canvas{height:430px}.chart-gallery-canvas.tall{height:520px}}
+.table-download{display:flex;align-items:center;gap:8px}.table-download .btn{white-space:nowrap}
+@media(max-width:1100px){.brandtitle{font-size:22px}.brandsub{font-size:13px}.header-controls{gap:7px}.last-updated{display:none}.default-charts{grid-template-columns:1fr}.sidebar{width:185px}body.sidebar-open .wrap{margin-left:185px}}
+@media(max-width:700px){.top{height:auto;min-height:72px;padding:9px 12px;gap:10px}.logo{height:46px;width:56px;max-width:none}.brandtitle{font-size:18px}.brandsub{font-size:11px}.header-date label{display:none}.header-date input{min-width:135px}.header-controls .btn{font-size:11px;padding:8px}.sidebar{top:72px;width:205px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.mobile-open{transform:translateX(0)}body.sidebar-open .wrap,body.sidebar-closed .wrap{margin-left:0}.default-charts{grid-template-columns:1fr}.dash-header{align-items:flex-start}.dash-controls{width:100%}}
+input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
+
+/* V7 KPI previous values inside each respective card */
+.kpi{min-height:142px}
+.kprev{margin-top:9px;padding-top:7px;border-top:1px solid #e6ebe7;font-family:"Times New Roman",Times,serif;font-size:11px;color:#6b776f;line-height:1.25}
+.kprev span{font-size:9px;text-transform:uppercase;letter-spacing:.55px;color:#89948d;font-weight:700}
+.kprev b{display:block;font-size:13px;color:#405248;margin-top:2px;font-weight:700;white-space:nowrap}
+.kprev em{font-style:normal;font-size:9px;color:#8b948f;margin-left:4px}
+.previous-strip{display:none!important}
+
+/* V7 dashboard KPI + entity filter refinements */
+.kpis{align-items:stretch}
+.kpi{min-height:132px;display:flex;flex-direction:column;justify-content:flex-start}
+.kv{font-family:"Times New Roman",Times,serif!important;font-size:25px!important;line-height:1.15!important;min-height:31px;display:flex;align-items:center;white-space:nowrap}
+.ks{min-height:25px;line-height:1.25}
+.previous-strip{display:none!important}
+.previous-label{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);font-weight:800}.previous-date{font-size:12px;color:var(--forest);font-weight:800;margin-top:3px}.previous-item{padding-left:12px;border-left:1px solid #e1e8e3}.previous-item span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.previous-item b{display:block;font-family:"Times New Roman",Times,serif;font-size:16px;color:var(--ink);margin-top:2px;white-space:nowrap}
+.entity-filterbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:8}.entity-filter-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--forest);font-weight:800}.multi-select{position:relative;min-width:245px}.multi-select-btn{width:100%;height:39px;text-align:left;padding:8px 34px 8px 11px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;color:var(--ink);font-family:"Times New Roman",Times,serif;font-size:13px;font-weight:700;cursor:pointer;position:relative}.multi-select-btn:after{content:"▾";position:absolute;right:11px;color:var(--forest)}.multi-select-menu{display:none;position:absolute;top:44px;left:0;width:100%;max-height:290px;overflow:auto;background:#fff;border:1px solid #ccd8d0;border-radius:8px;box-shadow:0 10px 26px rgba(25,55,40,.14);padding:8px;z-index:30}.multi-select.open .multi-select-menu{display:block}.multi-actions{display:flex;gap:6px;padding-bottom:7px;margin-bottom:5px;border-bottom:1px solid #edf1ee}.multi-actions button{border:0;background:#f1f5f2;color:var(--forest);border-radius:5px;padding:5px 8px;font-family:"Times New Roman",Times,serif;font-size:11px;font-weight:700;cursor:pointer}.multi-option{display:flex;align-items:center;gap:8px;padding:7px 6px;border-radius:5px;cursor:pointer}.multi-option:hover{background:#f5f8f6}.multi-option input{margin:0;width:14px;height:14px}.filter-count{font-size:11px;color:var(--muted)}
+@media(max-width:1000px){.previous-strip{grid-template-columns:repeat(3,1fr)}.previous-label{grid-column:1/-1}.previous-item:nth-child(2){border-left:0;padding-left:0}}
+@media(max-width:650px){.previous-strip{grid-template-columns:1fr 1fr}.previous-label{grid-column:1/-1}.previous-item{padding-left:8px}.multi-select{min-width:220px;flex:1}.entity-filterbar{align-items:flex-start;flex-wrap:wrap}}
+
+/* V8 header entity filter + table export controls */
+.header-entity-filter{display:flex;align-items:center;gap:6px;position:relative;z-index:40}
+.header-entity-filter>label{font-weight:700;color:var(--forest);white-space:nowrap}
+.header-entity-filter .multi-select{min-width:190px}
+.header-entity-filter .multi-select-btn{height:38px;font-size:12px}
+.header-entity-filter .filter-count{font-size:10px;white-space:nowrap;color:var(--muted)}
+.header-entity-filter .multi-select-menu{z-index:9999!important;min-width:235px;right:0;left:auto}
+.table-download{gap:6px;flex-wrap:wrap}
+.table-download .btn{font-size:10px;padding:6px 9px}
+@media(max-width:1250px){.header-entity-filter .filter-count{display:none}.header-entity-filter .multi-select{min-width:170px}.brandtitle{font-size:21px}.brandsub{font-size:11px}}
+@media(max-width:900px){.top{height:auto;min-height:80px;flex-wrap:wrap;padding:9px 14px}.brand{flex:1 1 360px}.header-controls{flex:1 1 100%;justify-content:flex-end}.header-entity-filter{margin-left:auto}}
+@media(max-width:600px){.header-controls{justify-content:flex-start;flex-wrap:wrap}.header-entity-filter .multi-select{min-width:180px}.header-date label,.header-entity-filter>label{display:none}.last-updated{display:none}}
+
+/* V9 clean header + table date/nomenclature */
+.header-date input{font-family:"Times New Roman",Times,serif;font-weight:700;color:var(--ink)}
+.header-entity-filter .multi-select{min-width:165px}
+.header-entity-filter .filter-count{display:none!important}
+.table-date{font-weight:700;color:var(--forest);font-size:12px;margin-left:3px}
+
+.header-project-filter select{min-width:150px;height:38px;font-weight:700;color:var(--forest)}.status-cell{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px}.status-symbol{font-size:17px;font-weight:700;line-height:1}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}.project-master-row{border:1px solid var(--line);padding:9px 10px;border-radius:8px;background:#fafcfb;display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:12px}.project-master-row .meta{color:var(--muted);font-size:11px;margin-left:10px}.project-master-row input{padding:6px 8px}@media(max-width:1100px){.header-project-filter{display:none}}
+
+/* V28 HEADER COMPACT — single row, same header space */
+.top{height:80px!important;padding:0 18px 0 10px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;flex-wrap:nowrap!important;overflow:visible!important}
+.menu-btn{width:40px!important;height:40px!important;flex:0 0 40px!important}
+.brand{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;flex:1 1 auto!important;max-width:none!important;height:100%!important;overflow:hidden!important}
+.logo{height:48px!important;width:58px!important;flex:0 0 58px!important}
+.brandcopy{min-width:0!important;overflow:hidden!important}
+.brandtitle{font-size:22px!important;line-height:1.05!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.brandsub{font-size:11px!important;line-height:1.15!important;margin-top:4px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.header-controls{position:relative!important;z-index:1000!important;overflow:visible!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;flex:0 0 auto!important;flex-wrap:nowrap!important;white-space:nowrap!important}
+.header-date input{width:126px!important;min-width:126px!important;height:38px!important;padding:8px 9px!important}
+.header-entity-filter{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1100!important}.header-entity-filter .multi-select{min-width:150px!important;width:150px!important;position:relative!important;z-index:1101!important}
+.header-entity-filter .multi-select-btn{width:150px!important;height:38px!important;padding:8px 10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.header-project-filter{display:block!important}
+.header-project-filter select{width:145px!important;min-width:145px!important;height:38px!important;padding:8px 9px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.last-updated{width:142px!important;min-width:142px!important;line-height:1.05!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+.last-updated small{font-size:10px!important;white-space:nowrap!important}
+.last-updated b{font-size:12px!important;white-space:nowrap!important}
+.header-controls>.btn.primary{height:38px!important;padding:8px 13px!important;font-size:12px!important;white-space:nowrap!important}
+@media(max-width:1400px){.brandtitle{font-size:20px!important}.brandsub{font-size:10px!important}.header-date input{width:118px!important;min-width:118px!important}.header-entity-filter .multi-select,.header-entity-filter .multi-select-btn{width:140px!important;min-width:140px!important}.header-project-filter select{width:135px!important;min-width:135px!important}.last-updated{width:128px!important;min-width:128px!important}.header-controls>.btn.primary{padding-left:10px!important;padding-right:10px!important}}
+@media(max-width:1100px){.last-updated{display:none!important}.brandtitle{font-size:19px!important}.header-date input{width:115px!important;min-width:115px!important}.header-entity-filter .multi-select,.header-entity-filter .multi-select-btn{width:135px!important;min-width:135px!important}.header-project-filter select{width:130px!important;min-width:130px!important}}
+</style>
+<style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}</style></head>
+<body>
+<header class="top">
+  <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
+  <div class="brand">
+    <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAADICAYAAABMFuzmAAAW1klEQVR4nO3de3wcZb0G8Oc3s5uk9MIlQFusUmiymyw3oQooh0Ooiie0u0kLC4oeC0VDm2TTVm7idVUQ8NY2aSkUBBRQpEKbpFpB5LTCUVErF7XkUrR6oK1AW+zFZpOd+Z0/LHwAoeQyu+/M7vP9D0je30MJT97d2XkHICIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiKiYYq2JOZGU/EbTOeg4BPTASh4ksmk/fT4zHRY+DgUSYF+ZUL57q+uS6/Lms5GwWSZDkDB8+SRmTMUmP7KX6vKF7bsGHe+yUwUbCwiGpKq5voaS/DR1/1NgVjAXZGWuiZDsSjgWEQ0aBVNM96n4l6gb/Jzo4oQVL8Raak710Q2CjYWEQ1KddO5R1uW9TFV2G/1NQKMEtUfTWmpnwq+/0hDwCKit1U9d/rxjhW+EorwIL58VEjdxyKp+vfmPBgVDBYRHVC0OX6MGwrNhupgSugVZQL3/sr5daflLBgVFBYRvaUpc2ceCZF5Ch03jG+fZLm6asrcmUd6HowKDouI3lR0TmJsKOx+ThUHj2CZiaGQ01ORqj3Cs2BUkFhE9G8il8cP19FyhaqWjXgxwcE2wr+INseP8SAaFSgWEb3OpIXJUZKxLoPqBA+XrVJLbjm2ITmS3RUVMBYRvSqWTpaMzmYuV+i7vF5bFB8Kl2XWTVqYHOX12hR8LCICAMSSyRJnR+ZqVbwzZ0MUJ43OZu6f2tAwlCtwVARYRIRkMmm7E/ouUheTcjxKANTuLtt2ayyZLMnxLAqQkOkAZN5TR+67BGrl7QOIopjtTOx3AczJ10zyN+6IilysJX4BJH8l9CrF7GhzYnHe55IvsYiKWKQ5Xu+oNc3MdLUgkoq2JK4yM5/8hEVUpKLN8WmA1KqqwZtT1YLixmhz/FJzGcgPWERFqHJ+3WkKudB0jleJ3FbVPOMi8I79osUiKjKVjTOrRfEJ0zneSMW6rXJ+3ammc5AZLKIiUtEUP84Kuc1w1Y9XS0dZrq6PtiT+y3QQyj8WUZGY0piosG2rUf1ZQq8ohcq9lQtmVpsOQvnFIioC71uYHGXbmOfzEtpPD7YcZ31F6mPDOXqEAopFVOCizYmjtmcz10IxxnSWITjCxu5NsZYZnt/zRv7EIipgVU0zy6GYF7ASesURjmutqW6adbTpIJR7LKICFUsnS2BlW1QQ3BMSBSe44qyNpXlfWqFjERWgqQ0NYWd75ipXxcszhcwQrXa2Zx6ZnL545Ie0kW+xiApMrDE5Zk/JtsacHueRf2eUbt/eXtU0s9x0EMoNFlEBqUnXhLKh/tkKxExn8Z6co7bz1YpUbanpJOQ9FlEB2bJz3CVw9UTTOXJGMdeW8PdMxyDv8d6eAjC1YWp4d9mk2aJ4Tz5vYhULh0KRzNe8/VwRa3HX1vBVWLnSyfNsyhHuiIIunbZ2lxz1wXyXkEGWqrswMrH/SiSTb/n4awoWFlHAVW3/3XRA6oukhF4honp9ZHz/laaDkDdYRAFWPT/xnwqr1nQOU0T0C9HmxFzTOWjkWEQBVdU0432OiwtUUcwvTw6CYFGkub7edBAaGRZRAFU21r/bFetiKPhYHqBMxF1V1TyjxnQQGj4WUcBUt8yoFEs/ZTqH36hYP42lpp9pOgcND4soQGKN505wXHseEITjPPKu1BH7h8fyjv1AYhEFRLQ5cVTWCn8W0NGms/iWYmJYrT9VLIwfZzoKDQ2LKAAiDfHDVXANoLy94e2NsbPyP5MX1B9iOggNHovI52LpZAlKpBkKHoUxeEeUOu76o9Lxg0wHocFhEflYdE5ibPalzDUAJprOEkAnjt0uv4o1JoN4KFzRYRH51OSLa8r0IGkCcJTpLAF2omNl2qNXJcaaDkIHxiLyqdKxY+cCeozpHIEnmKb78IDpGHRgLCIfiqYS81SFj9TxiAAfjKbit5rOQW+tmG6U9L2pDQ3hvaVbz3dVakxnGQxDx4AMmwDL9oRKr3xu0cp9prPQ63FH5B+yO7ztvKCU0H7bBbrTdIjBUqBplNP3SSh/AfsNi8gnKlOJc0VwlukcgyWwflNa0ndFxpJqCNpN5xksS2VRdH7i86Zz0OvxN4Np6bQVeWnDhwWS0AD8YhBgn1pWZ8+S1Y9AoACAZNKOTOy/UlQ/DyAIn/x2YFmXdS9ZfTuw/9+BjGIRmSVVzXXHq+i8IBznoSI7Q669/JllD/z1zf55VUvd+xV6HxTvyHe2IRP0u4pZva0dP3m1UMkYFpFBkdSMU0WtSwKyE9qY2bPrls13rus70NedMG/6oQPh0FpVPS1f2UYgq65c0LOsfZXpIMWORWRILFUXy6rOA/x964ZYkhW17utqW7V+KN9XlUo0q+BbAbg15UUH7sc3ta15yHSQYsYiMqC66dyjHbHnA+L391O22Bq6861eir2daHPiPbBwNxRRr4N5bLtr22f2Ll71jOkgxYpFlGeRhTPegQHri6ZzHIiIqCqe7jn85JuRTrsjWasmXRPatmPcz9XFmRB//7yJbR3TtXj1ZtM5ipGvfzAKTfWCWRNdx5mvqoeaznIgrugdm8qn/makJfSqZNKuOrLvUrXkFk/Wy53nHMiHN7W1bzQdpNiwiPLk2IbkweHSzBWqONJ0lrck8rwL+/ZNbQ88l4vlI6n6UwXu3QAqc7G+R54W157WtWzVdtNBigmLKA9ijckxTqjvM+rKEaazvBkBXFf0yd62zrzsWKKpeAcg0+Hfq4XPimufxjLKH7/+IBSME684Z3Q2lPmsX0sIANTV23vLp+btptCJ5btnKeSSfM0bhimu5ayPpZN+v+JXMLgjyqGadE1o6/aDG1XVn2coizzvhHHHs99u/z8T4yub6k6zLNwG6PEm5g9Ch4OBCza1rc2YDlLouCPKkZqamtDWF8f4soQEcAXur8dmxl9vqoQAoHdZ++OZ8kPfC8HdpjK8jYSF8P3gL+yc4x9wbkgklWiC4gTTQf6dZMXRW7qXdzxtOslrRVvidYDc58sPQCru7m7r+ARvBckdFlEORFOJj6niP03neCNL9K8hS77zxyUdfzed5U1I5YKZVVY2ez/Ej4fCyS3dbe1zTacoVCwij0VTM85XtT5kOscbWZD1u/rd1VtWdP7TdJYDmbyg/pBSV78NVR++me1e1d225humUxQiFpFX0rCiL8VrFHKh6SivZVmyF5B7ulpXbzCdZSiiqcQcAEsA+OopHCLa0rW17CasXOmYzlJI+Ga1R6I7EmdBrQtM53gdkefhWNcFrYQAoLut43axrRMA9JrO8lqq8u2qCQMfMJ2j0LCIPBCZH38vFEkV9cUOUwAXkEfKSvd9K8gfyutavHqzg4EzIFgCwC87kJDCXRNpSXzEdJBC4ov/cYKsomnGKbZlfdIvB5sJZJeKs7Knbc1vUSinD6bTVuTFJ+aIpdcBPrlFRtAvlvXhrsWr15mOUghYRCNwWqp23E4tudYvz6QX6IulZYdc//Q379prOksuVKRmTbKRXQdgiuks++3pt1DxF39ehQwUFtEwVc6bfqzYoQV+KCEBXNhY67gDDxb6p4DfNW/6oQeFrS+oSgvgi13oHtexzuy9afWTpoMEGYtoGKoXzJroZJ0rATV+sJkAL6tY9/e0rf6N6Sx5JNFU4hIFvibAeNNhAPQ6kHoeHzJ8LKIhqkjVjrM0/BkA5SZziIiK6DbLLm3duGjlDpNZTKlumVHpwuqEIgLzP8ub7VBm6sZFDxblf4uRMv0fL1CicxJjcRA+r8AhprOIjYfH7Ht+9YYVGwZMZzEp1pgc49iZJQDmmM4C4FkHA6dsalu7y3SQoGERDdKxVycPDu3tnwfoMWaT6F47FL77mcUP/N5sDn+JpurOB/RmmN6pKh6XUGjmM4sf2GoyR9CwiAZhcvrisrIdO5tdV42dLCgiCuAvJdnsij8s/3FgHvOcT9VNs452rYH7ATkFBn+2RbGmpKzvI09/86GCvHqZCyyityeRVOLT+9+HMCZk6c83tnbeZzJDQEhVqu52hc6G0Z9vXdddPvUDnp37XeBYRAdQkaottaySRnERVTX0qWnBQMjV5RuXdf7JyPyAirbE66DyAwCjDEVQQDq7y/9xHtLrsoYyBAZv8XgLyWTSDrvhmXC0ylgJQbrGZko/xxIauu7WznbXDh0PwWOGIgigicj2cTfUpGtChjIEBndEb0Yh1c2JCx3B2WYCSFYsd303X4p5ItqSWA6VSwENm0kgrd1t7fPNzA4G7ojeRFUqPssVOcvUfNtyFne3dq40Nb/QdG8tbVaRWnMJtLGyue5z5ub7H3dEb1CdqvugC51l5iZW6Sp1snfyqlhuVKRqp9gIrwAwzcD4rKpc1bO0fZGB2b7HInqNqlT8LFflorwPFhkQ1Ye6l3Z05H12EYo2x78hlixQRd7fu7FEZj3T2r4q33P9jkW0X2xh/LjsgLQYGN0fcrPXbbzpJ9sMzC5aFam6mA39HUxcVRPUdrd2/DTvc32MRQSgqrnuBBf4VN7vpLfk6X5L7tm8ePXLeZ1LAICqBfWT1XHuAKQmz6N3ubZ9eu/iVc/kea5vFf2b1ZXzph/ril6W7xKyxF1z0taSm1lC5nQtXr15TGbiOYDcmOfR4ywn+/uKVPz0PM/1raLeEU1prHunbevVUOTtsq4I/tGXCS366wrei+Qnsaa60xxb10BxeN6GCvbZWZy48aaOTXmb6VNFuyOqubimLGSjKa8lBGy0ndKvsIT8Z+Oy9scdHYiJ4Bd5G6oY5dh4KNaY9NWTSkwoyh1RVdPMclecy5G3O7UlC7hrxvZPfHjDihVFfWyH38Uak2OyoUxKFF8CkJ+X6yKbw6Kn+/TBl3lRdEWU7zOFRPCC7eC73H4HS+X8xIcsF7cBeFc+5inwaxcDiU1ta1/Mxzy/KbqXZjJaU/krIX3GLi/9KksoeHqXdPxsd0arAflVPuYJcLqN0Np8zPKj4tkRJZN2dHzmcs3PEyD6XdEfHZzZ8stiP0Ex6CYtTI4a5Qx80lL3mwBKcj9R13ZvK4sX25Nki6KIJqcvLivZsfPjcPW9OR9mYatmnR/23vRjfkakgFSmEtOtfz0CO+e/yERxrx6Ehu6vd+zO9Sy/KPwiSibt6ITMbFWclssxIqIK7f3Hy303//0unsxXiE74zPRD+/eGHgJwCqC5fltj8cTyXVeuK5KzjAr+PaLIxEwy9yUER1TuPWlb6WKWUOH6ww0/3mlvKzkDqtfkYVzLlh0HfzsPc3yhcHdEyaQdndh3Hlw5W3NZuKLPQ3Ffz9LOrpzNIN+JNsenAbIcktMjhB2F3NhTfvIXCv3I2cLcESkkNqH//VBrWq5KSADXsvSPezL4Jkuo+HQv7XxE1H6/AA8DyNXLJ1ugV0d3PDEb6XRh/r+6X0HuiKKNibPVwkdyOkTk7p629kdzOoOCQKJN8atgyQ05nKEqkuppbV+WwxlGFVwRRZsTZyjkIkBzctaMiO4U2765a/HqzblYn4Ipkqo7U6D3AHhnjkbsgauXdi8rzOODC6qIqlumH+9q6FOqWub12gK4asmG0GEl39uYXtnv9foUfJHL44dbGVmhggSQkxM+d6vqhT1LOwvug48FU0SR5ngVIAtzsrigXyHtvW3tD+dkfSookZbENeLqFyHi+S9EAFC47+5pW/NULtY2pSCKqLrp3KNdCS3UHJy2Jzb+6bgD39rUtvY5r9emAqWQaCoxFRZ+Bs3B7UQiOwTZc7paf7zB87UNCfw78cd/uu6droQac1FCUOuxzKGHXcMSoiERaPfSjt85OnA0BHd7vr7qYeraq2JXJid4vrYhgd4RxRYmD3Oc/mvU1XFerivAPhW5n1fFyAvR1IwWwPoagNFerivA3/vFPfXPrWv+5uW6JgS2iCpSteNshL+sioM8XViwO+SUpjfetHKPp+tSUZsyd+aRobCzER6fgSXAzv6DSo/5840r/+HluvkWyJdmUxsawhZCzV6XkACPjs3oF1lC5LVnb171goOBaoh838t1FTi0ZF+mY9LCZP6fRuKhwO2IKlK1pbYbWqAix3q2qGBAXdzXu6wjf8eEUtGKtiTmQ/UGwMuravJLu7zk7KB+tCRQRVSRqi21Nfw5BcZ7taYIXjhsW+nXfrVy5T6v1iR6O5GFyXdItv9/AT3aw2Xb7fLSC4JYRoF6aRZyQ7M9LSHg0b0hlhDlX8+ilc+XjM6eDOhdHi5b52zPeLle3gRmRxRNJeZ4dZyHAPtclR/0HnHybwv9rmbyuWTSjo7vuxiWLIJirCdrCpZ0t3Ys8GStPPF/ESWTdtWE/nNd1RleLCeQv+3d17f8ue88uMOL9Yi8EJ2XiEoIDygQ82I9EXx5dN+E64Ly1BjfvzSrOrKv1qsSUstd3334ydezhMhvupd3dE8o33WSVy/VVPGlveGtl3ixVj74ekcUbY5PU8iFI19J9oZE79pYfspTfClGfja1oSG8p2zrTKjcCmCkH9TNAmjpbutY7kG0nPJrEUmkZeYZos5FqiO9i1n+grBzV8+iNc97E40o96LNifcAuBWCd49wqQEV69Ke1tW+fhPbl0VU3TTraFeynxnJ6YoCuKruhpNeGHXHyiJ7NAsVhqkNDeHdJdseEEEtRnasyD4HOGNTW8eTANSbdN7yXRHFmuLHZS2ZN7Jn0kvGsawVz7au+hN8+gdPNCjptBV96ffnwcLd0BE9V61PVOq7lrY/6Fk2D/mqiGKpupjjupfpSM5xsdAtLu7tXtqxxcNoREZFUjNOElg3AXj/CJbZ5rpS37us/XGvcnnFN1fNKlK1RzjQi4ddQiIDUH1sbN+ENpYQFZqetjVPZcoP+4ACPwAw3E9OT7AsXTWlMVHhZTYv+GJHVJGqPcLS8Bcx3Ef6CgZCri7fuKzzT94mI/IdibTU1YvqAyNYY5eDgYpNbWtf9CzVCBnfEUUa4ofbCLdgmCUkwLMhJ3stS4iKhPa0tq9yIMdB8eQw1xhna2h9tDl+jJfBRsLojuhfj/C1m1SH8eQDwQAsebRnS8mPwKtiVIRiyWSJM6F/GUQ/Mbw3snWDg3HTNrXds8v7dENjrIhiyWSJMz7z+eHdxCqZkOgdG9s6nvA+GVGwVKbiH7UgtwFDP59LBE/s6tP/2LKi8585iDb4HCaGTlqYHDU6m7l8ODshAZ7TUl3e863Ol3KRjSiIpixMVIQcPAjFUM/pUgieGtOnZ2wwWEZ5L6JkMmk/PSHToDq0T4yKwIHog92tne05ikYUaP86ryt0LUTmA0P7HJ5C7hybGd9g6ibZ/BZROm1FX9pwiUJOHcq3CWSXZVnffaZ11R9zFY2oUFTNrz9PXfdmAIcP6RtVvt+9tP1juUl1YPkronTairy0Yb6IFVXVQc8VC89lDjvsG5vTd/blMh5RIZm8oP6QMsd5TCHHDeHb1AWW9LZ15OZBpQeQt8v3kZc2JIZaQqraOaZvwg0sIaKh2bx49cs6St4HxdeH8G1iAS3R5rprcxbsrQbnY0jV/PgM15H4YL9eILsE+F7X0vY/5DIXUTGIpmacL7CWDuUKtQCprraOpbnM9YZ5uRVbGD8um5U5g/16gb7Q3dZ5Yy4zERWb/c8B/DmAyYP+JsF/d7d2/DRnoYiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIjoNf4fXnF4pH66a9gAAAAASUVORK5CYII=">
+    <div class="brandcopy">
+      <div class="brandtitle">MAIA Treasury Dashboard</div>
+      <div class="brandsub">Consolidated treasury position across MAIA group entities</div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <div class="header-date"><input id="headerDate" type="date" aria-label="Date" onchange="syncHeaderDate()"></div>
+    <div class="header-entity-filter" style="display:flex!important;visibility:visible!important;opacity:1!important">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.6px">Entities</label>
+      <div class="multi-select" id="entityMultiSelect">
+        <button type="button" class="multi-select-btn" id="entityMultiBtn" onclick="toggleEntityMenu(event)">6 Entities</button>
+        <div class="multi-select-menu" id="entityMultiMenu"></div>
+      </div>
+    </div>
+    <div class="header-project-filter"><select id="headerProject" onchange="syncHeaderProject()"><option value="ALL">All Projects</option></select></div>
+    <div class="last-updated"><small>Last Updated</small><b id="headerLastUpdated">—</b></div>
+    <button class="btn primary" onclick="loadAll()">↻ Refresh Data</button>
+  </div>
+</header>
+<nav class="sidebar" id="sidebar">
+  <button class="side-link active" data-page="dashboard"><span class="ico">⌂</span><span class="side-text">Dashboard</span></button>
+  <button class="side-link" data-page="entry"><span class="ico">✎</span><span class="side-text">Data Entry</span></button>
+  <button class="side-link" data-page="compare"><span class="ico">Δ</span><span class="side-text">Compare</span></button>
+  <button class="side-link" data-page="charts"><span class="ico">◔</span><span class="side-text">Charts</span></button>
+  <button class="side-link" data-page="audit"><span class="ico">▤</span><span class="side-text">Audit Log</span></button>
+  <button class="side-link" data-page="entities"><span class="ico">▥</span><span class="side-text">Entity &amp; Project Master</span></button>
+</nav>
+
+<main class="wrap">
+<nav class="tabs">
+  <button class="tab active" data-page="dashboard">Dashboard</button>
+  <button class="tab" data-page="entry">Data Entry</button>
+  <button class="tab" data-page="compare">Compare</button>
+  <button class="tab" data-page="charts">Charts</button>
+  <button class="tab" data-page="audit">Audit Log</button>
+  <button class="tab" data-page="entities">Entity &amp; Project Master</button>
+</nav>
+<div id="notice" class="note hidden"></div>
+
+<section id="dashboard" class="page active">
+  <div id="kpis" class="kpis"></div>
+  <div class="default-charts">
+    <div class="card"><div class="cardhead"><div><div class="ct">Total Funds Trend (₹ Cr)</div><div class="cs">Last 5 available dates</div></div></div><div class="default-chart"><canvas id="trendChart"></canvas></div></div>
+    <div class="card"><div class="cardhead"><div><div class="ct">Fund Allocation (₹ Cr)</div><div class="cs">Selected date · Total Funds composition</div></div></div><div class="allocation-chart"><canvas id="allocationChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="cardhead"><div><div class="ct">Entity-wise Treasury Position <span id="dashTableDate" class="table-date"></span></div><div class="cs">All amounts in ₹ Crores</div></div><div class="table-download">
+        <button class="btn sm" onclick="exportCurrentExcel()">⇩ Excel</button>
+        <button class="btn sm" onclick="exportCurrentJPG()">⇩ JPG</button>
+      </div></div>
+    <div class="tablewrap"><table><thead id="dashHead"></thead><tbody id="dashTable"></tbody></table></div>
+    <div style="padding:8px 12px;color:var(--muted);font-size:10px">All amounts in ₹ Crores.</div>
+  </div>
+</section>
+
+<section id="entry" class="page">
+  <div class="head"><div><div class="eyebrow">Daily update</div><div class="title">Data Entry</div><div class="sub">One record per Date + Entity + Project. Existing records are updated, not duplicated.</div></div></div>
+  <div class="card cardpad">
+    <div class="formgrid">
+      <div class="fg"><label>Date *</label><input id="eDate" type="date"></div>
+      <div class="fg"><label>Entity *</label><select id="eEntity" onchange="loadEntryProjects()"></select></div><div class="fg"><label>Project *</label><select id="eProject" onchange="loadEntry()"></select></div>
+      <div id="entryFields" class="formgrid" style="grid-column:1/-1"></div>
+      <div class="fg wide"><label>Computed Preview</label><div id="previewBox" class="preview">Total Funds: ₹0.00 Cr · Liquid Funds: ₹0.00 Cr</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button id="saveBtn" class="btn primary" onclick="saveEntry()">Save / Update</button><button class="btn" onclick="clearEntry()">Clear</button></div>
+  </div>
+  <div class="card cardpad" style="margin-top:16px">
+    <div class="ct" style="margin-bottom:4px">Office Holidays</div>
+    <div class="sub" style="margin-bottom:12px">Saturday and Sunday are holidays by default. Add any additional office holiday below. Data can still be entered on any holiday.</div>
+    <div class="formgrid" style="grid-template-columns:180px 1fr 120px;align-items:end">
+      <div class="fg"><label>Holiday Date</label><input id="holidayDate" type="date"></div>
+      <div class="fg"><label>Holiday Name</label><input id="holidayName" placeholder="Office Holiday"></div>
+      <button class="btn primary" onclick="addOfficeHoliday()">+ Add</button>
+    </div>
+    <div id="holidayList" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="compare" class="page">
+  <div class="head"><div><div class="eyebrow">Movement analysis</div><div class="title">Entity-wise Comparison</div><div class="sub">Compare Total Funds entity by entity and identify the major reason for movement.</div></div></div>
+  <div class="card cardpad"><div class="compare-controls">
+    <div class="control"><label>From Date</label><input id="c1" type="date"></div><div class="control"><label>To Date</label><input id="c2" type="date"></div>
+    <button class="btn primary" onclick="renderCompare()">Compare</button>
+  </div></div>
+  <div id="compareSummary" class="compare-summary"></div>
+  <div class="card"><div class="cardhead"><div><div class="ct">Total Funds Movement by Entity</div><div class="cs" id="compareSub"></div></div><div class="table-download"><button class="btn sm" onclick="openCompareExport('excel')">⇩ Excel</button><button class="btn sm" onclick="openCompareExport('jpg')">⇩ JPG</button></div></div>
+    <div class="tablewrap"><table id="compareExportTable"><thead><tr><th>Entity</th><th>Project Name</th><th id="compareDate1Head">Date 1</th><th id="compareDate2Head">Date 2</th><th>Movement</th><th>% Movement</th></tr></thead><tbody id="compareTable"></tbody></table></div>
+  </div>
+</section>
+
+<section id="charts" class="page">
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Treasury Charts</div><div class="sub">Six dynamic charts are shown by default. They follow the current date, entity and project filters and automatically expand for larger entity / project counts.</div></div></div>
+  <div id="chartGallery" class="chart-gallery">
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds by Entity</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g1Stage" class="chart-gallery-canvas"><canvas id="g1"></canvas></div></div>
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Liquid Funds by Entity</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g2Stage" class="chart-gallery-canvas"><canvas id="g2"></canvas></div></div>
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds vs Liquid Funds by Entity</div><div class="cs">Grouped Horizontal Bar · Selected date</div></div></div><div id="g3Stage" class="chart-gallery-canvas"><canvas id="g3"></canvas></div></div>
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds by Project</div><div class="cs">Horizontal Bar · Selected date</div></div></div><div id="g4Stage" class="chart-gallery-canvas"><canvas id="g4"></canvas></div></div>
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Total Funds Components by Entity</div><div class="cs">Stacked Horizontal Bar · Total Funds components</div></div></div><div id="g5Stage" class="chart-gallery-canvas"><canvas id="g5"></canvas></div></div>
+    <div class="card chart-gallery-card"><div class="cardhead"><div><div class="ct">Fund Concentration by Entity</div><div class="cs">Doughnut when readable · otherwise Horizontal Bar</div></div></div><div id="g6Stage" class="chart-gallery-canvas"><canvas id="g6"></canvas></div></div>
+  </div>
+
+  <div class="card cardpad">
+    <div class="ct" style="margin-bottom:12px">Custom Chart</div>
+    <div class="formgrid" style="grid-template-columns:1fr 1fr 1fr;align-items:end">
+      <div class="fg"><label>Category / Axis</label><select id="chartAxis" onchange="updateCustomChartControls()"><option value="date">Date</option><option value="entity">Entity</option><option value="project">Project</option><option value="fund">Fund Type</option></select></div>
+      <div class="fg"><label>Metric / Value</label><select id="chartMetric" onchange="updateCustomChartControls()"></select></div>
+      <div class="fg"><label>Chart Type</label><select id="chartType" onchange="updateCustomChartControls()"></select></div>
+    </div>
+    <div class="chart-value-note" style="margin-top:14px">Values are always shown.</div>
+    <div class="custom-chart-note" id="chartLogicNote"></div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" onclick="resetChartSettings()">Reset</button><button class="btn primary" onclick="renderCustomChart()">Apply</button></div>
+  </div>
+  <div class="card"><div id="customChartStage" class="custom-chart-stage"><canvas id="customChart"></canvas></div></div>
+</section>
+
+<section id="audit" class="page">
+  <div class="head"><div><div class="eyebrow">Control &amp; history</div><div class="title">Audit Log</div><div class="sub">Separate historical record of additions, changes, reason, IP and browser details.</div></div></div>
+  <div class="card cardpad"><div class="auditfilters"><select id="aEntity" onchange="renderAudit()"><option value="ALL">All Entities</option></select><input id="aFrom" type="date" onchange="renderAudit()"><input id="aTo" type="date" onchange="renderAudit()"><select id="aAction" onchange="renderAudit()"><option value="ALL">All Actions</option><option value="ADD">ADD</option><option value="UPDATE">UPDATE</option><option value="ENTITY_ADD">ENTITY ADD</option><option value="ENTITY_DEACTIVATE">ENTITY DEACTIVATE</option></select></div></div>
+  <div class="card"><div class="tablewrap"><table style="min-width:1450px"><thead><tr><th>Timestamp</th><th>Action</th><th>Date</th><th>Entity</th><th>Changed Fields</th><th>Movement</th><th>Major Reason</th><th>IP Address</th><th>Browser / Device</th></tr></thead><tbody id="auditTable"></tbody></table></div></div>
+</section>
+
+<section id="entities" class="page">
+  <div class="head"><div><div class="eyebrow">Master data</div><div class="title">Entity &amp; Project Master</div><div class="sub">Maintain entity, project and starting date in one simple table.</div></div></div>
+
+  <div class="card cardpad">
+    <div class="ct" style="margin-bottom:12px">Add Entity / Project</div>
+    <div class="formgrid" style="grid-template-columns:1fr 1.6fr 1.6fr 1fr 120px;align-items:end">
+      <div class="fg"><label>Entity Code *</label><input id="newCode" placeholder="MEIPL"></div>
+      <div class="fg"><label>Entity Name *</label><input id="newName" placeholder="Maia Estates India Private Limited"></div>
+      <div class="fg"><label>Project Name *</label><input id="newProjectName" placeholder="Pelican Gardens"></div>
+      <div class="fg"><label>Starting Date *</label><input id="newStartDate" type="date"></div>
+      <button class="btn primary" onclick="addMasterRow()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Entity Code</th><th>Entity Name</th><th>Project Name</th><th>Starting Date</th><th>Action</th></tr></thead>
+        <tbody id="masterTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card cardpad" style="margin-top:16px">
+    <div class="ct" style="margin-bottom:4px">Treasury Columns</div>
+    <div class="sub" style="margin-bottom:12px">Rename existing columns or add a new numeric treasury column. New columns appear in Data Entry and the dashboard table.</div>
+    <div id="columnManager"></div>
+    <div class="formgrid" style="grid-template-columns:1fr 1.6fr 120px 130px 130px;align-items:end;margin-top:14px">
+      <div class="fg"><label>New Column Key *</label><input id="newColKey" placeholder="commercial_paper"></div>
+      <div class="fg"><label>Column Name *</label><input id="newColLabel" placeholder="Commercial Paper"></div>
+      <div class="fg"><label>Include in Total</label><select id="newColTotal"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <div class="fg"><label>Include in Liquid</label><select id="newColLiquid"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <button class="btn primary" onclick="addColumn()">+ Add Column</button>
+    </div>
+  </div>
+</section>
+
+<div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
+</main>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz5FeeE5v5tGh7beoKX3Hx3ZTjPFD9CB6Xov9_QDSYrdfzxLjfunW_a0tcpxSarDFIL/exec";
+const LIB_URLS={chart:{src:"https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js",global:"Chart"},excel:{src:"https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js",global:"ExcelJS"},canvas:{src:"https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",global:"html2canvas"}};
+const libPromises={};
+function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.resolve(window[LIB_URLS[key].global]);if(libPromises[key])return libPromises[key];libPromises[key]=new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src=LIB_URLS[key].src;sc.async=true;sc.onload=()=>window[LIB_URLS[key].global]?resolve(window[LIB_URLS[key].global]):reject(new Error(key+" library loaded but is unavailable"));sc.onerror=()=>reject(new Error("Could not load "+key+" library."));document.head.appendChild(sc)});return libPromises[key]}
+function ensureChartJs(){return loadScriptOnce("chart")}function ensureExcelJs(){return loadScriptOnce("excel")}function ensureHtml2Canvas(){return loadScriptOnce("canvas")}
+function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDefaultCharts==='function')renderDefaultCharts();if(document.getElementById("charts")?.classList.contains("active")){if(typeof renderChartGallery==='function')renderChartGallery();if(typeof renderCustomChart==='function')renderCustomChart()}}).catch(()=>{})}
+const REFRESH_MS = 10*60*1000;
+let rows=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL";
+
+const $=id=>document.getElementById(id);
+const n=v=>Number(v)||0;
+const total=r=>+(columns.filter(c=>c.active!==false&&c.includeTotal).reduce((s,c)=>s+n(r[c.key]),0)).toFixed(2);
+const liquid=r=>+(total(r)-columns.filter(c=>c.active!==false&&c.liquidExclude).reduce((s,c)=>s+n(r[c.key]),0)).toFixed(2);
+const fmtNum=v=>{const x=Number(v)||0;return x<0?`(₹${Math.abs(x).toFixed(2)} Cr)`:`₹${x.toFixed(2)} Cr`};
+const fmtCell=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)})`:x.toFixed(2)};
+const fmtPct=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)}%)`:`${x.toFixed(2)}%`};
+const fmtDate=s=>{if(!s)return "—";let p=String(s).slice(0,10).split("-");return p.length===3?new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):s};
+const pct=(a,b)=>b?((a/b)*100).toFixed(2)+"%":"—";
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+function note(msg,bad=false){const e=$("notice");e.textContent=msg;e.className="note "+(bad?"warn":"");e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),5000)}
+function status(msg){const e=$("sync");if(e)e.textContent="● "+msg;const b=$("headerStatus");if(b)b.textContent=msg}
+async function apiGet(action){
+  const url=API_URL+"?action="+encodeURIComponent(action)+"&_ts="+Date.now();
+  try{
+    const r=await fetch(url,{cache:"no-store"});
+    if(!r.ok)throw Error("HTTP "+r.status);
+    const text=await r.text();
+    try{return JSON.parse(text)}catch(e){throw Error("Invalid API response")}
+  }catch(fetchErr){
+    return await apiGetJSONP(action);
+  }
+}
+function apiGetJSONP(action){
+  return new Promise((resolve,reject)=>{
+    const cb="maiaJsonp_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    const script=document.createElement("script");
+    const url=API_URL+"?action="+encodeURIComponent(action)+"&_ts="+Date.now()+"&callback="+cb;
+    const timer=setTimeout(()=>{cleanup();reject(Error("Google Apps Script is not reachable. Please verify the Web App is deployed as Anyone."))},15000);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
+    window[cb]=data=>{cleanup();resolve(data)};
+    script.onerror=()=>{cleanup();reject(Error("Google Apps Script request failed"))};
+    script.src=url;
+    document.head.appendChild(script);
+  });
+}
+async function apiPost(payload){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
+function normalizeRows(data){const arr=data.data||data.rows||data.records||[];return arr.map(x=>({...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()})).filter(x=>x.date&&x.entity)}
+
+function toggleSidebar(){
+  const sb=$("sidebar");
+  if(window.innerWidth<=700){sb.classList.toggle("mobile-open");return}
+  sb.classList.toggle("collapsed");
+  document.body.classList.toggle("sidebar-open",!sb.classList.contains("collapsed"));
+  document.body.classList.toggle("sidebar-closed",sb.classList.contains("collapsed"));
+}
+function syncHeaderDate(){const d=$("headerDate").value;if(!d)return;selectedDate=d;$("eDate").value=d;renderDashboard();loadEntry()}
+function defaultColumns(){return [
+  {key:"bank",label:"Bank Balance",active:true,sort:1,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"sweep",label:"Sweep Deposit",active:true,sort:2,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"fd",label:"Fixed Deposits",active:true,sort:3,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"mf",label:"Mutual Funds",active:true,sort:4,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"bonds",label:"Bonds / Debentures",active:true,sort:5,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"brs",label:"BRS",active:true,sort:6,custom:false,includeTotal:true,liquidExclude:false},
+  {key:"reserve",label:"Reserve Fund",active:true,sort:7,custom:false,includeTotal:false,liquidExclude:true},
+  {key:"restricted",label:"Restricted Fund",active:true,sort:8,custom:false,includeTotal:false,liquidExclude:true},
+  {key:"locked_funds",label:"Locked Funds",active:true,sort:9,custom:false,includeTotal:false,liquidExclude:true}
+]}
+function letter(i){let s="";i++;while(i){let r=(i-1)%26;s=String.fromCharCode(97+r)+s;i=Math.floor((i-1)/26)}return s}
+function coreColumnMap(){return {bank:"a",sweep:"b",fd:"c",mf:"d",bonds:"e",brs:"f",reserve:"h",restricted:"i",locked_funds:"j"}}
+function totalFormulaLabel(){const extra=columns.filter(c=>c.active!==false&&c.custom&&c.includeTotal).map((c,i)=>letter(12+i));return "G. Total Funds (g) = (a to f"+(extra.length?" + "+extra.join(" + "):"")+")"}
+async function loadAll(){
+  status("Loading");
+  try{
+    const hadAllEntities=entities.length>0 && selectedEntities.length===entities.length;
+    const b=await apiGet("getBootstrap");
+    if(!b || b.status==="error") throw Error((b&&b.message)||"Treasury API error");
+    rows=normalizeRows({data:b.data||[]});
+    const master=(b.entities||[]);
+    entityMeta=master.map(x=>typeof x==="string"?{entityCode:String(x).toUpperCase(),entityName:"",startDate:""}:{entityCode:String(x.entityCode||x.code||x.entity||x.name||"").toUpperCase(),entityName:String(x.entityName||""),startDate:String(x.startDate||"").slice(0,10)}).filter(x=>x.entityCode);
+    entities=entityMeta.length?[...new Set(entityMeta.map(x=>x.entityCode))]:[...new Set(rows.map(r=>String(r.entity||"").toUpperCase()).filter(Boolean))];
+    // If the user previously had all entities selected, automatically include newly added entities.
+    // If the user intentionally selected a subset, preserve that subset.
+    if(hadAllEntities || !selectedEntities.length || selectedEntities.some(e=>!entities.includes(e))) selectedEntities=[...entities];
+    columns=(b.columns||[]).filter(x=>x.active!==false);
+    if(!columns.length)columns=defaultColumns();
+    projects=(b.projects||[]).filter(x=>x.active!==false);
+    // Do not invent a second "General" project on the client. The backend
+    // reconciles missing project masters from Treasury_Data.
+    audit=b.audit||[];
+    officeHolidays=b.holidays||[];
+    const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();
+    selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates[dates.length-1]):"";
+    populateControls(dates);
+    renderEntryFields();
+    renderDashboard();
+    if(typeof renderCompare==='function')renderCompare();
+    if(typeof renderAudit==='function')renderAudit();
+    if(typeof renderEntityMaster==='function')renderEntityMaster();
+    renderHolidayList();
+    // Heavy charts load after the core dashboard is visible.
+    warmChartLibrary();
+    status(rows.length?"Live · "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}):"Connected · No Treasury rows");
+    if(!rows.length)note("Google Sheet connected, but Treasury_Data has no usable rows.",true);
+  }catch(e){
+    status("Connection error");
+    note(e.message||"Could not load Treasury data.",true);
+  }
+}
+
+function populateControls(dates){const hd=$("headerDate");if(hd)hd.value=selectedDate||dates.at(-1)||"";const ed=$("eDate");if(ed)ed.value=selectedDate||dates.at(-1)||"";["eEntity","chartEntity","aEntity"].forEach(id=>{const el=$(id);if(!el)return;const all=id!=="eEntity";el.innerHTML=(all?'<option value="ALL">All Entities</option>':'<option value="">Select entity</option>')+entities.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join("")});const ne=$("newProjectEntity");if(ne)ne.innerHTML=entities.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join("");if(!selectedEntities.length||selectedEntities.some(e=>!entities.includes(e)))selectedEntities=[...entities];renderEntityFilter();renderProjectFilter();loadEntryProjects();const set=(id,v)=>{const el=$(id);if(el)el.value=v||""};set("c1",dates.at(-2)||dates.at(-1)||"");set("c2",dates.at(-1)||"");set("chartFrom",dates[0]||"");set("chartTo",dates.at(-1)||"");set("aFrom",dates[0]||"");set("aTo",dates.at(-1)||"");const ec=$("entityCount");if(ec)ec.textContent=entities.length;}
+function renderEntityFilter(){
+  const menu=$("entityMultiMenu"),btn=$("entityMultiBtn"),count=$("entityFilterCount");if(!menu||!btn)return;
+  const all=selectedEntities.length===entities.length;
+  menu.innerHTML=`<div class="multi-actions"><button type="button" onclick="selectAllEntities(event)">Select All</button><button type="button" onclick="clearEntities(event)">Clear</button></div>`+
+    entities.map(e=>`<label class="multi-option"><input type="checkbox" value="${esc(e)}" ${selectedEntities.includes(e)?"checked":""} onchange="changeEntityFilter()"><span>${esc(e)}</span></label>`).join("");
+  btn.textContent=all?`${entities.length} Entities`:(selectedEntities.length?`${selectedEntities.length} Entities`:"No Entity");
+  if(count)count.textContent="";
+}
+function toggleEntityMenu(ev){ev.stopPropagation();const box=$("entityMultiSelect");if(box)box.classList.toggle("open")}
+function changeEntityFilter(){
+  selectedEntities=[...document.querySelectorAll('#entityMultiMenu input[type="checkbox"]:checked')].map(x=>x.value);
+  renderEntityFilter();renderDashboard();
+  if(typeof updateCustomChartControls==='function')updateCustomChartControls();
+}
+function selectAllEntities(ev){ev.stopPropagation();selectedEntities=[...entities];renderEntityFilter();renderDashboard()}
+function clearEntities(ev){ev.stopPropagation();selectedEntities=[];renderEntityFilter();renderDashboard()}
+document.addEventListener("click",ev=>{const box=$("entityMultiSelect");if(box&&!box.contains(ev.target))box.classList.remove("open")});
+function rowsForDate(d){return rows.filter(r=>r.date===d)}
+function getDashboardEntities(){return selectedEntities.length?selectedEntities:entities}
+function filteredRows(d){const es=new Set(getDashboardEntities());return rowsForDate(d).filter(r=>es.has(String(r.entity||"").toUpperCase())&&(selectedProject==="ALL"||String(r.project||"").toUpperCase()===String(selectedProject).toUpperCase()))}
+function projectsForEntities(){const es=new Set(getDashboardEntities());return projects.filter(p=>es.has(String(p.entityCode||"").toUpperCase()))}
+function renderProjectFilter(){const el=$("headerProject");if(!el)return;const list=projectsForEntities();el.innerHTML='<option value="ALL">All Projects</option>'+list.map(p=>`<option value="${esc(p.projectCode)}">${esc(p.projectName||p.projectCode)}</option>`).join("");if(selectedProject!=="ALL"&&!list.some(p=>p.projectCode===selectedProject))selectedProject="ALL";el.value=selectedProject}
+function syncHeaderProject(){selectedProject=$("headerProject").value||"ALL";renderDashboard();if(typeof updateCustomChartControls==='function')updateCustomChartControls()}
+function loadEntryProjects(){const e=$("eEntity").value||"",el=$("eProject");if(!el)return;const list=projects.filter(p=>String(p.entityCode||"").toUpperCase()===e.toUpperCase());el.innerHTML=list.map(p=>`<option value="${esc(p.projectCode)}">${esc(p.projectName||p.projectCode)}</option>`).join("");if(list.length&&!el.value)el.value=list[0].projectCode;loadEntry()}
+function entityStatus(entity,project,date){const r=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);if(!r)return {key:"pending",symbol:"◷"};const a=audit.filter(x=>String(x.entity||"").toUpperCase()===entity&&String(x.date||"").slice(0,10)===date&&["ADD","UPDATE"].includes(String(x.action||"").toUpperCase())).sort((x,y)=>String(y.timestamp||"").localeCompare(String(x.timestamp||"")));return a.length&&String(a[0].action).toUpperCase()==="UPDATE"?{key:"modified",symbol:"✎"}:{key:"updated",symbol:"✓"}}
+
+function isWeekend(d){if(!d)return false;const x=new Date(d+'T00:00:00');const day=x.getDay();return day===0||day===6}
+function isOfficeHoliday(d){return (officeHolidays||[]).some(h=>String(h.date||'').slice(0,10)===d)}
+function isHoliday(d){return isWeekend(d)||isOfficeHoliday(d)}
+function previousDataDate(date){const ds=[...new Set(rows.map(r=>r.date).filter(d=>d<date))].sort();return ds.length?ds[ds.length-1]:''}
+function statusSymbolFor(entity,project,date){const r=rows.find(x=>x.date===date&&String(x.entity).toUpperCase()===String(entity).toUpperCase()&&String(x.project)===String(project));if(r){const a=audit.filter(x=>String(x.entity||'').toUpperCase()===String(entity).toUpperCase()&&String(x.date||'').slice(0,10)===date);const modified=a.some(x=>x.action==='UPDATE'&&String(x.details||'').includes(project));return modified?{symbol:'✎',cls:'modified'}:{symbol:'✓',cls:'updated'}}return isHoliday(date)?{symbol:'',cls:''}:{symbol:'◷',cls:'pending'}}
+function renderHolidayList(){const box=$("holidayList");if(!box)return;const list=(officeHolidays||[]).sort((a,b)=>String(a.date).localeCompare(String(b.date)));box.innerHTML=list.length?list.map(h=>`<div class="holiday-row"><span><b>${esc(formatDateLong(h.date))}</b> · ${esc(h.name||'Office Holiday')}</span><button class="btn sm" onclick="removeOfficeHoliday('${esc(h.date)}')">×</button></div>`).join(''):'<div class="empty">No additional office holidays.</div>'}
+async function addOfficeHoliday(){const date=$("holidayDate").value,name=$("holidayName").value.trim()||'Office Holiday';if(!date){note('Select a holiday date.',true);return}try{const r=await apiPost({action:'addHoliday',date,name,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add holiday');$("holidayDate").value='';$("holidayName").value='';await loadAll();note('✓ Office holiday added.')}catch(e){note(e.message,true)}}
+async function removeOfficeHoliday(date){try{const r=await apiPost({action:'deleteHoliday',date,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not remove holiday');await loadAll();note('✓ Office holiday removed.')}catch(e){note(e.message,true)}}
+
+function renderDashboard(){
+  selectedDate=$('headerDate').value||selectedDate;
+  const lu=$('headerLastUpdated');if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
+  renderProjectFilter();
+  if(typeof Chart!=="undefined")renderDefaultCharts();
+  if(typeof Chart!=="undefined" && $("charts")?.classList.contains("active") && typeof renderChartGallery==="function")renderChartGallery();
+  const source=filteredRows(selectedDate);
+  const prev=previousDataDate(selectedDate),pd=filteredRows(prev);
+
+  let T=0,L=0,R=0,RS=0,LO=0;
+  source.forEach(r=>{T+=total(r);L+=liquid(r);R+=n(r.reserve);RS+=n(r.restricted);LO+=n(r.locked_funds)});
+  const pT=pd.reduce((a,r)=>a+total(r),0),pL=pd.reduce((a,r)=>a+liquid(r),0),pR=pd.reduce((a,r)=>a+n(r.reserve),0),pRL=pd.reduce((a,r)=>a+n(r.restricted)+n(r.locked_funds),0);
+  const kpis=[['Total Funds',T,pT],['Liquid Funds',L,pL],['Reserve Fund',R,pR],['Restricted + Locked',RS+LO,pRL],['Submission',source.length,pd.length]];
+  $('kpis').innerHTML=kpis.map(x=>{
+    const has=prev!=='';const delta=x[1]-x[2];const pctMove=has&&x[2]!==0?(delta/Math.abs(x[2])*100):0;const sym=!has?'—':(delta>0?'↑':delta<0?'↓':'→');
+    const val=x[0]==='Submission'?String(x[1]):fmtNum(x[1]);const pv=has?(x[0]==='Submission'?String(x[2]):fmtNum(x[2])):'—';
+    return `<div class="kpi"><div class="kl">${x[0]}</div><div class="kv">${val}</div><div class="kprev"><span>vs ${pv}</span><b class="kpi-move ${delta>0?'pos':delta<0?'neg':'zero'}">${sym}${has&&x[0]!=='Submission'?` ${fmtPct(Math.abs(pctMove))}`:''}</b></div></div>`;
+  }).join('');
+
+  // Always merge the six core balance types with Treasury_Columns. This prevents
+  // an older backend response from accidentally hiding the core balances.
+  const coreDefs=[
+    {key:'bank',label:'Bank Balance',sort:1,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'sweep',label:'Sweep Deposit',sort:2,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'fd',label:'Fixed Deposits',sort:3,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'mf',label:'Mutual Funds',sort:4,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'bonds',label:'Bonds / Debentures',sort:5,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'brs',label:'BRS',sort:6,custom:false,includeTotal:true,liquidExclude:false},
+    {key:'reserve',label:'Reserve Fund',sort:7,custom:false,includeTotal:false,liquidExclude:true},
+    {key:'restricted',label:'Restricted Fund',sort:8,custom:false,includeTotal:false,liquidExclude:true},
+    {key:'locked_funds',label:'Locked Funds',sort:9,custom:false,includeTotal:false,liquidExclude:true}
+  ];
+  const byKey=new Map();
+  coreDefs.forEach(c=>byKey.set(c.key,{...c}));
+  columns.forEach(c=>byKey.set(c.key,{...c}));
+  const allDefs=[...byKey.values()].filter(c=>c.active!==false);
+  const hasData=c=>source.some(r=>r.__present&&r.__present[c.key]);
+  const balanceDefs0=allDefs.filter(c=>c.includeTotal===true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+  const customNonTotal=allDefs.filter(c=>c.custom===true&&c.includeTotal!==true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+  // Non-total custom balances are still balance columns and remain before Total Funds.
+  const balanceDefsAll=[...balanceDefs0,...customNonTotal];
+  const deductionDefs0=allDefs.filter(c=>c.includeTotal!==true&&c.custom!==true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
+
+  let codeIndex=0;const codeFor=()=>letter(codeIndex++);
+  const balanceDefs=balanceDefsAll.map(c=>({c,code:codeFor()}));
+  const totalCode=codeFor();
+  const deductionDefs=deductionDefs0.map(c=>({c,code:codeFor()}));
+  const liquidCode=codeFor(),movementCode=codeFor();
+  const th=(name,code,formula='')=>`<th><span class="th-name">${esc(name)}</span>${formula?`<span class="th-formula">${esc(formula)}</span>`:''}<span class="th-code">(${code.toUpperCase()})</span></th>`;
+  const thFormulaOnly=(name,formula)=>`<th><span class="th-name">${esc(name)}</span><span class="th-formula">${esc(formula)}</span></th>`;
+  let head=`<tr class="treasury-head"><th><span class="th-name">ENTITY</span></th><th class="project-head"><span class="th-name">PROJECT NAME</span></th>`;
+  balanceDefs.forEach(x=>head+=th(x.c.label,x.code));
+  const totalFormula=balanceDefs.length?`(${totalCode.toUpperCase()}) = (${balanceDefs[0].code.toUpperCase()}) TO (${balanceDefs[balanceDefs.length-1].code.toUpperCase()})`:`(${totalCode.toUpperCase()}) = (A) TO (A)`;
+  // Total/Liquid references are shown once only: the formula itself carries the column reference.
+  head+=thFormulaOnly('TOTAL FUNDS',totalFormula);
+  deductionDefs.forEach(x=>head+=th(x.c.label,x.code));
+  const liquidFormula=deductionDefs.length?`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()}${deductionDefs.map(x=>` - ${x.code.toUpperCase()}`).join('')})`:`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()})`;
+  head+=thFormulaOnly('LIQUID FUNDS',liquidFormula);
+  head+=`<th><span class="th-name">MOVEMENT</span><span class="th-formula">FROM ${prev?fmtDate(prev).toUpperCase():'—'}</span><span class="th-code">(${movementCode.toUpperCase()})</span></th></tr>`;
+  $('dashHead').innerHTML=head;
+
+  let h='';
+  const displayRows=[];
+  const dashEntities=new Set(getDashboardEntities());
+  const dashProjects=(projects||[]).filter(p=>p.active!==false&&dashEntities.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode).toUpperCase()===String(selectedProject).toUpperCase()));
+  const used=new Set();
+  dashProjects.forEach(p=>{
+    const entity=String(p.entityCode||'').toUpperCase(),project=String(p.projectCode||'').trim().toUpperCase(),key=entity+'|'+project;
+    const rr=rows.find(x=>x.date===selectedDate&&String(x.entity||'').toUpperCase()===entity&&String(x.project||'').trim().toUpperCase()===project);
+    if(rr){displayRows.push(rr);used.add(key)}else{displayRows.push({date:selectedDate,entity,project,projectName:p.projectName,__missing:true});used.add(key)}
+  });
+  rows.filter(r=>r.date===selectedDate&&dashEntities.has(String(r.entity||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())&&(!projects.length||projects.some(p=>p.active!==false&&String(p.projectCode).toUpperCase()===String(r.project).toUpperCase()))).forEach(r=>{
+    const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').trim().toUpperCase();if(!used.has(key)){displayRows.push(r);used.add(key)}
+  });
+
+  displayRows.forEach(r=>{
+    const actual=!r.__missing;
+    const pr=rows.find(x=>x.date===prev&&String(x.entity).toUpperCase()===String(r.entity).toUpperCase()&&String(x.project).toUpperCase()===String(r.project).toUpperCase());
+    const t=actual?total(r):0,l=actual?liquid(r):0,mv=actual&&pr?+(t-total(pr)).toFixed(2):null;
+    const st=statusSymbolFor(r.entity,r.project,selectedDate);
+    h+=`<tr><td class="entity-cell"><span class="status-symbol ${st.cls} entity-status">${st.symbol}</span><b>${esc(r.entity)}</b></td><td class="project-cell">${esc(projectName(r.project))}</td>`;
+    balanceDefs.forEach(x=>h+=`<td>${actual?fmtCell(r[x.c.key]):'—'}</td>`);
+    h+=`<td><b>${actual?fmtCell(t):'—'}</b></td>`;
+    deductionDefs.forEach(x=>h+=`<td>${actual?fmtCell(r[x.c.key]):'—'}</td>`);
+    h+=`<td><b>${actual?fmtCell(l):'—'}</b></td><td class="${mv>0?'pos':mv<0?'neg':'zero'}">${mv===null?'—':(mv>0?'▲ ':'▼ ')+fmtCell(Math.abs(mv))}</td></tr>`;
+  });
+  const colCount=2+balanceDefs.length+1+deductionDefs.length+2;
+  $('dashTable').innerHTML=h||`<tr><td colspan="${colCount}" class="empty">No data</td></tr>`;
+  const td=$('dashTableDate');if(td)td.textContent=selectedDate?` · ${formatDateLong(selectedDate)}`:'';
+  const tableWrap=$('dashTable')?.closest('.tablewrap');if(tableWrap)tableWrap.scrollLeft=0;
+}
+function projectName(code){const p=projects.find(x=>String(x.projectCode)===String(code));return p?p.projectName:(code||'General')}
+
+function formatDateLong(date){
+  if(!date)return "";
+  const dt=new Date(date+"T00:00:00");
+  if(isNaN(dt))return date;
+  return dt.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+function latestUpdatedForDate(date){
+  const rs=rows.filter(r=>r.date===date&&r.updatedAt);
+  if(!rs.length)return "—";
+  const v=rs.map(r=>String(r.updatedAt)).sort().at(-1);
+  const dt=new Date(v);if(isNaN(dt))return v;
+  return dt.toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function renderDefaultCharts(){
+  if(typeof Chart!=="undefined"){
+    Chart.defaults.font.family='"Times New Roman", Times, serif';
+    Chart.defaults.font.size=12;
+    Chart.defaults.color="#52635a";
+  }
+  if(!rows.length||!selectedDate||!$("trendChart")||!$("allocationChart"))return;
+  if(charts.trend)charts.trend.destroy();
+  if(charts.allocation)charts.allocation.destroy();
+  const dates=[...new Set(rows.map(r=>r.date))].sort().slice(-5);
+  const trendData=dates.map(d=>+filteredRows(d).reduce((s,r)=>s+total(r),0).toFixed(2));
+  charts.trend=new Chart($("trendChart"),{type:"line",data:{labels:dates.map(fmtDate),datasets:[{label:"Total Funds",data:trendData,tension:.3,fill:true,borderColor:"#1f513b",backgroundColor:"rgba(31,81,59,.12)",pointBackgroundColor:"#b18a3a",pointBorderColor:"#fff",pointBorderWidth:2,borderWidth:3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"bottom"},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>"₹ "+Number(c.raw).toFixed(2)+" Cr"}}},scales:{x:{grid:{display:false},ticks:{font:{family:"Times New Roman"}}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores",font:{family:"Times New Roman",weight:"bold"}},ticks:{font:{family:"Times New Roman"}}}}}});
+  const d=filteredRows(selectedDate);
+  // Fund Allocation is strictly the composition of Total Funds.
+  // Reserve / Restricted / Locked and any balance type with Include in Total = No
+  // must never appear in this chart.
+  const fundDefs=columns.filter(c=>c.active!==false&&c.includeTotal===true&&d.some(r=>r.__present&&r.__present[c.key]));
+  const labels=fundDefs.map(c=>c.label), vals=fundDefs.map(c=>+d.reduce((s,r)=>s+n(r[c.key]),0).toFixed(2));
+  const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88","#8B6F47","#A84B4B","#5E6F82","#2D7A61","#C17C3A"];
+  charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
+}
+function hasCellData(r,key){
+  return !!(r && r[key]!==undefined && r[key]!==null && String(r[key]).trim()!=="" && Number.isFinite(Number(r[key])));
+}
+function galleryRows(){return selectedDate?filteredRows(selectedDate):[];}
+function galleryDates(){return [...new Set(rows.map(r=>r.date).filter(Boolean))].sort().filter(d=>filteredRows(d).length).slice(-5);}
+function destroyGalleryChart(key){if(charts[key]){try{charts[key].destroy();}catch(e){}charts[key]=null;}}
+function galleryMessage(stageId,msg){const st=$(stageId);if(!st)return;st.innerHTML=`<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px">${esc(msg)}</div>`;}
+function resetGalleryStage(stageId,canvasId){const st=$(stageId);if(!st)return null;let c=$(canvasId);if(!c){st.innerHTML=`<canvas id="${canvasId}"></canvas>`;c=$(canvasId);}return c;}
+function galleryHeight(count,mode='bar'){
+  if(mode==='donut') return 430;
+  if(mode==='line') return 390;
+  return Math.max(430, Math.min(1250, 180 + count*48));
+}
+function galleryBaseOptions(indexAxis='y',heightMode='bar'){
+  return {
+    responsive:true,maintainAspectRatio:false,indexAxis,
+    animation:{duration:350},
+    layout:{padding:{top:10,right:34,bottom:10,left:10}},
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},
+      tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ${formatChartValue(c.raw)} Cr`}}
+    },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},
+      y:{beginAtZero:true,grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis==='y'?'':'₹ Crores',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}
+    }
+  };
+}
+function galleryValuePlugin(id,stacked){
+  return {id,afterDatasetsDraw(chart){
+    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
+    chart.data.datasets.forEach((ds,di)=>{
+      if(stacked && di!==chart.data.datasets.length-1)return;
+      const meta=chart.getDatasetMeta(di);
+      meta.data.forEach((el,i)=>{
+        const v=ds.data[i];if(v===null||v===undefined||!Number.isFinite(Number(v)))return;
+        const p=el.tooltipPosition();let x=p.x,y=p.y,show=true;
+        if(stacked){
+          const w=Math.abs((el.base??p.x)-p.x);const h=Math.abs((el.base??p.y)-p.y);
+          const span=Math.max(w,h);
+          show=span>=34;
+        }
+        if(!show)return;
+        if(chart.options.indexAxis==='y'){x=p.x+8;ctx.textAlign='left';}else{y=p.y-9;ctx.textAlign='center';}
+        ctx.fillText(formatChartValue(v),x,y);
+      });
+    });ctx.restore();
+  }};
+}
+function entityChartRows(){
+  return getDashboardEntities().filter(e=>filteredRows(selectedDate).some(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()));
+}
+function projectChartRows(){
+  const cr=filteredRows(selectedDate),seen=new Set(),out=[];
+  cr.forEach(r=>{const entity=String(r.entity||'').toUpperCase(),project=String(r.project||'').toUpperCase(),key=entity+'|'+project;if(seen.has(key))return;seen.add(key);out.push({entity,project,label:`${entity} · ${projectName(r.project)}`});});
+  return out;
+}
+function renderChartGallery(){
+  if(typeof Chart==='undefined')return;
+  const stages=['g1Stage','g2Stage','g3Stage','g4Stage','g5Stage','g6Stage'];
+  if(!rows.length||!selectedDate){stages.forEach(s=>galleryMessage(s,'No Treasury data available.'));return;}
+  Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
+  const selected=selectedDate;
+  const entitiesNow=entityChartRows();
+  const projectsNow=projectChartRows();
+  const cr=filteredRows(selected);
+  const metricSum=(rs,key)=>+rs.reduce((s,r)=>s+n(r[key]),0).toFixed(2);
+  const commonHeightForEntities=galleryHeight(entitiesNow.length,'bar');
+  const commonHeightForProjects=galleryHeight(projectsNow.length,'bar');
+
+  // 1. Total Funds by Entity
+  destroyGalleryChart('g1'); let stage=$('g1Stage'); stage.style.height=commonHeightForEntities+'px'; let c=resetGalleryStage('g1Stage','g1');
+  if(!entitiesNow.length){galleryMessage('g1Stage','No entity data available for the selected date.');}
+  else {
+    const labels=entitiesNow;
+    const totals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
+    const o=galleryBaseOptions('y');o.scales.y.ticks.font={family:'Times New Roman',size:10};
+    charts.g1=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:totals,backgroundColor:'#1F5B45',borderColor:'#1F5B45',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g1v',false)]});
+  }
+
+  // 2. Liquid Funds by Entity
+  destroyGalleryChart('g2');stage=$('g2Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g2Stage','g2');
+  if(!entitiesNow.length){galleryMessage('g2Stage','No entity data available for the selected date.');}
+  else {
+    const labels=entitiesNow,vals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+liquid(r),0).toFixed(2));
+    const o=galleryBaseOptions('y');charts.g2=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Liquid Funds',data:vals,backgroundColor:'#B18A3A',borderColor:'#B18A3A',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g2v',false)]});
+  }
+
+  // 3. Total vs Liquid Funds by Entity — grouped horizontal bar
+  destroyGalleryChart('g3');stage=$('g3Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g3Stage','g3');
+  if(!entitiesNow.length){galleryMessage('g3Stage','No entity data available for the selected date.');}
+  else {
+    const labels=entitiesNow;
+    const totals=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
+    const liquids=labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+liquid(r),0).toFixed(2));
+    const o=galleryBaseOptions('y');o.scales.y.ticks.padding=8;
+    charts.g3=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:totals,backgroundColor:'#1F5B45',borderColor:'#1F5B45',borderWidth:1,barThickness:12,maxBarThickness:16},{label:'Liquid Funds',data:liquids,backgroundColor:'#B18A3A',borderColor:'#B18A3A',borderWidth:1,barThickness:12,maxBarThickness:16}]},options:o,plugins:[galleryValuePlugin('g3v',false)]});
+  }
+
+  // 4. Total Funds by Project — dynamic height avoids congestion with 18–20+ entities/projects
+  destroyGalleryChart('g4');stage=$('g4Stage');stage.style.height=commonHeightForProjects+'px';c=resetGalleryStage('g4Stage','g4');
+  if(!projectsNow.length){galleryMessage('g4Stage','No project data available for the selected date.');}
+  else {
+    const labels=projectsNow.map(x=>x.label),vals=projectsNow.map(x=>+cr.filter(r=>String(r.entity||'').toUpperCase()===x.entity&&String(r.project||'').toUpperCase()===x.project).reduce((s,r)=>s+total(r),0).toFixed(2));
+    const o=galleryBaseOptions('y');o.scales.y.ticks={font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8};
+    charts.g4=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'Total Funds',data:vals,backgroundColor:'#3D6F8E',borderColor:'#3D6F8E',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g4v',false)]});
+  }
+
+  // 5. Total Funds components by Entity — stacked horizontal
+  destroyGalleryChart('g5');stage=$('g5Stage');stage.style.height=commonHeightForEntities+'px';c=resetGalleryStage('g5Stage','g5');
+  const componentDefs=columns.filter(c=>c.active!==false&&c.includeTotal===true&&cr.some(r=>hasCellData(r,c.key)));
+  if(!entitiesNow.length||!componentDefs.length){galleryMessage('g5Stage','No Total Funds component data available.');}
+  else {
+    const labels=entitiesNow;
+    const datasets=componentDefs.map((col,i)=>({label:col.label,data:labels.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+n(r[col.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1,barThickness:20,maxBarThickness:24}));
+    const o=galleryBaseOptions('y');o.scales.x.stacked=true;o.scales.y.stacked=true;
+    charts.g5=new Chart(c,{type:'bar',data:{labels,datasets},options:o,plugins:[galleryValuePlugin('g5v',true)]});
+  }
+
+  // 6. Fund concentration by Entity — doughnut for small entity counts; auto-fallback to horizontal bar for 9+
+  destroyGalleryChart('g6');stage=$('g6Stage');c=resetGalleryStage('g6Stage','g6');
+  const labels6=entitiesNow,vals6=labels6.map(e=>+cr.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()).reduce((s,r)=>s+total(r),0).toFixed(2));
+  if(!labels6.length||!vals6.some(v=>v!==0)){galleryMessage('g6Stage','No fund concentration data available.');}
+  else if(labels6.length<=8){
+    stage.style.height='430px';
+    const g6LegendLabels=function(chart){
+      const base=Chart.defaults.plugins.legend.labels.generateLabels(chart);
+      return base.map((it,i)=>({...it,text:`${labels6[i]} — ₹${vals6[i].toFixed(2)} Cr`}));
+    };
+    charts.g6=new Chart(c,{
+      type:'doughnut',
+      data:{labels:labels6,datasets:[{data:vals6,backgroundColor:labels6.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:3}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Times New Roman',size:11},padding:10,usePointStyle:true,generateLabels:g6LegendLabels}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.label}: ₹ ${Number(c.raw).toFixed(2)} Cr`}}}}
+    });
+  }else{
+    stage.style.height=galleryHeight(labels6.length,'bar')+'px';
+    const o=galleryBaseOptions('y');
+    charts.g6=new Chart(c,{type:'bar',data:{labels:labels6,datasets:[{label:'Total Funds',data:vals6,backgroundColor:'#7A5C8E',borderColor:'#7A5C8E',borderWidth:1,barThickness:20,maxBarThickness:26}]},options:o,plugins:[galleryValuePlugin('g6v',false)]});
+  }
+}
+function renderEntryFields(){
+  const wrap=$("entryFields");if(!wrap)return;
+  wrap.innerHTML=columns.filter(c=>c.active!==false).map(c=>`<div class="fg"><label>${esc(c.label)}</label><input id="e_${esc(c.key)}" type="number" step=".01" oninput="preview()"></div>`).join("");
+}
+function preview(){let r=formRow();$("previewBox").textContent=`Total Funds: ₹${total(r).toFixed(2)} Cr · Liquid Funds: ₹${liquid(r).toFixed(2)} Cr`}
+function formRow(){const r={};columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);r[c.key]=el?el.value:""});return r}
+function loadEntry(){const d=$("eDate").value,e=$("eEntity").value,p=$("eProject").value,r=rows.find(x=>x.date===d&&x.entity===e&&x.project===p);renderEntryFields();columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=r?(r[c.key]??""):""});preview()}
+async function saveEntry(){
+  const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note("Date, entity and project are required.",true);return}
+  const old=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);$("saveBtn").disabled=true;
+  try{
+    const values=formRow();
+    const res=await apiPost({action:"save",date,entity,projectCode:project,project,...values});
+    if(res.status!=="ok")throw Error(res.message||"Save failed");
+    const updated={date,entity:String(entity).toUpperCase(),project:String(project).toUpperCase(),projectName:projectName(project),updatedAt:new Date().toISOString()};
+    columns.filter(c=>c.active!==false).forEach(c=>updated[c.key]=n(values[c.key]));
+    const idx=rows.findIndex(x=>x.date===date&&x.entity===String(entity).toUpperCase()&&x.project===String(project).toUpperCase());
+    if(idx>=0)rows[idx]=updated;else rows.push(updated);
+    rows.sort((a,b)=>(a.date+a.entity+a.project).localeCompare(b.date+b.entity+b.project));
+    const auditEntry={timestamp:new Date().toISOString(),action:old?"UPDATE":"ADD",date,entity:String(entity).toUpperCase(),details:old?(project+" · Updated"):("Initial treasury entry · "+project),movement:"",reason:old?"":"Initial entry",ip:"",userAgent:navigator.userAgent};
+    audit=[auditEntry,...audit].slice(0,200);
+    populateControls([...new Set(rows.map(r=>r.date).filter(Boolean))].sort());
+    renderDashboard();
+    if(typeof renderCompare==='function')renderCompare();
+    if(typeof renderAudit==='function')renderAudit();
+    loadEntry();
+    note(old?"✓ Record updated and audit logged.":"✓ New record saved and audit logged.");
+  }catch(e){note(e.message,true)}finally{$("saveBtn").disabled=false}
+}
+
+function clearEntry(){columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=""});preview()}
+function renderCompare(){
+  const d1=$("c1").value,d2=$("c2").value;if(!d1||!d2)return;
+  const a=rowsForDate(d1),b=rowsForDate(d2),map={};
+  [...a,...b].forEach(r=>{
+    const e=String(r.entity||"").toUpperCase();if(!e)return;
+    if(!map[e])map[e]={rows1:[],rows2:[],projects:new Set()};
+    const is1=r.date===d1;(is1?map[e].rows1:map[e].rows2).push(r);
+    const pn=projectName(r.project);if(pn)map[e].projects.add(pn);
+  });
+  entities.forEach(e=>{
+    const key=String(e).toUpperCase();if(!map[key])map[key]={rows1:[],rows2:[],projects:new Set()};
+    projects.filter(p=>String(p.entityCode||"").toUpperCase()===key&&p.active!==false).forEach(p=>{if(p.projectName)map[key].projects.add(p.projectName)});
+  });
+  let total1=0,total2=0,move=0,h="";
+  entities.forEach(e=>{
+    const key=String(e).toUpperCase(),mdata=map[key]||{rows1:[],rows2:[],projects:new Set()};
+    const t1=+mdata.rows1.reduce((s,r)=>s+total(r),0).toFixed(2),t2=+mdata.rows2.reduce((s,r)=>s+total(r),0).toFixed(2);
+    const m=+(t2-t1).toFixed(2);total1+=t1;total2+=t2;move+=m;
+    const pn=[...mdata.projects].join(" / ")||"—";
+    const fcmp=v=>v<0?`(${Math.abs(v).toFixed(2)})`:v.toFixed(2);
+    const mpct=t1?((m/t1)*100):null;
+    h+=`<tr><td>${esc(e)}</td><td class="project-cell">${esc(pn)}</td><td>${fcmp(t1)}</td><td>${fcmp(t2)}</td><td class="${m>0?'pos':m<0?'neg':'zero'}">${m>0?'▲ ':m<0?'▼ ':''}${fcmp(Math.abs(m))}</td><td>${mpct===null?'—':(mpct<0?`(${Math.abs(mpct).toFixed(2)}%)`:`${mpct.toFixed(2)}%`)}</td></tr>`;
+  });
+  const ftotal=v=>v<0?`(${Math.abs(v).toFixed(2)})`:v.toFixed(2);
+  const totalPct=total1?((move/total1)*100):null;
+  h+=`<tr class="totalrow"><td>TOTAL</td><td class="project-cell"></td><td>${ftotal(total1)}</td><td>${ftotal(total2)}</td><td class="${move>0?'pos':move<0?'neg':'zero'}">${move>0?'▲ ':move<0?'▼ ':''}${ftotal(Math.abs(move))}</td><td>${totalPct===null?'—':(totalPct<0?`(${Math.abs(totalPct).toFixed(2)}%)`:`${totalPct.toFixed(2)}%`)}</td></tr>`;
+  $("compareTable").innerHTML=h;
+  $("compareDate1Head").textContent=fmtDate(d1);
+  $("compareDate2Head").textContent=fmtDate(d2);
+  $("compareSub").textContent=fmtDate(d1)+" vs "+fmtDate(d2);
+  $("compareSummary").innerHTML=[[fmtDate(d1),"₹"+total1.toFixed(2)+" Cr"],[fmtDate(d2),"₹"+total2.toFixed(2)+" Cr"],["Net Movement",(move>=0?"+":"")+"₹"+move.toFixed(2)+" Cr"]].map(x=>`<div class="sum"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("");
+}
+function compareExportRows(){
+  const d1=$("c1").value,d2=$("c2").value;
+  const trs=[...document.querySelectorAll("#compareTable tr")];
+  return trs.map((tr,i)=>{const cells=[...tr.querySelectorAll("td")].map(td=>td.textContent.trim());return {entity:cells[0]||"",project:cells[1]||"",date1:cells[2]||"",date2:cells[3]||"",movement:cells[4]||"",pct:cells[5]||"",d1,d2,total:i===trs.length-1};});
+}
+function openCompareExport(type){
+  const d1=$("c1").value,d2=$("c2").value;if(!d1||!d2){alert("Please select both comparison dates first.");return}
+  const rowsEx=compareExportRows();
+  const nonTotal=rowsEx.filter(r=>!r.total);
+  const modal=document.createElement("div");modal.className="export-modal";modal.id="compareExportModal";
+  modal.innerHTML=`<div class="export-dialog"><div class="export-head"><b>Export Movement Analysis</b><button class="btn sm" onclick="closeCompareExport()">✕</button></div><div class="export-body"><div class="export-note">Add optional remarks for the export. These remarks are included only in the exported file and are not saved to the audit log.</div><table class="remarks-table"><thead><tr><th>Entity</th><th>Project Name</th><th>Movement</th><th>Remarks</th></tr></thead><tbody>${nonTotal.map((r,i)=>`<tr><td><b>${esc(r.entity)}</b></td><td>${esc(r.project)}</td><td>${esc(r.movement)}</td><td><input id="exportRemark_${i}" placeholder="Enter remarks"></td></tr>`).join("")}</tbody></table></div><div class="export-foot"><button class="btn" onclick="closeCompareExport()">Cancel</button><button class="btn primary" onclick="performCompareExport('${type}')">Download ${type.toUpperCase()}</button></div></div>`;
+  document.body.appendChild(modal);
+}
+function closeCompareExport(){const m=$("compareExportModal");if(m)m.remove()}
+function collectCompareRemarks(rowsEx){let i=0;return rowsEx.map(r=>{if(r.total)return {...r,remarks:"Consolidated movement"};const el=$("exportRemark_"+(i++));return {...r,remarks:el?el.value.trim():""};});}
+async function performCompareExport(type){
+  const rowsEx=collectCompareRemarks(compareExportRows());
+  try{
+    if(type==='jpg'){
+      closeCompareExport();await exportCompareJPG(rowsEx);return;
+    }
+    await exportCompareExcel(rowsEx);closeCompareExport();
+  }catch(e){alert(e.message||"Export failed.")}
+}
+async function exportCompareExcel(rowsEx){
+  await ensureExcelJs();
+  const d1=$("c1").value,d2=$("c2").value;
+  const wb=new ExcelJS.Workbook();wb.creator="MAIA Treasury Dashboard";wb.created=new Date();
+  const ws=wb.addWorksheet("Movement Analysis",{views:[{showGridLines:false}]});
+  ws.columns=[{width:15},{width:28},{width:16},{width:16},{width:15},{width:14},{width:42}];
+  ws.mergeCells("A1:G1");ws.getCell("A1").value="MAIA Treasury Dashboard";ws.getCell("A1").font={name:"Times New Roman",size:20,bold:true,color:{argb:"1F513B"}};ws.getCell("A1").alignment={vertical:"middle"};ws.getRow(1).height=30;
+  ws.mergeCells("A2:G2");ws.getCell("A2").value="Movement Analysis — Entity-wise Comparison";ws.getCell("A2").font={name:"Times New Roman",size:13,italic:true,color:{argb:"6D7B73"}};ws.getRow(2).height=22;
+  ws.mergeCells("A3:G3");ws.getCell("A3").value=`Comparison: ${fmtDate(d1)} vs ${fmtDate(d2)}`;ws.getCell("A3").font={name:"Times New Roman",size:11,bold:true,color:{argb:"B18A3A"}};ws.getRow(3).height=20;
+  ws.addRow([]);const hdr=ws.addRow(["Entity","Project Name",fmtDate(d1),fmtDate(d2),"Movement","% Movement","Remarks"]);
+  hdr.height=24;hdr.eachCell(c=>{c.font={name:"Times New Roman",size:11,bold:true,color:{argb:"FFFFFF"}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"1F513B"}};c.alignment={vertical:"middle",horizontal:c.col>=3?"right":"left"};c.border={bottom:{style:"thin",color:{argb:"D5BD7B"}}}});
+  rowsEx.forEach(r=>{const row=ws.addRow([r.entity,r.project,r.date1,r.date2,r.movement,r.pct,r.remarks]);row.eachCell((c,i)=>{c.font={name:"Times New Roman",size:11,bold:r.total,color:{argb:r.total?"1F513B":"17221C"}};c.alignment={vertical:"middle",horizontal:i>=3&&i<=6?"right":"left",wrapText:i===2||i===7};c.border={bottom:{style:"thin",color:{argb:"E3EAE5"}}};if(r.total)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"EEF4EF"}}});row.height=22});
+  ws.autoFilter={from:{row:5,column:1},to:{row:4+rowsEx.length,column:7}};ws.views=[{state:"frozen",ySplit:5,showGridLines:false}];
+  const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`MAIA_Movement_Analysis_${d1}_to_${d2}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+async function exportCompareJPG(rowsEx){
+  await ensureHtml2Canvas();
+  const d1=$("c1").value,d2=$("c2").value;const wrap=document.createElement("div");wrap.style.position="fixed";wrap.style.left="-100000px";wrap.style.top="0";wrap.style.background="#fff";wrap.style.padding="24px";wrap.style.width="1250px";wrap.style.fontFamily='"Times New Roman",Times,serif';
+  wrap.innerHTML=`<div style="font-size:22px;font-weight:700;color:#1f513b">MAIA Treasury Dashboard</div><div style="font-size:16px;color:#17221c;margin-top:4px">Movement Analysis — Entity-wise Comparison</div><div style="font-size:12px;color:#b18a3a;margin:6px 0 14px">${fmtDate(d1)} vs ${fmtDate(d2)}</div>`;
+  const table=document.createElement("table");table.style.width="100%";table.style.borderCollapse="collapse";table.style.fontFamily='"Times New Roman",Times,serif';
+  const thead=document.createElement("thead"),hr=document.createElement("tr");["Entity","Project Name",fmtDate(d1),fmtDate(d2),"Movement","% Movement","Remarks"].forEach(x=>{const th=document.createElement("th");th.textContent=x;th.style.background="#1f513b";th.style.color="#fff";th.style.padding="9px";th.style.textAlign="left";hr.appendChild(th)});thead.appendChild(hr);table.appendChild(thead);
+  const tb=document.createElement("tbody");rowsEx.forEach(r=>{const tr=document.createElement("tr");[r.entity,r.project,r.date1,r.date2,r.movement,r.pct,r.remarks].forEach((x,i)=>{const td=document.createElement("td");td.textContent=x;td.style.padding="8px";td.style.borderBottom="1px solid #dfe7e2";td.style.textAlign=i>=2&&i<=5?"right":"left";if(r.total)td.style.fontWeight="700";tr.appendChild(td)});tb.appendChild(tr)});table.appendChild(tb);wrap.appendChild(table);document.body.appendChild(wrap);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const canvas=await html2canvas(wrap,{backgroundColor:"#fff",scale:2,useCORS:true,logging:false,width:wrap.scrollWidth,height:wrap.scrollHeight,windowWidth:wrap.scrollWidth,windowHeight:wrap.scrollHeight});document.body.removeChild(wrap);const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.95);a.download=`MAIA_Movement_Analysis_${d1}_to_${d2}.jpg`;a.click();
+}
+function metricLabel(m){if(m==="total")return "Total Funds";if(m==="liquid")return "Liquid Funds";const c=columns.find(x=>x.key===m);return c?c.label:m}
+function updateDashChartControls(){
+  const axisEl=$("dashChartAxis"),typeEl=$("dashChartType"); if(!axisEl||!typeEl)return; const axis=axisEl.value,type=typeEl.value;
+  $("dashChartEntityWrap").style.display=(axis==="fund"||axis==="date")?"block":"none";
+  $("dashChartMetric2").disabled=(type==="doughnut"||axis==="fund");
+  if(type==="doughnut")$("dashChartMetric2").value="none";
+}
+function resetDashboardCustomChart(){
+  if(!$("dashChartType")||!$("dashChartAxis"))return;
+  $("dashChartType").value="bar";$("dashChartAxis").value="entity";$("dashChartMetric1").value="total";$("dashChartMetric2").value="none";$("dashChartEntityScope").value="ALL";
+  const dates=[...new Set(rows.map(r=>r.date))].sort();$("dashChartFrom").value=dates[0]||"";$("dashChartTo").value=dates.at(-1)||"";updateDashChartControls();renderDashboardCustomChart();
+}
+function renderDashboardCustomChart(){
+  if(!rows.length||!$("dashboardCustomChart")||!$("dashChartType"))return;
+  const type=$("dashChartType").value,axis=$("dashChartAxis").value,m1=$("dashChartMetric1").value,m2=$("dashChartMetric2").value,scope=$("dashChartEntityScope").value,from=$("dashChartFrom").value,to=$("dashChartTo").value;
+  const dates=[...new Set(rows.map(r=>r.date))].sort().filter(d=>(!from||d>=from)&&(!to||d<=to));
+  if(charts.dashboardCustom)charts.dashboardCustom.destroy();
+  let labels=[],d1=[],d2=[];
+  if(axis==="entity"){
+    const source=scope==="ALL"?entities:[scope];labels=source;const d=rowsForDate(selectedDate);d1=source.map(e=>metricValue(d[e]||{},m1));if(m2!=="none")d2=source.map(e=>metricValue(d[e]||{},m2));
+  }else if(axis==="date"){
+    labels=dates.map(fmtDate);d1=dates.map(d=>{const rs=scope==="ALL"?rows.filter(r=>r.date===d):rows.filter(r=>r.date===d&&r.entity===scope);return +rs.reduce((s,r)=>s+metricValue(r,m1),0).toFixed(2)});if(m2!=="none")d2=dates.map(d=>{const rs=scope==="ALL"?rows.filter(r=>r.date===d):rows.filter(r=>r.date===d&&r.entity===scope);return +rs.reduce((s,r)=>s+metricValue(r,m2),0).toFixed(2)});
+  }else{
+    const d=rowsForDate(selectedDate),source=scope==="ALL"?entities:[scope];const fundMap={Bank:"bank",Sweep:"sweep",FD:"fd","Mutual Funds":"mf","Bonds / Debentures":"bonds",BRS:"brs",Reserve:"reserve",Restricted:"restricted",Locked:"locked_funds"};labels=Object.keys(fundMap);d1=labels.map(k=>{let sum=0;source.forEach(e=>sum+=n((d[e]||{})[fundMap[k]]));return +sum.toFixed(2)});
+  }
+  const datasets=[{label:metricLabel(m1),data:d1,backgroundColor:CHART_PALETTE[0],borderColor:CHART_PALETTE[0],borderWidth:2}];if(m2!=="none"&&axis!=="fund")datasets.push({label:metricLabel(m2),data:d2,backgroundColor:CHART_PALETTE[1],borderColor:CHART_PALETTE[1],borderWidth:2});
+  if(type==="doughnut"){
+    charts.dashboardCustom=new Chart($("dashboardCustomChart"),{type:"doughnut",data:{labels,datasets:[{label:metricLabel(m1),data:d1,backgroundColor:CHART_PALETTE.slice(0,Math.max(d1.length,1)),borderColor:"#ffffff",borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}}}});
+  }else{
+    charts.dashboardCustom=new Chart($("dashboardCustomChart"),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:{x:{title:{display:true,text:axis==="entity"?"Entity":axis==="date"?"Date":"Fund Type"}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores"}}}}});
+  }
+}
+const chartValueLabelsPlugin={id:"valueLabels",afterDatasetsDraw(chart){
+  const ctx=chart.ctx; ctx.save(); ctx.font='700 10px "Times New Roman"'; ctx.fillStyle="#35584a"; ctx.textBaseline="middle";
+  const type=chart.config.type;
+  // Doughnut / polar values are kept in the legend to avoid slice-label collisions.
+  if(type==="doughnut" || type==="polarArea" || type==="radar"){ctx.restore();return;}
+  chart.data.datasets.forEach((ds,di)=>{const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{
+    const v=ds.data[i]; if(v===null||v===undefined||v===0)return;
+    const p=el.tooltipPosition(); let x=p.x,y=p.y-10;
+    if(chart.options.indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
+    if(chart.config.type==='radar'){y=p.y-8;}
+    ctx.fillText(formatChartValue(v, chart.config.type==="bar" && chart.options.scales?.y?.max===100),x,y);
+  });}); ctx.restore();
+}};
+function formatChartValue(v,isPct=false){const num=Number(v);if(!Number.isFinite(num))return "";return isPct?num.toFixed(0)+"%":(Math.abs(num)>=100?num.toFixed(0):num.toFixed(2));}
+function chartSettingKey(){return "maia_treasury_chart_settings_v4"}
+function getChartSettings(){try{return JSON.parse(localStorage.getItem(chartSettingKey())||"{}")||{}}catch(e){return {}}}
+const CHART_PALETTE=["#1F5B45","#B58A3A","#3D6F8E","#7A5C8E","#8C633E","#4D8A80","#A34F4F","#6B7D3A","#C06C3D","#5B6E8C","#7B4F6D","#3F7C63","#9B7A2F","#4C6678"];
+function chartAllowedTypes(axis,count=0){
+  if(axis==='date') return ['line','area','bar','horizontalBar','radar'];
+  if(axis==='project') return count<=6?['horizontalBar','stackedBar','100StackedBar','doughnut']:['horizontalBar','stackedBar','100StackedBar'];
+  if(axis==='entity') return count<=8?['bar','horizontalBar','doughnut','stackedBar','100StackedBar','radar','polarArea']:count<=12?['horizontalBar','stackedBar','100StackedBar','polarArea']:['horizontalBar','stackedBar','100StackedBar'];
+  return count<=6?['horizontalBar','doughnut','polarArea','radar']:count<=8?['horizontalBar','polarArea','radar']:['horizontalBar'];
+}
+const CHART_TYPE_NAMES={bar:'Column Bar',horizontalBar:'Horizontal Bar',line:'Line',area:'Area',doughnut:'Doughnut',stackedBar:'Stacked Bar','100StackedBar':'100% Stacked Bar',radar:'Radar',polarArea:'Polar Area'};
+function chartCategoryCount(axis){
+  if(axis==='entity')return getDashboardEntities().length||entities.length;
+  if(axis==='project')return chartRowsForAxis('project').labels.length;
+  if(axis==='fund')return columns.filter(c=>c.active!==false&&rsHasAnyFundData(c.key)).length;
+  return [...new Set(rows.map(r=>r.date).filter(Boolean))].length;
+}
+function populateChartTypes(axis){
+  const el=$('chartType');if(!el)return;
+  const count=chartCategoryCount(axis),allowed=chartAllowedTypes(axis,count),current=el.value;
+  el.innerHTML=allowed.map(v=>`<option value="${v}">${CHART_TYPE_NAMES[v]}</option>`).join('');
+  el.value=allowed.includes(current)?current:allowed[0];
+}
+function populateChartMetrics(){
+  const el=$('chartMetric');if(!el)return;
+  const active=columns.filter(c=>c.active!==false);
+  const defs=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},...active.map(c=>({v:c.key,l:c.label}))];
+  const cur=el.value;el.innerHTML=defs.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');el.value=defs.some(x=>x.v===cur)?cur:'total';
+}
+function updateCustomChartControls(){
+  const axis=$('chartAxis')?.value||'date';populateChartMetrics();populateChartTypes(axis);
+  const note=$('chartLogicNote');if(note){
+    const count=chartCategoryCount(axis);
+    const msg={
+      date:'Date is the category. Line and Area are for trends; bars compare dates; Radar is available for a small number of dates.',
+      entity:`Entity is the category. ${count>12?'Large entity lists use Horizontal Bar / Stacked options to avoid congestion.':'Horizontal Bar is preferred for readability.'}`,
+      project:`Project is the category. Horizontal Bar is used to keep project names horizontal; stacked options compare Total Funds components.`,
+      fund:`Fund Type is the category. Doughnut is available only when there are few fund types; larger lists use Horizontal Bar.`
+    }[axis]||'';note.textContent=msg;
+  }
+}
+function applyChartSettings(){updateCustomChartControls();renderCustomChart();}
+function resetChartSettings(){localStorage.removeItem(chartSettingKey());$('chartAxis').value='date';$('chartMetric').value='total';updateCustomChartControls();renderCustomChart();}
+function rsHasAnyFundData(key){return rows.some(r=>r.date===selectedDate&&r.__present&&r.__present[key]);}
+function chartRowsForAxis(axis){
+  const selected=selectedDate||[...new Set(rows.map(r=>r.date).filter(Boolean))].sort().at(-1)||'';
+  if(axis==='date'){const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort().slice(-5);return {labels:dates.map(fmtDate),values:dates};}
+  if(axis==='entity'){const source=getDashboardEntities();return {labels:source,values:source};}
+  if(axis==='project'){const source=rows.filter(r=>r.date===selected),seen=new Set(),items=[];source.forEach(r=>{const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').toUpperCase();if(seen.has(key))return;seen.add(key);items.push({label:`${r.entity} · ${projectName(r.project)}`,entity:r.entity,project:r.project});});return {labels:items.map(x=>x.label),values:items};}
+  const defs=columns.filter(c=>c.active!==false&&rsHasAnyFundData(c.key));return {labels:defs.map(c=>c.label),values:defs.map(c=>c.key)};
+}
+function stackComponents(axis,selected){
+  const defs=columns.filter(c=>c.active!==false&&c.includeTotal===true);
+  if(axis==='entity'){
+    const es=getDashboardEntities();return {labels:es,datasets:defs.map((c,i)=>({label:c.label,data:es.map(e=>+rows.filter(r=>r.date===selected&&r.entity===e).reduce((s,r)=>s+n(r[c.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1}))};
+  }
+  if(axis==='project'){
+    const cfg=chartRowsForAxis('project');return {labels:cfg.labels,datasets:defs.map((c,i)=>({label:c.label,data:cfg.values.map(x=>+rows.filter(r=>r.date===selected&&r.entity===x.entity&&r.project===x.project).reduce((s,r)=>s+n(r[c.key]),0).toFixed(2)),backgroundColor:CHART_PALETTE[i%CHART_PALETTE.length],borderColor:'#fff',borderWidth:1}))};
+  }
+  return null;
+}
+function showCustomStageMessage(msg){const stage=$('customChartStage');if(!stage)return;stage.innerHTML=`<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px">${esc(msg)}</div>`;}
+function ensureChartCanvas(){const stage=$('customChartStage');if(!stage)return null;let c=$('customChart');if(!c){stage.innerHTML='<canvas id="customChart"></canvas>';c=$('customChart');}return c;}
+function customStageHeight(count,type){
+  if(type==='doughnut'||type==='polarArea'||type==='radar')return 500;
+  if(type==='line'||type==='area')return 430;
+  const horizontal=type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar';
+  return horizontal?Math.max(430,Math.min(1250,190+count*50)):Math.max(430,Math.min(650,430+Math.max(0,count-8)*10));
+}
+function renderCustomChart(){
+  if(!rows.length)return;
+  updateCustomChartControls();
+  const axis=$('chartAxis')?.value||'date',metric=$('chartMetric')?.value||'total',type=$('chartType')?.value||'line',selected=selectedDate||'';
+  const cfg=chartRowsForAxis(axis);let labels=[...cfg.labels],data=[];
+  const valueForRows=rs=>+rs.reduce((s,r)=>s+metricValue(r,metric),0).toFixed(2);
+  if(axis==='date')data=cfg.values.map(d=>valueForRows(rows.filter(r=>r.date===d)));
+  else if(axis==='entity')data=cfg.values.map(e=>valueForRows(rows.filter(r=>r.date===selected&&String(r.entity||'').toUpperCase()===String(e).toUpperCase())));
+  else if(axis==='project')data=cfg.values.map(x=>valueForRows(rows.filter(r=>r.date===selected&&String(r.entity||'').toUpperCase()===String(x.entity).toUpperCase()&&String(r.project||'').toUpperCase()===String(x.project).toUpperCase())));
+  else data=cfg.values.map(k=>+rows.filter(r=>r.date===selected).reduce((s,r)=>s+n(r[k]),0).toFixed(2));
+
+  if(!labels.length||!data.some(v=>Number.isFinite(Number(v)))){showCustomStageMessage('No data available for the selected category and filters.');return;}
+  const count=labels.length,allowed=chartAllowedTypes(axis,count);
+  if(!allowed.includes(type)){$('chartType').value=allowed[0];return renderCustomChart();}
+  if(charts.custom){try{charts.custom.destroy();}catch(e){}charts.custom=null;}
+  const canvas=ensureChartCanvas();if(!canvas)return;
+  const stage=canvas.parentElement;stage.style.height=customStageHeight(count,type)+'px';
+  const isHorizontal=type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar'||axis==='project';
+  const chartType=type==='area'||type==='horizontalBar'||type==='stackedBar'||type==='100StackedBar'?'bar':type==='doughnut'?'doughnut':type==='radar'?'radar':type==='polarArea'?'polarArea':'line';
+  const indexAxis=isHorizontal?'y':'x';
+  let datasets=[];
+  if(type==='stackedBar'||type==='100StackedBar'){
+    const st=stackComponents(axis,selected);if(!st||!st.datasets.length){showCustomStageMessage('No Total Funds components have data for this selection.');return;}
+    labels=st.labels;datasets=st.datasets;
+    if(type==='100StackedBar'){const totals=labels.map((_,i)=>st.datasets.reduce((s,ds)=>s+(Number(ds.data[i])||0),0));datasets=datasets.map(ds=>({...ds,data:ds.data.map((v,i)=>totals[i]?+(Number(v)/totals[i]*100).toFixed(2):0)}));}
+  }else if(axis==='fund'){
+    datasets=[{label:'Amount',data,backgroundColor:labels.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:2}];
+  }else{
+    const c=CHART_PALETTE[0];datasets=[{label:metricLabel(metric),data,borderColor:c,backgroundColor:type==='area'?'rgba(31,91,69,.22)':c,pointBackgroundColor:CHART_PALETTE[1],pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:3,tension:.25,fill:type==='area'}];
+  }
+  if(type==='doughnut'||type==='polarArea')datasets=[{label:metricLabel(metric),data,backgroundColor:labels.map((_,i)=>CHART_PALETTE[i%CHART_PALETTE.length]),borderColor:'#fff',borderWidth:3}];
+
+  const valueLabelsPlugin={id:'customValueLabelsV38',afterDatasetsDraw(chart){
+    if(chart.config.type==='doughnut'||chart.config.type==='polarArea'||chart.config.type==='radar')return;
+    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
+    chart.data.datasets.forEach((ds,di)=>{const meta=chart.getDatasetMeta(di);meta.data.forEach((el,i)=>{const v=ds.data[i];if(v===null||v===undefined||!Number.isFinite(Number(v)))return;let show=true;if((type==='stackedBar'||type==='100StackedBar')){const p=el.tooltipPosition();const props=el.getProps(['base','x','y'],true);const span=Math.abs((props.base??p.x)-p.x)||0;show=span>=34;if(di!==chart.data.datasets.length-1&&span<48)show=false;}if(!show)return;const p=el.tooltipPosition();let x=p.x,y=p.y-9;if(chart.options.indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else ctx.textAlign='center';ctx.fillText(formatChartValue(v,type==='100StackedBar'),x,y);});});ctx.restore();
+  }};
+  const legendValueLabels=(chart)=>{
+    const base=Chart.defaults.plugins.legend.labels.generateLabels(chart);
+    if(chart.config.type==='radar')return labels.map((lab,i)=>({...base[0],text:`${lab} — ${formatChartValue(data[i])} Cr`,index:i,datasetIndex:0,hidden:false}));
+    if(chart.config.type==='doughnut'||chart.config.type==='polarArea')return base.map((item,i)=>({...item,text:`${labels[i]} — ${formatChartValue(data[i])} Cr`}));
+    return base.map((item,i)=>item);
+  };
+  const opts={responsive:true,maintainAspectRatio:false,indexAxis,animation:{duration:350},layout:{padding:{top:10,right:40,bottom:12,left:12}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:11,usePointStyle:true,boxWidth:12,generateLabels:legendValueLabels}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ${formatChartValue(c.raw,type==='100StackedBar')} ${type==='100StackedBar'?'':'Cr'}`}}},scales:{x:{stacked:type==='stackedBar'||type==='100StackedBar',grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:axis==='date',maxRotation:0,minRotation:0,maxTicksLimit:12},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':axis==='entity'?'Entity':axis==='project'?'Project':axis==='fund'?'Fund Type':'Date',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{stacked:type==='stackedBar'||type==='100StackedBar',beginAtZero:true,grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7},title:{display:indexAxis!=='y',text:indexAxis!=='y'?(axis==='date'?'Date':axis==='entity'?'Entity':axis==='project'?'Project':'Fund Type'):'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
+  if(type==='100StackedBar'){if(indexAxis==='y'){opts.scales.x.min=0;opts.scales.x.max=100;opts.scales.x.ticks={callback:v=>v+'%',font:{family:'Times New Roman',size:10},color:'#35584a'}}else{opts.scales.y.min=0;opts.scales.y.max=100;opts.scales.y.ticks={callback:v=>v+'%',font:{family:'Times New Roman',size:10},color:'#35584a'}}}
+  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar'){delete opts.scales;}
+  if(chartType==='doughnut'||chartType==='polarArea'){opts.cutout=chartType==='doughnut'?'58%':undefined;}
+  try{charts.custom=new Chart(canvas,{type:chartType,data:{labels,datasets},options:opts,plugins:[valueLabelsPlugin]});}
+  catch(e){console.error(e);showCustomStageMessage('This chart could not be rendered. Please choose another valid chart type.');}
+}
+function metricValue(r,m){return m==='total'?total(r):m==='liquid'?liquid(r):n(r[m])}
+function renderAudit(){
+  const ent=$("aEntity").value,from=$("aFrom").value,to=$("aTo").value,act=$("aAction").value;
+  let ar=audit.filter(x=>(ent==="ALL"||String(x.entity||"").toUpperCase()===ent)&&(!from||String(x.date||"").slice(0,10)>=from)&&(!to||String(x.date||"").slice(0,10)<=to)&&(act==="ALL"||x.action===act)).sort((a,b)=>String(b.timestamp||"").localeCompare(String(a.timestamp||"")));
+  $("auditTable").innerHTML=ar.length?ar.map(x=>`<tr><td>${esc(x.timestamp||"—")}</td><td><span class="tag">${esc(x.action||"")}</span></td><td>${fmtDate(x.date)}</td><td>${esc(x.entity||"")}</td><td class="audit-detail">${esc(x.details||x.changedFields||"—")}</td><td class="${n(x.movement)>0?'pos':n(x.movement)<0?'neg':'zero'}">${x.movement===""||x.movement==null?"—":(n(x.movement)>0?"+":"")+n(x.movement).toFixed(2)}</td><td class="reasontext">${esc(x.reason||x.remarks||"—")}</td><td>${esc(x.ip||"Unavailable")}</td><td class="audit-detail">${esc(x.userAgent||"—")}</td></tr>`).join(""):`<tr><td colspan="9" class="empty">No audit records for selected filters.</td></tr>`
+}
+function renderProjectManager(){const box=$("projectManager");if(!box)return;box.innerHTML=(projects||[]).map(p=>`<div class="project-master-row"><div><b>${esc(p.projectCode)}</b><span class="meta">${esc(p.projectName)} · ${esc(p.entityCode)} · Data From <input type="date" id="pstart_${esc(p.projectCode)}" value="${esc(p.startDate||"")}"> <button class="btn sm" onclick="updateProjectDate('${esc(p.projectCode)}')">Save Date</button></span></div><button class="btn sm danger" onclick="deactivateProject('${esc(p.projectCode)}')">×</button></div>`).join('')||'<div class="empty">No projects yet.</div>'}
+async function addProject(){const projectCode=$("newProjectCode").value.trim().toUpperCase(),projectName=$("newProjectName").value.trim(),entityCode=$("newProjectEntity").value,startDate=$("newProjectStartDate").value;if(!projectCode||!projectName||!entityCode||!startDate){note("Project Code, Project Name, Entity and Data From date are required.",true);return}try{const r=await apiPost({action:"addProject",projectCode,projectName,entityCode,startDate,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||"Could not add project");await loadAll();$("newProjectCode").value='';$("newProjectName").value='';$("newProjectStartDate").value='';note('✓ Project added.')}catch(e){note(e.message,true)}}
+async function updateProjectDate(code){const el=$("pstart_"+code),startDate=el?el.value:'';if(!startDate){note('Select a Data From date.',true);return}try{const r=await apiPost({action:'updateProjectStartDate',projectCode:code,startDate,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||'Could not update project date');await loadAll()}catch(e){note(e.message,true)}}
+async function deactivateProject(code){if(!confirm('Deactivate project '+code+'? Historical data will remain.'))return;try{const r=await apiPost({action:'deactivateProject',projectCode:code,userAgent:navigator.userAgent});if(r.status!=="ok")throw Error(r.message||'Could not deactivate project');await loadAll()}catch(e){note(e.message,true)}}
+
+function renderColumnManager(){const box=$("columnManager");if(!box)return;box.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Key</th><th>Column Name</th><th>Include in Total</th><th>Include in Liquid</th><th>Action</th></tr></thead><tbody>${columns.map(c=>{const incLiquid=c.liquidExclude!==true;return `<tr><td>${esc(c.key)}</td><td><input value="${esc(c.label)}" data-col-label="${esc(c.key)}" style="min-width:180px"></td><td>${c.custom?`<select data-col-total="${esc(c.key)}"><option value="no" ${c.includeTotal?'':'selected'}>No</option><option value="yes" ${c.includeTotal?'selected':''}>Yes</option></select>`:"Yes"}</td><td>${c.custom?`<select data-col-liquid="${esc(c.key)}"><option value="no" ${incLiquid?'':'selected'}>No</option><option value="yes" ${incLiquid?'selected':''}>Yes</option></select>`:"Yes"}</td><td><button class="btn sm" onclick="saveColumn('${esc(c.key)}')">${c.custom?'Save':'Rename'}</button> <button class="btn sm" onclick="${c.active===false?`reactivateColumn('${esc(c.key)}')`:`deactivateColumn('${esc(c.key)}')`}">${c.active===false?'Reactivate':'Deactivate'}</button></td></tr>`}).join("")}</tbody></table></div>`}
+async function saveColumn(key){const label=document.querySelector(`[data-col-label="${CSS.escape(key)}"]`)?.value.trim();if(!label){note("Column name is required.",true);return}const t=document.querySelector(`[data-col-total="${CSS.escape(key)}"]`),l=document.querySelector(`[data-col-liquid="${CSS.escape(key)}"]`);try{const r=await apiPost({action:"updateColumn",key,label,includeTotal:t?t.value==="yes":undefined,liquidExclude:l?l.value!=="yes":undefined});if(r.status!=="ok")throw Error(r.message||"Could not update column");note("✓ Column updated.");await loadAll();renderColumnManager()}catch(e){note(e.message,true)}}
+async function addColumn(){const key=$("newColKey").value.trim().toLowerCase().replace(/[^a-z0-9_]+/g,"_");const label=$("newColLabel").value.trim();if(!key||!label){note("New column key and name are required.",true);return}try{const r=await apiPost({action:"addColumn",key,label,includeTotal:$("newColTotal").value==="yes",liquidExclude:$("newColLiquid").value!=="yes"});if(r.status!=="ok")throw Error(r.message||"Could not add column");$("newColKey").value="";$("newColLabel").value="";note("✓ New column added.");await loadAll();renderColumnManager();renderEntryFields()}catch(e){note(e.message,true)}}
+async function reactivateColumn(key){try{const r=await apiPost({action:'updateColumn',key,active:true});if(r.status!=='ok')throw Error(r.message||'Could not reactivate column');note('✓ Column reactivated.');await loadAll();renderColumnManager();renderEntryFields()}catch(e){note(e.message,true)}}
+async function deactivateColumn(key){if(!confirm("Remove this column from the dashboard and data entry? Existing Google Sheet values will be retained."))return;try{const r=await apiPost({action:"deactivateColumn",key});if(r.status!=="ok")throw Error(r.message||"Could not remove column");note("✓ Column removed from active view.");await loadAll();renderColumnManager()}catch(e){note(e.message,true)}}
+function renderEntityMaster(){
+  renderColumnManager();
+  const metaByCode=Object.fromEntries(entityMeta.map(x=>[x.entityCode,x]));
+  const projectRows=(projects||[]).filter(p=>p.active!==false).map(p=>{const m=metaByCode[String(p.entityCode||'').toUpperCase()]||{};return {entityCode:String(p.entityCode||'').toUpperCase(),entityName:String(m.entityName||''),projectName:String(p.projectName||''),startDate:String(p.startDate||'').slice(0,10),projectCode:String(p.projectCode||'')};});
+  const entityOnly=entities.filter(e=>!projectRows.some(r=>r.entityCode===e)).map(e=>{const m=metaByCode[e]||{};return {entityCode:e,entityName:String(m.entityName||''),projectName:'',startDate:String(m.startDate||'').slice(0,10),projectCode:''}});
+  const all=[...projectRows,...entityOnly],box=$("masterTable");if(!box)return;
+  box.innerHTML=all.length?all.map((r,i)=>`<tr><td><b>${esc(r.entityCode)}</b></td><td><input id="masterName_${i}" value="${esc(r.entityName||'')}" readonly style="min-width:220px;background:#f8faf8"></td><td>${r.projectCode?`<input id="masterProject_${i}" value="${esc(r.projectName||'')}" readonly style="min-width:190px;background:#f8faf8">`:'—'}</td><td><input type="date" id="masterDate_${i}" value="${esc(r.startDate||'')}" readonly style="min-width:140px;background:#f8faf8"></td><td style="white-space:nowrap"><button class="btn sm" id="editMaster_${i}" onclick="editMasterRow(${i})">Edit</button> <button class="btn sm primary" id="saveMaster_${i}" onclick="saveMasterRow(${i})" style="display:none">Save</button> ${r.projectCode?`<button class="btn sm" onclick="deactivateProject('${esc(r.projectCode)}')">×</button>`:`<button class="btn sm" onclick="removeEntity('${esc(r.entityCode)}')">×</button>`}</td></tr>`).join(''):`<tr><td colspan="5" class="empty">No entity or project records yet.</td></tr>`;
+  box.dataset.rows=JSON.stringify(all);
+}
+async function addMasterRow(){
+  const code=$("newCode").value.trim().toUpperCase(),name=$("newName").value.trim(),projectName=$("newProjectName").value.trim(),startDate=$("newStartDate").value;
+  if(!code||!name||!projectName||!startDate){note("Entity Code, Entity Name, Project Name and Starting Date are required.",true);return}
+  try{
+    const r=await apiPost({action:"addEntityProject",entityCode:code,entityName:name,projectName,startDate,userAgent:navigator.userAgent});
+    if(r.status!=="ok")throw Error(r.message||"Could not add entity / project");
+    $("newCode").value='';$("newName").value='';$("newProjectName").value='';$("newStartDate").value='';
+    await loadAll();note('✓ Entity / project added.');
+  }catch(e){note(e.message,true)}
+}
+function editMasterRow(index){
+  ['masterName_','masterProject_','masterDate_'].forEach(prefix=>{const el=$(prefix+index);if(el){el.readOnly=false;el.style.background='#fff';}});
+  const e=$('editMaster_'+index),sv=$('saveMaster_'+index);if(e)e.style.display='none';if(sv)sv.style.display='inline-block';
+  const first=$('masterProject_'+index)||$('masterName_'+index);if(first){first.focus();first.select?.();}
+}
+async function saveMasterRow(index){
+  const rowsMaster=JSON.parse($("masterTable").dataset.rows||'[]'),r=rowsMaster[index];if(!r)return;
+  const entityName=$("masterName_"+index)?.value.trim()||'',projectName=$("masterProject_"+index)?.value.trim()||'',startDate=$("masterDate_"+index)?.value||'';
+  if(!entityName||!startDate||(r.projectCode&&!projectName)){note('Entity Name, Project Name and Starting Date are required.',true);return}
+  try{
+    const res=await apiPost({action:'updateMaster',entityCode:r.entityCode,entityName,startDate,projectCode:r.projectCode||'',projectName:r.projectCode?projectName:'',userAgent:navigator.userAgent});
+    if(res.status!=='ok')throw Error(res.message||'Could not update master');
+    const em=entityMeta.find(x=>x.entityCode===String(r.entityCode).toUpperCase());
+    if(em){em.entityName=entityName;em.startDate=startDate;}
+    const pr=projects.find(x=>String(x.projectCode)===String(r.projectCode));
+    if(pr){pr.projectName=projectName;pr.startDate=startDate;pr.entityCode=r.entityCode;}
+    renderEntityMaster();
+    renderDashboard();
+    loadEntryProjects();
+    note('✓ Entity / project updated.');
+  }catch(e){note(e.message,true)}
+}
+
+function currentTableData(){
+  const table=document.querySelector('#dashboard .tablewrap table');
+  if(!table)return [];
+  const out=[];
+  table.querySelectorAll('tr').forEach(tr=>{
+    const row=[];tr.querySelectorAll('th,td').forEach(cell=>row.push(cell.innerText.replace(/\s+/g,' ').trim()));out.push(row);
+  });
+  return out;
+}
+function treasuryExportTitle(){return `MAIA Treasury Dashboard — Entity-wise Treasury Position — ${formatDateLong(selectedDate)}`;}
+async function exportCurrentExcel(){
+  try{await ensureExcelJs();}catch(e){alert(e.message);return}
+  const data=currentTableData();if(!data.length){alert("Treasury table not found.");return}
+  const wb=new ExcelJS.Workbook();wb.creator="MAIA Treasury Dashboard";wb.created=new Date();
+  const ws=wb.addWorksheet("Treasury Position",{views:[{showGridLines:false}]});
+  const widths=[18,30,14,14,16,16,20,12,16,16,16,16,16,16];
+  ws.columns=widths.map(w=>({width:w}));
+  const maxCols=Math.max(...data.map(r=>r.length));
+  ws.mergeCells(1,1,1,maxCols);ws.getCell(1,1).value=treasuryExportTitle();ws.getCell(1,1).font={name:"Times New Roman",size:16,bold:true,color:{argb:"1F513B"}};ws.getCell(1,1).alignment={vertical:"middle",horizontal:"left"};ws.getRow(1).height=26;
+  ws.mergeCells(2,1,2,maxCols);ws.getCell(2,1).value="All amounts in ₹ Crores";ws.getCell(2,1).font={name:"Times New Roman",size:10,italic:true,color:{argb:"6D7B73"}};ws.getRow(2).height=18;
+  const header=data[0];const hdr=ws.getRow(4);header.forEach((v,i)=>hdr.getCell(i+1).value=v);hdr.height=48;
+  hdr.eachCell((c,i)=>{c.font={name:"Times New Roman",size:10,bold:true,color:{argb:"FFFFFF"}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"1F513B"}};c.alignment={vertical:"middle",horizontal:i<2?"left":"right",wrapText:true};c.border={bottom:{style:"thin",color:{argb:"D5BD7B"}}};});
+  data.slice(1).forEach((r,ri)=>{const row=ws.getRow(5+ri);r.forEach((v,i)=>row.getCell(i+1).value=v);row.height=22;row.eachCell((c,i)=>{c.font={name:"Times New Roman",size:10,bold:i===0,color:{argb:"17221C"}};c.alignment={vertical:"middle",horizontal:i<2?"left":"right",wrapText:i<2};c.border={bottom:{style:"thin",color:{argb:"E3EAE5"}}};if(ri%2===1)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FAFCFB"}};if(i>=2)c.numFmt='0.00';});});
+  ws.views=[{state:"frozen",ySplit:4,showGridLines:false}];ws.autoFilter={from:{row:4,column:1},to:{row:4+data.length-1,column:maxCols}};
+  const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`MAIA_Treasury_${selectedDate}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+async function exportCurrentJPG(){
+  const target=document.querySelector('#dashboard .tablewrap');
+  if(!target){alert("Treasury table not found.");return}
+  try{await ensureHtml2Canvas();}catch(e){alert(e.message);return}
+  const table=target.querySelector('table');if(!table){alert("Treasury table not found.");return}
+  const exportWrap=document.createElement('div');exportWrap.style.position='fixed';exportWrap.style.left='-100000px';exportWrap.style.top='0';exportWrap.style.background='#ffffff';exportWrap.style.padding='24px';exportWrap.style.overflow='visible';exportWrap.style.width=Math.max(target.scrollWidth,table.scrollWidth)+'px';exportWrap.style.fontFamily='"Times New Roman",Times,serif';
+  exportWrap.innerHTML=`<div style="font-size:20px;font-weight:700;color:#1f513b;margin-bottom:3px">MAIA Treasury Dashboard</div><div style="font-size:13px;color:#17221c;margin-bottom:3px">Entity-wise Treasury Position</div><div style="font-size:11px;color:#b18a3a;margin-bottom:12px">${formatDateLong(selectedDate)} · All amounts in ₹ Crores</div>`;
+  const clone=table.cloneNode(true);clone.style.width=Math.max(target.scrollWidth,table.scrollWidth)+'px';clone.style.minWidth=Math.max(target.scrollWidth,table.scrollWidth)+'px';clone.style.maxWidth='none';exportWrap.appendChild(clone);document.body.appendChild(exportWrap);
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const canvas=await html2canvas(exportWrap,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,width:exportWrap.scrollWidth,height:exportWrap.scrollHeight,windowWidth:Math.max(document.documentElement.clientWidth,exportWrap.scrollWidth),windowHeight:exportWrap.scrollHeight});
+  document.body.removeChild(exportWrap);const a=document.createElement('a');a.href=canvas.toDataURL('image/jpeg',0.95);a.download='MAIA_Treasury_'+selectedDate+'.jpg';a.click();
+}
+document.querySelectorAll(".side-link").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".side-link").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  const page=t.dataset.page;$(page).classList.add("active");
+  if(page==="dashboard"){if(typeof Chart!=="undefined")renderDefaultCharts();else warmChartLibrary();}
+  if(page==="charts"){if(typeof Chart!=="undefined"){renderChartGallery();renderCustomChart();}else ensureChartJs().then(()=>{renderChartGallery();renderCustomChart();}).catch(e=>note(e.message,true));}
+  if(window.innerWidth<=700)$("sidebar").classList.remove("mobile-open");
+});document.body.classList.add("sidebar-open");
+$("eDate").addEventListener("change",loadEntry);
+setInterval(loadAll,REFRESH_MS);
+updateCustomChartControls();
+loadAll();
+</script>
+</body>
+</html>
