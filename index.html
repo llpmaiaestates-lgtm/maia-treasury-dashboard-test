@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MAIA Treasury Dashboard V38 Final</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin>
 <style>
 :root{--forest:#1f513b;--forest2:#2f6b50;--forest3:#e9f1ec;--gold:#b18a3a;--gold2:#d5bd7b;--ink:#17221c;--muted:#6d7b73;--line:#dfe7e2;--bg:#f5f7f5;--white:#fff;--red:#a33b3b;--shadow:0 8px 28px rgba(25,55,40,.07)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px "Times New Roman",Times,serif}
@@ -404,11 +407,15 @@ function apiGetJSONP(action){
 }
 async function apiPost(payload){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
 function normalizeRows(data){const arr=data.data||data.rows||data.records||[];return arr.map(x=>({...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()})).filter(x=>x.date&&x.entity)}
-const BOOT_CACHE_KEY='maiaTreasuryBootstrapV38';
+const BOOT_CACHE_KEY='maiaTreasuryBootstrapV39_FAST';
+const BOOT_CACHE_MAX_AGE_MS=60*60*1000;
 function restoreBootstrapCache(){
   try{
-    const raw=sessionStorage.getItem(BOOT_CACHE_KEY); if(!raw)return false;
-    const b=JSON.parse(raw); if(!b||!Array.isArray(b.data))return false;
+    const raw=localStorage.getItem(BOOT_CACHE_KEY); if(!raw)return false;
+    const cached=JSON.parse(raw); if(!cached||!cached.payload||!Array.isArray(cached.payload.data))return false;
+    const b=cached.payload;
+    const age=Date.now()-Number(cached.ts||0);
+    if(!Number.isFinite(age)||age<0||age>BOOT_CACHE_MAX_AGE_MS)return false;
     rows=normalizeRows({data:b.data});
     entityMeta=Array.isArray(b.entityMeta)?b.entityMeta:[];
     entities=Array.isArray(b.entities)?b.entities:[];
@@ -427,7 +434,10 @@ function restoreBootstrapCache(){
   }catch(e){return false}
 }
 function saveBootstrapCache(b){
-  try{sessionStorage.setItem(BOOT_CACHE_KEY,JSON.stringify({data:b.data||[],entityMeta,entities,columns,projects,audit:b.audit||[],savedCharts:b.savedCharts||[],holidays:officeHolidays,ts:Date.now()}));}catch(e){}
+  try{
+    const payload={data:b.data||[],entityMeta,entities,columns,projects,audit:b.audit||[],savedCharts:b.savedCharts||[],holidays:officeHolidays};
+    localStorage.setItem(BOOT_CACHE_KEY,JSON.stringify({ts:Date.now(),payload}));
+  }catch(e){}
 }
 
 function toggleSidebar(){
@@ -454,6 +464,8 @@ function coreColumnMap(){return {bank:"a",sweep:"b",fd:"c",mf:"d",bonds:"e",brs:
 function totalFormulaLabel(){const extra=columns.filter(c=>c.active!==false&&c.custom&&c.includeTotal).map((c,i)=>letter(12+i));return "G. Total Funds (g) = (a to f"+(extra.length?" + "+extra.join(" + "):"")+")"}
 async function loadAll(){
   const started=performance.now();
+  // Start Chart.js immediately so it downloads in parallel with Google Sheets.
+  ensureChartJs().catch(()=>{});
   status("Refreshing");
   const slowHint=setTimeout(()=>status("Still connecting to Google Sheets…"),8000);
   try{
@@ -496,12 +508,17 @@ async function loadAll(){
     populateControls(dates);
     renderEntryFields();
     renderDashboard();
-    if(typeof renderCompare==='function')renderCompare();
-    if(typeof renderAudit==='function')renderAudit();
-    if(typeof renderEntityMaster==='function')renderEntityMaster();
-    renderHolidayList();
-    renderSavedCharts();
-    // Heavy charts load after the core dashboard is visible.
+    // Yield once so the browser can paint the dashboard before heavier admin/report sections.
+    requestAnimationFrame(()=>{
+      try{
+        if(typeof renderCompare==='function')renderCompare();
+        if(typeof renderAudit==='function')renderAudit();
+        if(typeof renderEntityMaster==='function')renderEntityMaster();
+        renderHolidayList();
+        renderSavedCharts();
+      }catch(e){}
+    });
+    // Chart.js is already warming in parallel with the API request.
     warmChartLibrary();
     const sec=((performance.now()-started)/1000).toFixed(1);
     status(rows.length?"Live · "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+" · "+sec+"s":"Connected · No Treasury rows · "+sec+"s");
@@ -1118,6 +1135,8 @@ $("eDate").addEventListener("change",loadEntry);
   setTimeout(function tick(){loadAll();setTimeout(tick,REFRESH_MS);},REFRESH_MS+jitter);
 })();
 if(typeof updateOneChartControls==='function')updateOneChartControls(false);
+// Begin downloading Chart.js immediately on page open.
+ensureChartJs().catch(()=>{});
 restoreBootstrapCache();
 loadAll();
 </script>
