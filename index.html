@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MAIA Treasury Dashboard V38 Final - Custom Chart</title>
+<title>MAIA Treasury Dashboard V38 Final</title>
 <style>
 :root{--forest:#1f513b;--forest2:#2f6b50;--forest3:#e9f1ec;--gold:#b18a3a;--gold2:#d5bd7b;--ink:#17221c;--muted:#6d7b73;--line:#dfe7e2;--bg:#f5f7f5;--white:#fff;--red:#a33b3b;--shadow:0 8px 28px rgba(25,55,40,.07)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px "Times New Roman",Times,serif}
@@ -61,7 +61,7 @@ body.sidebar-open .wrap{margin-left:205px;max-width:none}body.sidebar-closed .wr
 .default-charts{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px}.default-charts .card{margin-bottom:0}.default-chart{height:300px;padding:10px 18px 18px}.allocation-chart{height:300px;padding:8px 18px 18px}.chart-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:16px}.chart-gallery-card{min-width:0;overflow:hidden}.chart-gallery-canvas{height:430px;padding:10px 16px 18px;position:relative;overflow:hidden}.chart-gallery-canvas.tall{height:430px}.chart-card-note{padding:0 16px 10px;color:var(--muted);font-size:10px}.custom-chart-stage{height:480px;padding:12px 18px 18px;position:relative}@media(max-width:1100px){.chart-gallery{grid-template-columns:1fr}.chart-gallery-canvas{height:430px}.chart-gallery-canvas.tall{height:520px}}
 .table-download{display:flex;align-items:center;gap:8px}.table-download .btn{white-space:nowrap}
 @media(max-width:1100px){.brandtitle{font-size:22px}.brandsub{font-size:13px}.header-controls{gap:7px}.last-updated{display:none}.default-charts{grid-template-columns:1fr}.sidebar{width:185px}body.sidebar-open .wrap{margin-left:185px}}
-@media(max-width:700px){.top{height:auto;min-height:72px;padding:9px 12px;gap:10px}.logo{height:46px;width:56px;max-width:none}.brandtitle{font-size:18px}.brandsub{font-size:11px}.header-date label{display:none}.header-date input{min-width:135px}.header-controls .btn{font-size:11px;padding:8px}.sidebar{top:72px;width:205px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.mobile-open{transform:translateX(0)}body.sidebar-open .wrap,body.sidebar-closed .wrap{margin-left:0}.default-charts{display:none}.dash-header{align-items:flex-start}.dash-controls{width:100%}}
+@media(max-width:700px){.top{height:auto;min-height:72px;padding:9px 12px;gap:10px}.logo{height:46px;width:56px;max-width:none}.brandtitle{font-size:18px}.brandsub{font-size:11px}.header-date label{display:none}.header-date input{min-width:135px}.header-controls .btn{font-size:11px;padding:8px}.sidebar{top:72px;width:205px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.mobile-open{transform:translateX(0)}body.sidebar-open .wrap,body.sidebar-closed .wrap{margin-left:0}.default-charts{grid-template-columns:1fr}.dash-header{align-items:flex-start}.dash-controls{width:100%}}
 input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 
 /* V7 KPI previous values inside each respective card */
@@ -137,7 +137,7 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 @media(max-width:700px){.v38-custom-grid{grid-template-columns:1fr!important}.v38-gallery .chart-gallery-canvas{min-height:390px}.v38-custom-stage{min-height:420px}}
 
 /* V38 Final chart slots + saved charts */
-.chart-slots{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:18px;max-width:1100px}
+.chart-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
 .chart-slot-card{min-width:0;overflow:hidden}
 .chart-slot-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .chart-slot-actions{display:flex;gap:6px;flex-wrap:wrap}
@@ -157,10 +157,12 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .chart-status{font-size:10px;color:var(--muted);margin-top:8px}
 @media(max-width:1100px){.chart-slots{grid-template-columns:1fr}.chart-slot-controls{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:720px){.chart-slot-controls{grid-template-columns:1fr}.saved-chart-row{grid-template-columns:1fr;align-items:stretch}}
-.chart-slot-card{max-width:1100px}.chart-slot-controls select{width:100%}.chart-slot-date input,.chart-slot-date select{min-height:36px}
 
 </style>
-<style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}</style></head>
+<style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
+/* FINAL ONE CUSTOM CHART UI */
+.custom-one-card{overflow:visible!important}.custom-one-card .cardhead{align-items:center}.custom-chart-actions{display:flex;gap:7px;align-items:center}.custom-one-controls{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;padding:16px 18px 8px}.custom-one-controls .control label,.custom-one-date .control label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800;margin-bottom:5px}.custom-one-controls select,.custom-one-date select,.custom-one-date input{width:100%;height:40px}.custom-one-date{display:flex;gap:12px;align-items:end;flex-wrap:wrap;padding:0 18px 8px}.custom-one-date .control{min-width:200px;flex:1}.one-date-fixed{height:40px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;display:flex;align-items:center;gap:9px;padding:0 10px;color:var(--muted);font-weight:700}.one-date-fixed input{border:0;padding:0;height:38px;flex:1;min-width:145px;box-shadow:none!important}.custom-one-note{padding:0 18px 8px;color:var(--muted);font-size:11px;min-height:22px}.custom-one-stage{min-height:480px;height:auto;padding:4px 18px 18px;position:relative;overflow:visible}.one-chart-scroller{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:5px}.one-chart-scroller canvas{display:block;height:470px!important}.custom-saved-card{margin-bottom:0!important}.saved-chart-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.saved-chart-row:last-child{border-bottom:0}.saved-chart-name{font-weight:700;color:var(--forest)}.saved-chart-meta{font-size:10px;color:var(--muted);margin-top:2px}@media(max-width:950px){.custom-one-controls{grid-template-columns:1fr 1fr}.custom-one-date .control{min-width:180px}}@media(max-width:650px){.custom-one-controls{grid-template-columns:1fr}.custom-one-date{flex-direction:column;align-items:stretch}.custom-one-stage{padding-left:10px;padding-right:10px}.saved-chart-row{grid-template-columns:1fr}.custom-chart-actions{align-self:flex-end}}
+</style></head>
 <body>
 <header class="top">
   <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
@@ -258,11 +260,21 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 
 
 <section id="charts" class="page">
-  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Chart</div><div class="sub">Build one fully customizable treasury chart from category, metric, chart type and the applicable date option. Save it for later or delete saved charts.</div></div></div>
-  <div id="chartSlots" class="chart-slots"></div>
-  <div class="card cardpad" style="margin-bottom:16px">
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Treasury Chart</div><div class="sub">Build one chart from your treasury data using Category, Metric, Chart Type and the applicable date option.</div></div></div>
+  <div class="card custom-one-card">
+    <div class="cardhead"><div><div class="ct">Custom Chart</div><div class="cs">One fully configurable chart · values always shown</div></div><div class="custom-chart-actions"><button class="btn sm" onclick="resetOneCustomChart()">Reset</button><button class="btn sm primary" onclick="saveOneCustomChart()">Save Chart</button></div></div>
+    <div class="custom-one-controls">
+      <div class="control"><label>CATEGORY / AXIS</label><select id="oneAxis" onchange="oneChartControlChanged()"></select></div>
+      <div class="control"><label>METRIC / VALUE</label><select id="oneMetric" onchange="oneChartControlChanged()"></select></div>
+      <div class="control"><label>CHART TYPE</label><select id="oneType" onchange="oneChartControlChanged()"></select></div>
+    </div>
+    <div id="oneDateControls" class="custom-one-date"></div>
+    <div id="oneChartNote" class="custom-one-note"></div>
+    <div id="oneChartStage" class="custom-one-stage"></div>
+  </div>
+  <div class="card cardpad custom-saved-card">
     <div class="ct" style="margin-bottom:4px">Saved Charts</div>
-    <div class="sub" style="margin-bottom:12px">Save any chart configuration for reuse. Saved charts are stored in Google Sheets and can be loaded or deleted later.</div>
+    <div class="sub" style="margin-bottom:12px">Save a chart configuration for reuse. You can load it into this one chart or delete it later.</div>
     <div id="savedChartsList" class="saved-chart-list"></div>
   </div>
 </section>
@@ -319,7 +331,7 @@ const LIB_URLS={chart:{src:"https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/cha
 const libPromises={};
 function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.resolve(window[LIB_URLS[key].global]);if(libPromises[key])return libPromises[key];libPromises[key]=new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src=LIB_URLS[key].src;sc.async=true;sc.onload=()=>window[LIB_URLS[key].global]?resolve(window[LIB_URLS[key].global]):reject(new Error(key+" library loaded but is unavailable"));sc.onerror=()=>reject(new Error("Could not load "+key+" library."));document.head.appendChild(sc)});return libPromises[key]}
 function ensureChartJs(){return loadScriptOnce("chart")}function ensureExcelJs(){return loadScriptOnce("excel")}function ensureHtml2Canvas(){return loadScriptOnce("canvas")}
-function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")&&typeof renderChartGallery==='function')renderChartGallery()}).catch(()=>{})}
+function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")){renderOneCustomChart()}}).catch(()=>{})}
 const REFRESH_MS = 10*60*1000;
 let rows=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL";
 
@@ -391,6 +403,7 @@ function restoreBootstrapCache(){
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates.at(-1)):'';
     populateControls(dates); renderEntryFields(); renderDashboard(); renderCompare(); renderAudit(); renderEntityMaster(); renderHolidayList();
     status('Cached · refreshing');
+    warmChartLibrary();
     return true;
   }catch(e){return false}
 }
@@ -455,7 +468,7 @@ async function loadAll(){
     if(typeof renderEntityMaster==='function')renderEntityMaster();
     renderHolidayList();
     renderSavedCharts();
-    // Heavy chart library loads after the core dashboard is visible.
+    // Heavy charts load after the core dashboard is visible.
     warmChartLibrary();
     const sec=((performance.now()-started)/1000).toFixed(1);
     status(rows.length?"Live · "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+" · "+sec+"s":"Connected · No Treasury rows · "+sec+"s");
@@ -480,7 +493,7 @@ function toggleEntityMenu(ev){ev.stopPropagation();const box=$("entityMultiSelec
 function changeEntityFilter(){
   selectedEntities=[...document.querySelectorAll('#entityMultiMenu input[type="checkbox"]:checked')].map(x=>x.value);
   renderEntityFilter();renderDashboard();
-  if(typeof updateCustomChartControls==='function')updateCustomChartControls();
+  if(typeof updateOneChartControls==='function')updateOneChartControls(false);
 }
 function selectAllEntities(ev){ev.stopPropagation();selectedEntities=[...entities];renderEntityFilter();renderDashboard()}
 function clearEntities(ev){ev.stopPropagation();selectedEntities=[];renderEntityFilter();renderDashboard()}
@@ -507,6 +520,8 @@ function renderDashboard(){
   selectedDate=$('headerDate').value||selectedDate;
   const lu=$('headerLastUpdated');if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
   renderProjectFilter();
+  if(typeof Chart!=="undefined")renderDashboardCharts();
+  if(typeof Chart!=="undefined" && $("charts")?.classList.contains("active"))renderOneCustomChart();
   const source=filteredRows(selectedDate);
   const prev=previousDataDate(selectedDate),pd=filteredRows(prev);
 
@@ -631,6 +646,7 @@ function renderDashboardCharts(){
   const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88","#8B6F47","#A84B4B","#5E6F82","#2D7A61","#C17C3A"];
   charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
 }
+
 function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return Math.abs(n)>=100?n.toFixed(0):n.toFixed(2);}
 function splitChartLabel(label,maxLen=25,maxLines=3){
   const text=String(label||''); if(text.length<=maxLen)return [text];
@@ -652,7 +668,7 @@ function chartHeight(count,type='horizontal',extra=0){
 }
 const V38_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63','#9B7A2F','#4C6678'];
 function baseChartOptions(indexAxis='y'){
-  return {responsive:true,maintainAspectRatio:false,indexAxis,animation:{duration:0},resizeDelay:40,layout:{padding:{top:12,right:54,bottom:18,left:10}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ₹ ${formatChartCr(c.raw)} Cr`}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
+  return {responsive:true,maintainAspectRatio:false,indexAxis,animation:{duration:0},resizeDelay:40,layout:{padding:{top:12,right:54,bottom:18,left:10}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>{const lab=Array.isArray(c.label)?c.label.join(' '):c.label;return `${c.dataset.label||lab}: ₹ ${formatChartCr(c.raw)} Cr`;}}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
 }
 function valueLabelPlugin(pluginId,opts={}){
   return {id:pluginId,afterDatasetsDraw(chart){
@@ -671,17 +687,30 @@ function valueLabelPlugin(pluginId,opts={}){
 }
 
 
-const CHART_SLOTS = 1;
-const CHART_TYPE_NAMES = {
-  columnBar:'Column Bar', horizontalBar:'Horizontal Bar', line:'Line', area:'Area',
-  doughnut:'Doughnut', stackedBar:'Stacked Bar', percentStackedBar:'100% Stacked Bar',
-  radar:'Radar', polarArea:'Polar Area'
+/* ================================================================
+   FINAL ONE-CUSTOM-CHART ENGINE
+   Dashboard keeps its two fixed charts. Charts tab has one configurable chart.
+   ================================================================ */
+const ONE_CHART_TYPE_NAMES={
+  columnBar:'Column Bar',
+  horizontalBar:'Horizontal Bar',
+  line:'Line',
+  area:'Area',
+  doughnut:'Doughnut',
+  stackedBar:'Stacked Bar',
+  percentStackedBar:'100% Stacked Bar'
 };
-const DEFAULT_SLOT_CONFIGS = [{axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof'}];
-let chartSlots = DEFAULT_SLOT_CONFIGS.map(x=>({...x}));
-let savedCharts = [];
+const ONE_AXIS_OPTIONS=[
+  {v:'date',l:'Date'},
+  {v:'entity',l:'Entity'},
+  {v:'project',l:'Project'},
+  {v:'fund',l:'Fund Type'}
+];
+const ONE_DEFAULT_CONFIG={axis:'entity',metric:'total',type:'horizontalBar',dateMode:'asof',asOf:''};
+let oneChartConfig={...ONE_DEFAULT_CONFIG};
+let savedCharts=[];
 
-function chartDefsForView(){
+function oneChartDefs(){
   const core=[
     {key:'bank',label:'Bank Balance',sort:1,includeTotal:true,liquidInclude:true,active:true},
     {key:'sweep',label:'Sweep Deposit',sort:2,includeTotal:true,liquidInclude:true,active:true},
@@ -697,239 +726,297 @@ function chartDefsForView(){
   (columns||[]).forEach(c=>m.set(c.key,{...m.get(c.key),...c}));
   return [...m.values()].filter(c=>c.active!==false).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
 }
-function chartIncludeTotalDefs(){return chartDefsForView().filter(c=>c.includeTotal===true);}
-function chartIncludeLiquidDefs(){return chartDefsForView().filter(c=>c.liquidInclude===true);}
-function chartNonLiquidDefs(){return chartDefsForView().filter(c=>c.liquidInclude!==true);}
-function chartConfigDefaults(i){return {...DEFAULT_SLOT_CONFIGS[i]};}
-function hasNumberForKey(rs,key){return rs.some(r=>r[key]!==''&&r[key]!==null&&r[key]!==undefined&&Number.isFinite(Number(r[key])));}
-function aggregateMetric(rs,metric){
+function oneTotalDefs(){return oneChartDefs().filter(c=>c.includeTotal===true);}
+function oneLiquidDefs(){return oneChartDefs().filter(c=>c.liquidInclude===true);}
+function oneMetricOptions(axis){
+  if(axis==='fund')return [{v:'amount',l:'Amount'}];
+  const out=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},{v:'nonliquid',l:'Non-Liquid Funds'}];
+  oneChartDefs().forEach(c=>{if(!out.some(x=>x.v===c.key))out.push({v:c.key,l:c.label});});
+  return out;
+}
+function oneDateOptions(axis){
+  if(axis!=='date')return [{v:'asof',l:'As of Date'}];
+  return [
+    {v:'latest5',l:'Latest 5 Available Dates'},
+    {v:'latest10',l:'Latest 10 Available Dates'},
+    {v:'last30',l:'Last 30 Days'},
+    {v:'last90',l:'Last 90 Days'},
+    {v:'custom',l:'Custom Date Range'}
+  ];
+}
+function oneUniqueDates(){return [...new Set((rows||[]).map(r=>String(r.date||'').slice(0,10)).filter(Boolean))].sort();}
+function oneMaxDate(){const d=oneUniqueDates();return d.length?d[d.length-1]:'';}
+function oneAddDays(s,days){const d=new Date(String(s).slice(0,10)+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
+function oneDatesForConfig(cfg){
+  const all=oneUniqueDates(); if(!all.length)return [];
+  const max=oneMaxDate();
+  if(cfg.dateMode==='latest10')return all.slice(-10);
+  if(cfg.dateMode==='last30'){const cut=oneAddDays(max,-30);return all.filter(d=>d>=cut&&d<=max);}
+  if(cfg.dateMode==='last90'){const cut=oneAddDays(max,-90);return all.filter(d=>d>=cut&&d<=max);}
+  if(cfg.dateMode==='custom'){const from=cfg.from||all[0],to=cfg.to||max;return all.filter(d=>d>=from&&d<=to);}
+  return all.slice(-5);
+}
+function oneAsOf(cfg){return cfg.axis==='date'?oneMaxDate():(cfg.asOf||selectedDate||oneMaxDate());}
+function oneHasValue(rs,key){return rs.some(r=>r[key]!==''&&r[key]!==null&&r[key]!==undefined&&Number.isFinite(Number(r[key])));}
+function oneAggregate(rs,metric){
   if(metric==='total')return +rs.reduce((s,r)=>s+total(r),0).toFixed(2);
   if(metric==='liquid')return +rs.reduce((s,r)=>s+liquid(r),0).toFixed(2);
   if(metric==='nonliquid')return +rs.reduce((s,r)=>s+(total(r)-liquid(r)),0).toFixed(2);
   return +rs.reduce((s,r)=>s+n(r[metric]),0).toFixed(2);
 }
-function slotMetricOptions(axis){
-  if(axis==='fund')return [{v:'amount',l:'Amount'}];
-  const defs=[{v:'total',l:'Total Funds'},{v:'liquid',l:'Liquid Funds'},{v:'nonliquid',l:'Non-Liquid Funds'}];
-  (columns||[]).filter(c=>c.active!==false).forEach(c=>{if(!defs.some(x=>x.v===c.key))defs.push({v:c.key,l:c.label});});
-  return defs;
-}
-function slotDateOptions(axis){
-  if(axis!=='date')return [{v:'asof',l:'As of Date'}];
-  return [{v:'latest5',l:'Latest 5 Available Dates'},{v:'latest10',l:'Latest 10 Available Dates'},{v:'last30',l:'Last 30 Days'},{v:'last90',l:'Last 90 Days'},{v:'custom',l:'Custom Date Range'}];
-}
-function uniqueDates(){return [...new Set(rows.map(r=>r.date).filter(Boolean))].sort();}
-function maxDataDate(){const ds=uniqueDates();return ds.length?ds[ds.length-1]:'';}
-function addDaysToDateStr(dateStr,days){const d=new Date(dateStr+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
-function axisDateForConfig(cfg){return cfg.axis==='date'?maxDataDate():(cfg.asOf||maxDataDate());}
-function availableDatesForConfig(cfg){
-  const all=uniqueDates();
-  if(!all.length)return [];
-  const max=maxDataDate();
-  if(cfg.dateMode==='latest10')return all.slice(-10);
-  if(cfg.dateMode==='last30'){const cutoff=addDaysToDateStr(max,-30);return all.filter(d=>d>=cutoff&&d<=max);}
-  if(cfg.dateMode==='last90'){const cutoff=addDaysToDateStr(max,-90);return all.filter(d=>d>=cutoff&&d<=max);}
-  if(cfg.dateMode==='custom'){const from=cfg.from||all[0],to=cfg.to||max;return all.filter(d=>d>=from&&d<=to);}
-  return all.slice(-5);
-}
-function selectedRowsForChartDate(date){return filteredRows(date);}
-function categoryItems(axis,date){
-  if(axis==='fund'){
-    const rs=selectedRowsForChartDate(date);
-    return chartIncludeTotalDefs().filter(c=>hasNumberForKey(rs,c.key)).map(c=>({key:c.key,label:c.label}));
-  }
-  if(axis==='project'){
-    const es=new Set(getDashboardEntities());
-    return (projects||[]).filter(p=>p.active!==false&&es.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode).toUpperCase()===String(selectedProject).toUpperCase()))
-      .map(p=>({key:p.projectCode,label:p.projectName||p.projectCode,entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase()}));
-  }
-  return getDashboardEntities().map(code=>{
-    const meta=(entityMeta||[]).find(e=>e.entityCode===code);
-    return {key:code,label:meta&&meta.entityName?meta.entityName:code,entity:code};
+function oneEntityItems(){
+  const es=getDashboardEntities();
+  return es.map(code=>{
+    const meta=(entityMeta||[]).find(e=>String(e.entityCode||'').toUpperCase()===String(code).toUpperCase());
+    const name=meta&&meta.entityName?meta.entityName:code;
+    return {key:code,label:name,fullLabel:code+' · '+name,entity:code};
   });
 }
-function metricLabel(metric){
-  if(metric==='total')return 'Total Funds';
-  if(metric==='liquid')return 'Liquid Funds';
-  if(metric==='nonliquid')return 'Non-Liquid Funds';
-  if(metric==='amount')return 'Amount';
-  const c=(columns||[]).find(x=>x.key===metric);
-  return c?c.label:metric;
+function oneProjectItems(){
+  const es=new Set(getDashboardEntities());
+  return (projects||[])
+    .filter(p=>p.active!==false && es.has(String(p.entityCode||'').toUpperCase()) && (selectedProject==='ALL'||String(p.projectCode||'').toUpperCase()===String(selectedProject).toUpperCase()))
+    .map(p=>({key:String(p.projectCode||'').toUpperCase(),label:String(p.projectName||p.projectCode||'').trim(),fullLabel:String(p.entityCode||'').toUpperCase()+' · '+String(p.projectName||p.projectCode||'').trim(),entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase()}));
 }
-function categoryCountForConfig(cfg){
-  if(cfg.axis==='date')return availableDatesForConfig(cfg).length;
-  return categoryItems(cfg.axis,axisDateForConfig(cfg)).length;
+function oneFundItems(date){
+  const rs=filteredRows(date);
+  return oneTotalDefs().filter(c=>oneHasValue(rs,c.key)).map(c=>({key:c.key,label:c.label,fullLabel:c.label}));
 }
-function validTypesForSlot(cfg){
-  const count=categoryCountForConfig(cfg);
+function oneCategoryItems(cfg,date){
+  if(cfg.axis==='entity')return oneEntityItems();
+  if(cfg.axis==='project')return oneProjectItems();
+  if(cfg.axis==='fund')return oneFundItems(date);
+  return oneDatesForConfig(cfg).map(d=>({key:d,label:fmtDate(d),fullLabel:fmtDate(d),date:d}));
+}
+function oneCount(cfg){return oneCategoryItems(cfg,oneAsOf(cfg)).length;}
+function oneLongLabels(cfg){return oneCategoryItems(cfg,oneAsOf(cfg)).some(x=>String(x.fullLabel||x.label).length>24);}
+function oneValidTypes(cfg){
+  const count=oneCount(cfg),long=oneLongLabels(cfg);
   if(cfg.axis==='date'){
-    const out=['line','area','columnBar','horizontalBar'];
-    if(count<=8)out.push('radar');
+    const out=['line','area'];
+    if(count<=8&&!long)out.push('columnBar');
+    out.push('horizontalBar');
     return out;
   }
   if(cfg.axis==='project'){
     const out=['horizontalBar'];
-    if(cfg.metric==='total'){out.push('stackedBar','percentStackedBar');}
-    if(count<=6)out.push('doughnut','polarArea');
+    if(cfg.metric==='total')out.push('stackedBar','percentStackedBar');
     return out;
   }
   if(cfg.axis==='fund'){
     const out=['horizontalBar'];
-    if(count<=6)out.push('doughnut','polarArea','radar');
+    if(count<=6)out.push('doughnut');
     return out;
   }
-  const out=['columnBar','horizontalBar'];
+  const out=[];
+  if(count<=8&&!long)out.push('columnBar');
+  out.push('horizontalBar');
   if(cfg.metric==='total')out.push('stackedBar','percentStackedBar');
-  if(count<=6)out.push('doughnut','polarArea','radar');
   return out;
 }
-function safeSlotConfig(cfg){
-  const c={...cfg};
-  const typeOptions=validTypesForSlot(c); if(!typeOptions.includes(c.type))c.type=typeOptions[0]||'horizontalBar';
+function oneSafeConfig(cfg){
+  const c={...ONE_DEFAULT_CONFIG,...cfg};
+  c.axis=ONE_AXIS_OPTIONS.some(x=>x.v===c.axis)?c.axis:'entity';
+  const metrics=oneMetricOptions(c.axis);
   if(c.axis==='fund')c.metric='amount';
-  if(c.axis!=='date'){c.dateMode='asof';c.asOf=c.asOf||maxDataDate();delete c.from;delete c.to;}
-  if(c.axis==='date' && !slotDateOptions('date').some(x=>x.v===c.dateMode))c.dateMode='latest5';
+  if(!metrics.some(x=>x.v===c.metric))c.metric=metrics[0]?.v||'total';
+  const types=oneValidTypes(c); if(!types.includes(c.type))c.type=types[0]||'horizontalBar';
+  if(c.axis==='date'){
+    if(!oneDateOptions('date').some(x=>x.v===c.dateMode))c.dateMode='latest5';
+  }else{
+    c.dateMode='asof';c.asOf=c.asOf||oneMaxDate();delete c.from;delete c.to;
+  }
   return c;
 }
-function splitLines(s,maxLen=26,maxLines=3){return splitChartLabel(s,maxLen,maxLines);}
-function chartValuePlugin(id,{percent=false,dense=false,skip=false}={}){
+function oneMetricLabel(metric){
+  if(metric==='total')return 'Total Funds';
+  if(metric==='liquid')return 'Liquid Funds';
+  if(metric==='nonliquid')return 'Non-Liquid Funds';
+  if(metric==='amount')return 'Amount';
+  const c=oneChartDefs().find(x=>x.key===metric);return c?c.label:metric;
+}
+function oneCategoryLabel(axis){return axis==='fund'?'Fund Type':axis.charAt(0).toUpperCase()+axis.slice(1);}
+function oneSummary(cfg,count,date){
+  const dateText=cfg.axis==='date'
+    ?(cfg.dateMode==='custom'?`${fmtDate(cfg.from)} → ${fmtDate(cfg.to)}`:(oneDateOptions('date').find(x=>x.v===cfg.dateMode)?.l||'Date range'))
+    :`As of ${fmtDate(date)}`;
+  return `${oneCategoryLabel(cfg.axis)} · ${oneMetricLabel(cfg.metric)} · ${ONE_CHART_TYPE_NAMES[cfg.type]||cfg.type} · ${count} categories · ${dateText}`;
+}
+function oneBuildRows(cfg,date){
+  const items=oneCategoryItems(cfg,date);
+  if(cfg.axis==='date'){
+    const vals=items.map(it=>({label:it.label,value:oneAggregate(filteredRows(it.date),cfg.metric),key:it.key,date:it.date}));
+    return {items,rows:vals};
+  }
+  if(cfg.axis==='entity'){
+    const vals=items.map(it=>({label:it.fullLabel,value:oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===it.entity),cfg.metric),key:it.key,entity:it.entity}));
+    return {items,rows:vals};
+  }
+  if(cfg.axis==='project'){
+    const vals=items.map(it=>({label:it.fullLabel,value:oneAggregate(filteredRows(date).filter(r=>String(r.entity||'').toUpperCase()===it.entity&&String(r.project||'').toUpperCase()===it.project),cfg.metric),key:it.key,entity:it.entity,project:it.project}));
+    return {items,rows:vals};
+  }
+  const rs=filteredRows(date);
+  const vals=items.map(it=>({label:it.label,value:+rs.reduce((s,r)=>s+n(r[it.key]),0).toFixed(2),key:it.key}));
+  return {items,rows:vals};
+}
+function oneStackedDatasets(cfg,date){
+  const defs=oneTotalDefs();
+  const base=oneBuildRows(cfg,date);
+  const labels=base.rows.map(r=>r.label);
+  const datasets=defs.map((d,i)=>({label:d.label,data:base.rows.map(r=>{
+    if(cfg.axis==='entity')return +filteredRows(date).filter(x=>String(x.entity||'').toUpperCase()===r.entity).reduce((s,x)=>s+n(x[d.key]),0).toFixed(2);
+    if(cfg.axis==='project')return +filteredRows(date).filter(x=>String(x.entity||'').toUpperCase()===r.entity&&String(x.project||'').toUpperCase()===r.project).reduce((s,x)=>s+n(x[d.key]),0).toFixed(2);
+    return 0;
+  }),backgroundColor:V38_ONE_PALETTE[i%V38_ONE_PALETTE.length],borderColor:'#fff',borderWidth:1,borderRadius:3}));
+  if(cfg.axis==='entity'||cfg.axis==='project')return {labels,datasets};
+  return {labels,datasets:[]};
+}
+const V38_ONE_PALETTE=['#1F5B45','#B58A3A','#3D6F8E','#7A5C8E','#8C633E','#4D8A80','#A34F4F','#6B7D3A','#C06C3D','#5B6E8C','#7B4F6D','#3F7C63'];
+function oneStageHeight(cfg,count){
+  if(cfg.type==='doughnut')return 500;
+  if(cfg.type==='line'||cfg.type==='area')return 460;
+  if(cfg.type==='horizontalBar'||cfg.axis==='project'||count>8)return Math.max(460,Math.min(1500,250+count*52));
+  return 470;
+}
+function oneStageWidth(cfg,count){
+  if(cfg.axis==='date'&&(cfg.type==='line'||cfg.type==='area'||cfg.type==='columnBar'))return Math.max(1000,count*85);
+  return null;
+}
+function oneOptions(indexAxis,stacked=false,percent=false){
+  const o={responsive:true,maintainAspectRatio:false,animation:{duration:0},indexAxis,layout:{padding:{top:24,right:65,bottom:28,left:16}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>{const lab=Array.isArray(c.label)?c.label.join(' '):c.label;return `${c.dataset.label||lab}: ₹ ${formatChartCr(c.raw)} Cr`;}}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
+  if(stacked){o.scales.x.stacked=true;o.scales.y.stacked=true;}
+  if(percent){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';o.scales.y.stacked=true;o.scales.x.stacked=true;}
+  return o;
+}
+function oneValuePlugin(id,cfg){
   return {id,afterDatasetsDraw(chart){
-    if(skip)return;
     const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';
+    const type=chart.config.type,indexAxis=chart.options.indexAxis;
     chart.data.datasets.forEach((ds,di)=>{
       const meta=chart.getDatasetMeta(di);
       meta.data.forEach((el,i)=>{
-        const raw=Number(ds.data[i]);if(!Number.isFinite(raw))return;
-        const p=el.tooltipPosition();let x=p.x,y=p.y-8;
-        if(chart.options.indexAxis==='y'){x=p.x+7;y=p.y;ctx.textAlign='left';}
-        else {ctx.textAlign='center';}
-        if(dense && chart.config.type==='line' && chart.data.labels.length>12 && i%Math.ceil(chart.data.labels.length/10)!==0)return;
-        ctx.fillText(percent?raw.toFixed(1)+'%':formatChartCr(raw),x,y);
+        const raw=Number(ds.data[i]); if(!Number.isFinite(raw))return;
+        let p=el.tooltipPosition();
+        if((cfg.type==='stackedBar'||cfg.type==='percentStackedBar')){
+          const pr=el.getProps(['base','x','y'],true);
+          const span=indexAxis==='y'?Math.abs(pr.x-(pr.base??pr.x)):Math.abs(pr.y-(pr.base??pr.y));
+          if(span<34)return;
+        }
+        if(type==='doughnut')return;
+        let x=p.x,y=p.y-9;
+        if(indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
+        const txt=cfg.type==='percentStackedBar'?raw.toFixed(1)+'%':formatChartCr(raw);
+        ctx.fillText(txt,x,y);
       });
-    });ctx.restore();
+    });
+    ctx.restore();
   }};
 }
-function baseSlotOptions(indexAxis){
-  const o={responsive:true,maintainAspectRatio:false,animation:false,indexAxis,layout:{padding:{top:12,right:indexAxis==='y'?72:20,bottom:18,left:indexAxis==='y'?10:16}},plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>`${c.dataset.label||c.label}: ₹ ${formatChartCr(c.raw)} Cr`}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:0,minRotation:0}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:7}}}};
-  return o;
+function makeOneCanvas(width,height){
+  const st=$('oneChartStage');if(!st)return null;
+  st.innerHTML='<div id="oneChartScroller" class="one-chart-scroller"><canvas id="oneChartCanvas"></canvas></div>';
+  const canvas=$('oneChartCanvas');
+  canvas.style.height=height+'px';
+  if(width)canvas.style.width=width+'px';
+  else canvas.style.width='100%';
+  return canvas;
 }
-function stageHeightForConfig(cfg,count){
-  if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')return Math.max(440,Math.min(760,440+Math.max(0,count-6)*18));
-  if(cfg.type==='line'||cfg.type==='area')return Math.max(400,Math.min(760,400+Math.max(0,count-10)*18));
-  return Math.max(430,Math.min(1400,250+Math.max(1,count)*45));
-}
-function renderChartStage(slot){
-  if(typeof Chart==='undefined')return;
-  const cfg=safeSlotConfig(chartSlots[slot]);chartSlots[slot]=cfg;
-  const stage=$(`slotStage${slot+1}`);if(!stage)return;
-  destroyChartKey('slot'+slot);
-  const date=axisDateForConfig(cfg);const categories=cfg.axis==='date'?availableDatesForConfig(cfg).map(d=>({label:fmtDate(d),key:d})):categoryItems(cfg.axis,date);
-  stage.style.height=stageHeightForConfig(cfg,categories.length)+'px';stage.innerHTML='<canvas></canvas>';const canvas=stage.querySelector('canvas');
-  if(!categories.length){stage.innerHTML='<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center">No data available for this chart selection.</div>';return;}
-  let labels=categories.map(x=>x.label),datasets=[],chartType='bar',indexAxis='x',pluginOpts={};
-  if(cfg.axis==='fund'){
-    const rs=selectedRowsForChartDate(date);const data=categories.map(x=>+rs.reduce((s,r)=>s+n(r[x.key]),0).toFixed(2));
-    labels=categories.map(x=>x.label);
-    if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')chartType=cfg.type;
-    else chartType='bar';
-    datasets=[{label:'Amount',data,backgroundColor:labels.map((_,i)=>V38_PALETTE[i%V38_PALETTE.length]),borderColor:'#fff',borderWidth:cfg.type==='doughnut'||cfg.type==='polarArea'?3:1,borderRadius:4}];
-    if(cfg.type==='horizontalBar'){indexAxis='y';}
-  }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
-    const defs=chartIncludeTotalDefs().filter(d=>hasNumberForKey(selectedRowsForChartDate(date),d.key));
-    const ds=defs.map((d,i)=>({label:d.label,data:categories.map(c=>{const rs=cfg.axis==='entity'?rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.key).toUpperCase()&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())):rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||'').toUpperCase()&&String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase());return +rs.reduce((s,r)=>s+n(r[d.key]),0).toFixed(2);}),backgroundColor:V38_PALETTE[i%V38_PALETTE.length],borderColor:'#fff',borderWidth:1}));
-    datasets=ds;indexAxis='y';
-    if(cfg.type==='percentStackedBar'){
-      const sums=labels.map((_,i)=>datasets.reduce((s,d)=>s+(Number(d.data[i])||0),0));datasets=datasets.map(d=>({...d,data:d.data.map((v,i)=>sums[i]?+(Number(v)/sums[i]*100).toFixed(1):0)}));pluginOpts.percent=true;
-    }
-  }else{
-    let data;if(cfg.axis==='date'){
-      data=categories.map(c=>aggregateMetric(rows.filter(r=>r.date===c.key),cfg.metric));labels=categories.map(c=>c.label);
-    }else{
-      data=categories.map(c=>{const rs=rows.filter(r=>r.date===date&&String(r.entity||'').toUpperCase()===String(c.entity||c.key).toUpperCase()&&(cfg.axis!=='project'||String(r.project||'').toUpperCase()===String(c.project||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));return aggregateMetric(rs,cfg.metric);});
-      labels=categories.map(c=>cfg.axis==='project'?splitLines(c.label,30,3):c.label);
-    }
-    if(cfg.type==='doughnut'||cfg.type==='polarArea'||cfg.type==='radar')chartType=cfg.type;
-    else if(cfg.type==='line'||cfg.type==='area')chartType='line';
-    else chartType='bar';
-    indexAxis=cfg.type==='horizontalBar'?'y':'x';
-    if(cfg.type==='area')datasets=[{label:metricLabel(cfg.metric),data,fill:true,tension:.25,borderWidth:3,borderColor:'#B58A3A',backgroundColor:'rgba(181,138,58,.18)',pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
-    else datasets=[{label:metricLabel(cfg.metric),data,backgroundColor:cfg.type==='line'?'#1F5B45':(labels.map((_,i)=>V38_PALETTE[i%V38_PALETTE.length])),borderColor:cfg.type==='line'?'#1F5B45':'#fff',borderWidth:cfg.type==='line'?3:1,borderRadius:4,pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
-    pluginOpts.dense=cfg.type==='line'||cfg.type==='area';
-  }
-  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar')pluginOpts.skip=true;
-  const o=baseSlotOptions(indexAxis);
-  if(chartType==='doughnut'||chartType==='polarArea'||chartType==='radar'){
-    delete o.scales;
-    o.plugins.legend.labels.generateLabels=chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(datasets[0].data[i])} Cr`}));
+function oneRenderChart(){
+  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;
+  destroyChartKey('oneCustom');
+  if(!rows.length){chartStageMessage('oneChartStage','No treasury data available.');return;}
+  if(typeof Chart==='undefined'){chartStageMessage('oneChartStage','Chart library is loading…');ensureChartJs().then(oneRenderChart).catch(()=>chartStageMessage('oneChartStage','Chart library could not be loaded.'));return;}
+  const date=oneAsOf(cfg), count=oneCount(cfg), height=oneStageHeight(cfg,count), width=oneStageWidth(cfg,count);
+  if(!count){chartStageMessage('oneChartStage','No data available for this selection.');return;}
+  const canvas=makeOneCanvas(width,height); if(!canvas)return;
+  Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
+  let chartType=cfg.type==='columnBar'?'bar':cfg.type==='horizontalBar'?'bar':cfg.type==='doughnut'?'doughnut':cfg.type==='line'?'line':'line';
+  let labels=[],datasets=[],indexAxis=(cfg.type==='horizontalBar'||cfg.type==='stackedBar'&&cfg.axis!=='date'||cfg.type==='percentStackedBar'&&cfg.axis!=='date')?'y':'x';
+  let pluginCfg={...cfg};
+  if(cfg.type==='doughnut'){
+    const b=oneBuildRows(cfg,date);labels=b.rows.map(r=>r.label);datasets=[{label:oneMetricLabel(cfg.metric),data:b.rows.map(r=>r.value),backgroundColor:labels.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]),borderColor:'#fff',borderWidth:3,hoverOffset:5}];
+    const o=oneOptions('x');delete o.scales;
+    o.cutout='62%';
+    o.plugins.legend={display:true,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(datasets[0].data[i])} Cr`}))}};
     o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;
-    if(chartType==='doughnut')o.cutout='60%';
-  } else {
-    if(indexAxis==='y')o.scales.y.ticks.autoSkip=false;
-    if(cfg.axis==='date')o.scales.x.title={display:true,text:'Date',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'};
-    if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){o.scales.x.stacked=true;o.scales.y.stacked=true;}
-    if(cfg.type==='percentStackedBar'){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';}
-  }
-  charts['slot'+slot]=new Chart(canvas,{type:chartType,data:{labels,datasets},options:o,plugins:[chartValuePlugin('slotValue'+slot,pluginOpts)]});
-  const note=$(`slotNote${slot+1}`);if(note)note.textContent=slotSummary(cfg,categories.length,date);
-}
-function slotSummary(cfg,count,date){
-  const d=cfg.axis==='date'?cfg.dateMode==='custom'?`${fmtDate(cfg.from)} → ${fmtDate(cfg.to)}`:(slotDateOptions('date').find(x=>x.v===cfg.dateMode)?.l||'Date range'):`As of ${fmtDate(date)}`;
-  return `${categoryLabel(cfg.axis)} · ${metricLabel(cfg.metric)} · ${CHART_TYPE_NAMES[cfg.type]||cfg.type} · ${count} categories · ${d}`;
-}
-function categoryLabel(axis){return axis==='fund'?'Fund Type':axis.charAt(0).toUpperCase()+axis.slice(1);}
-function renderChartGallery(){
-  const box=$('chartSlots');if(!box)return;
-  box.innerHTML=chartSlots.map((cfg0,i)=>{const cfg=safeSlotConfig(cfg0);chartSlots[i]=cfg;return `<div class="card chart-slot-card"><div class="cardhead"><div class="chart-slot-head"><div><div class="ct">Custom Chart</div><div class="cs">One fully customizable chart</div></div></div><div class="chart-slot-actions"><button class="btn sm" onclick="resetChartSlot(${i})">Reset</button><button class="btn sm primary" onclick="saveChartSlot(${i})">Save Chart</button></div></div>
-    <div class="chart-slot-controls"><div class="control"><label>Category / Axis</label><select id="slotAxis${i+1}" onchange="slotControlChanged(${i})">${['date','entity','project','fund'].map(v=>`<option value="${v}" ${cfg.axis===v?'selected':''}>${categoryLabel(v)}</option>`).join('')}</select></div>
-    <div class="control"><label>Metric / Value</label><select id="slotMetric${i+1}" onchange="slotControlChanged(${i})"></select></div>
-    <div class="control"><label>Chart Type</label><select id="slotType${i+1}" onchange="slotControlChanged(${i})"></select></div></div>
-    <div id="slotDateWrap${i+1}" class="chart-slot-date"></div>
-    <div id="slotNote${i+1}" class="chart-slot-note"></div><div id="slotStage${i+1}" class="chart-slot-stage"></div></div>`;}).join('');
-  chartSlots.forEach((_,i)=>updateSlotControls(i,false));
-  chartSlots.forEach((_,i)=>renderChartStage(i));
-  renderSavedCharts();
-}
-function updateSlotControls(i,rerender=true){
-  const cfg=chartSlots[i];if(!cfg)return;
-  cfg.axis=$(`slotAxis${i+1}`)?.value||cfg.axis;
-  const mEl=$(`slotMetric${i+1}`),metrics=slotMetricOptions(cfg.axis);
-  if(mEl){const cur=cfg.metric;mEl.innerHTML=metrics.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');cfg.metric=metrics.some(x=>x.v===cur)?cur:(metrics[0]?.v||'total');mEl.value=cfg.metric;mEl.disabled=cfg.axis==='fund';}
-  const types=validTypesForSlot(cfg),tEl=$(`slotType${i+1}`);
-  if(tEl){const cur=cfg.type;tEl.innerHTML=types.map(x=>`<option value="${x}">${CHART_TYPE_NAMES[x]}</option>`).join('');cfg.type=types.includes(cur)?cur:(types[0]||'horizontalBar');tEl.value=cfg.type;}
-  const dWrap=$(`slotDateWrap${i+1}`),dates=uniqueDates();
-  if(dWrap){
-    if(cfg.axis==='date'){
-      if(!['latest5','latest10','last30','last90','custom'].includes(cfg.dateMode))cfg.dateMode='latest5';
-      cfg.from=cfg.from||dates[0]||'';cfg.to=cfg.to||maxDataDate();
-      dWrap.innerHTML=`<label style="font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800">Date Range</label><select id="slotDateMode${i+1}" onchange="slotControlChanged(${i})">${slotDateOptions('date').map(x=>`<option value="${x.v}" ${cfg.dateMode===x.v?'selected':''}>${x.l}</option>`).join('')}</select><span id="slotDateExtra${i+1}" style="display:${cfg.dateMode==='custom'?'flex':'none'};align-items:center;gap:6px"><span>From</span><input id="slotFrom${i+1}" type="date" value="${esc(cfg.from)}" onchange="slotControlChanged(${i})"><span>To</span><input id="slotTo${i+1}" type="date" value="${esc(cfg.to)}" onchange="slotControlChanged(${i})"></span>`;
+    charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets},options:o});
+  }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
+    const b=oneStackedDatasets(cfg,date);labels=b.labels;
+    if(cfg.type==='percentStackedBar'){
+      const totals=labels.map((_,i)=>b.datasets.reduce((s,d)=>s+Number(d.data[i]||0),0));
+      b.datasets=b.datasets.map(d=>({...d,data:d.data.map((v,i)=>totals[i]?+(v/totals[i]*100).toFixed(2):0)}));
+    }
+    datasets=b.datasets;chartType='bar';indexAxis='y';
+    const o=oneOptions('y',true,cfg.type==='percentStackedBar');
+    o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;
+    charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets},options:o,plugins:[oneValuePlugin('oneValues',pluginCfg)]});
+  }else{
+    const b=oneBuildRows(cfg,date);
+    labels=b.rows.map(r=>{
+      if(cfg.type==='horizontalBar')return splitChartLabel(r.label,30,3);
+      return r.label;
+    });
+    const data=b.rows.map(r=>r.value);
+    const bg=b.rows.map((_,i)=>V38_ONE_PALETTE[i%V38_ONE_PALETTE.length]);
+    if(cfg.type==='line'||cfg.type==='area'){
+      chartType=cfg.type==='line'?'line':'line';
+      datasets=[{label:oneMetricLabel(cfg.metric),data,fill:cfg.type==='area',tension:.25,borderWidth:3,borderColor:'#1F5B45',backgroundColor:'rgba(31,91,69,.16)',pointRadius:4,pointBackgroundColor:'#B58A3A',pointBorderColor:'#fff',pointBorderWidth:2}];
     }else{
-      cfg.dateMode='asof';cfg.asOf=cfg.asOf||maxDataDate();
-      dWrap.innerHTML=`<label style="font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800">Date</label><span style="font-size:10px;color:var(--muted);font-weight:700">As of Date</span><input id="slotAsOf${i+1}" type="date" value="${esc(cfg.asOf)}" onchange="slotControlChanged(${i})">`;
+      chartType='bar';datasets=[{label:oneMetricLabel(cfg.metric),data,backgroundColor:bg,borderColor:'#fff',borderWidth:1,borderRadius:4}];
+    }
+    const o=oneOptions(indexAxis,false,false);
+    if(cfg.type==='line'||cfg.type==='area'){
+      o.plugins.legend.position='bottom';
+      o.scales.x.ticks.autoSkip=true;o.scales.x.ticks.maxRotation=0;o.scales.x.ticks.minRotation=0;
+    }
+    charts.oneCustom=new Chart(canvas,{type:chartType,data:{labels,datasets},options:o,plugins:[oneValuePlugin('oneValues',pluginCfg)]});
+  }
+  $('oneChartNote').textContent=oneSummary(cfg,count,date);
+}
+function renderOneCustomChart(){oneChartConfig=oneSafeConfig(oneChartConfig);updateOneChartControls(false);oneRenderChart();loadSavedCharts();}
+function renderChartGallery(){renderOneCustomChart();}
+function updateOneChartControls(rerender=true){
+  const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;
+  const ax=$('oneAxis'),me=$('oneMetric'),ty=$('oneType'),dc=$('oneDateControls');
+  if(ax){ax.innerHTML=ONE_AXIS_OPTIONS.map(x=>`<option value="${x.v}" ${cfg.axis===x.v?'selected':''}>${x.l}</option>`).join('');}
+  const metrics=oneMetricOptions(cfg.axis);
+  if(me){me.innerHTML=metrics.map(x=>`<option value="${esc(x.v)}">${esc(x.l)}</option>`).join('');me.value=cfg.metric;me.disabled=false;}
+  const types=oneValidTypes(cfg);
+  if(ty){ty.innerHTML=types.map(x=>`<option value="${x}">${ONE_CHART_TYPE_NAMES[x]}</option>`).join('');ty.value=cfg.type;}
+  if(dc){
+    const dates=oneUniqueDates();
+    if(cfg.axis==='date'){
+      cfg.from=cfg.from||dates[0]||'';cfg.to=cfg.to||oneMaxDate();
+      dc.innerHTML=`<div class="control"><label>DATE RANGE</label><select id="oneDateMode" onchange="oneChartControlChanged()">${oneDateOptions('date').map(x=>`<option value="${x.v}" ${cfg.dateMode===x.v?'selected':''}>${x.l}</option>`).join('')}</select></div>${cfg.dateMode==='custom'?`<div class="control"><label>FROM</label><input id="oneFrom" type="date" value="${esc(cfg.from)}" onchange="oneChartControlChanged()"></div><div class="control"><label>TO</label><input id="oneTo" type="date" value="${esc(cfg.to)}" onchange="oneChartControlChanged()"></div>`:''}`;
+    }else{
+      cfg.dateMode='asof';cfg.asOf=cfg.asOf||selectedDate||oneMaxDate();
+      dc.innerHTML=`<div class="control"><label>DATE</label><div class="one-date-fixed"><span>As of Date</span><input id="oneAsOf" type="date" value="${esc(cfg.asOf)}" onchange="oneChartControlChanged()"></div></div>`;
     }
   }
-  chartSlots[i]=safeSlotConfig(cfg);
-  if(rerender && document.getElementById(`slotStage${i+1}`))renderChartStage(i);
+  oneChartConfig=oneSafeConfig(cfg);
+  if(rerender)oneRenderChart();
 }
-function slotControlChanged(i){
-  const cfg=chartSlots[i];
-  cfg.axis=$(`slotAxis${i+1}`)?.value||cfg.axis;
-  cfg.metric=$(`slotMetric${i+1}`)?.value||cfg.metric;
-  cfg.type=$(`slotType${i+1}`)?.value||cfg.type;
-  if(cfg.axis==='date'){
-    cfg.dateMode=$(`slotDateMode${i+1}`)?.value||cfg.dateMode;
-    cfg.from=$(`slotFrom${i+1}`)?.value||cfg.from;
-    cfg.to=$(`slotTo${i+1}`)?.value||cfg.to;
+function oneChartControlChanged(){
+  oneChartConfig.axis=$('oneAxis')?.value||oneChartConfig.axis;
+  oneChartConfig.metric=$('oneMetric')?.value||oneChartConfig.metric;
+  oneChartConfig.type=$('oneType')?.value||oneChartConfig.type;
+  if(oneChartConfig.axis==='date'){
+    oneChartConfig.dateMode=$('oneDateMode')?.value||oneChartConfig.dateMode;
+    oneChartConfig.from=$('oneFrom')?.value||oneChartConfig.from;
+    oneChartConfig.to=$('oneTo')?.value||oneChartConfig.to;
   }else{
-    cfg.dateMode='asof';cfg.asOf=$(`slotAsOf${i+1}`)?.value||cfg.asOf;
+    oneChartConfig.asOf=$('oneAsOf')?.value||oneChartConfig.asOf;
+    oneChartConfig.dateMode='asof';
   }
-  updateSlotControls(i,true);
+  oneChartConfig=oneSafeConfig(oneChartConfig);
+  updateOneChartControls(true);
 }
-function resetChartSlot(i){chartSlots[i]=chartConfigDefaults(i);renderChartGallery();}
-async function saveChartSlot(i){
-  const name=prompt('Enter a name for this chart:');if(!name||!name.trim())return;
-  const cfg={...safeSlotConfig(chartSlots[i])};
-  if(cfg.axis==='date'&&cfg.dateMode==='custom'){cfg.from=$(`slotFrom${i+1}`)?.value||cfg.from;cfg.to=$(`slotTo${i+1}`)?.value||cfg.to;}
-  try{const r=await apiPost({action:'saveCustomChart',name:name.trim(),config:cfg,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not save chart');await loadSavedCharts();note('✓ Chart saved.');}catch(e){note(e.message,true);}
+function resetOneCustomChart(){oneChartConfig={...ONE_DEFAULT_CONFIG,asOf:selectedDate||oneMaxDate()};updateOneChartControls(true);}
+async function saveOneCustomChart(){
+  const name=(prompt('Enter a name for this chart:')||'').trim();if(!name)return;
+  const cfg={...oneSafeConfig(oneChartConfig)};
+  try{const r=await apiPost({action:'saveCustomChart',name,config:cfg,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not save chart');await loadSavedCharts();note('✓ Chart saved.');}catch(e){note(e.message,true);}
 }
 async function loadSavedCharts(){
   try{const r=await apiGet('getSavedCharts');savedCharts=Array.isArray(r.savedCharts)?r.savedCharts:[];renderSavedCharts();}catch(e){savedCharts=[];renderSavedCharts();}
@@ -937,19 +1024,19 @@ async function loadSavedCharts(){
 function renderSavedCharts(){
   const box=$('savedChartsList');if(!box)return;
   if(!savedCharts.length){box.innerHTML='<div class="empty">No saved charts yet.</div>';return;}
-  box.innerHTML=savedCharts.map(s=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><button class="btn sm primary" onclick="loadSavedChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
+  box.innerHTML=savedCharts.map(s=>`<div class="saved-chart-row"><div><div class="saved-chart-name">${esc(s.name)}</div><div class="saved-chart-meta">Saved ${s.updatedAt?formatDateTime(s.updatedAt):''}</div></div><button class="btn sm primary" onclick="loadSavedOneChart('${esc(s.id)}')">Load</button><button class="btn sm" onclick="deleteSavedChart('${esc(s.id)}')">Delete</button></div>`).join('');
 }
-function formatDateTime(v){const d=new Date(v);return isNaN(d)?String(v):d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
-function loadSavedChart(id){
-  const s=savedCharts.find(x=>x.id===id);if(!s)return;let cfg={};try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
-  chartSlots[0]=safeSlotConfig({...chartConfigDefaults(0),...cfg});renderChartGallery();note(`✓ ${s.name} loaded.`);
+function loadSavedOneChart(id){
+  const s=savedCharts.find(x=>x.id===id);if(!s)return;let cfg={};
+  try{cfg=typeof s.config==='string'?JSON.parse(s.config):s.config||{};}catch(e){note('Saved chart configuration is invalid.',true);return;}
+  oneChartConfig=oneSafeConfig(cfg);updateOneChartControls(true);note(`✓ ${s.name} loaded.`);
 }
 async function deleteSavedChart(id){
   if(!confirm('Delete this saved chart?'))return;
   try{const r=await apiPost({action:'deleteSavedChart',id,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not delete saved chart');await loadSavedCharts();note('✓ Saved chart deleted.');}catch(e){note(e.message,true);}
 }
-function resetChartSettings(){chartSlots=[chartConfigDefaults(0)];renderChartGallery();}
-function renderCustomChart(){renderChartGallery();}
+function resetChartSettings(){resetOneCustomChart();}
+function renderCustomChart(){renderOneCustomChart();}
 
 function renderEntryFields(){
   const wrap=$("entryFields");if(!wrap)return;
@@ -1116,7 +1203,7 @@ document.querySelectorAll(".side-link").forEach(t=>t.onclick=()=>{
   t.classList.add("active");
   const page=t.dataset.page;$(page).classList.add("active");
   if(page==="dashboard"){if(typeof Chart!=="undefined")renderDashboardCharts();else warmChartLibrary();}
-  if(page==="charts"){if(typeof Chart!=="undefined"){renderChartGallery();}else ensureChartJs().then(()=>{renderChartGallery();}).catch(e=>note(e.message,true));}
+  if(page==="charts"){if(typeof Chart!=="undefined"){renderOneCustomChart();}else ensureChartJs().then(()=>renderOneCustomChart()).catch(e=>note(e.message,true));}
   if(window.innerWidth<=700)$("sidebar").classList.remove("mobile-open");
 });document.body.classList.add("sidebar-open");
 $("eDate").addEventListener("change",loadEntry);
@@ -1126,7 +1213,7 @@ $("eDate").addEventListener("change",loadEntry);
   const jitter=Math.floor(Math.random()*90000);
   setTimeout(function tick(){loadAll();setTimeout(tick,REFRESH_MS);},REFRESH_MS+jitter);
 })();
-if(typeof updateCustomChartControls==='function')updateCustomChartControls();
+if(typeof updateOneChartControls==='function')updateOneChartControls(false);
 restoreBootstrapCache();
 loadAll();
 </script>
