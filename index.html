@@ -192,6 +192,12 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .login-body{padding:25px 28px 28px}.login-body .fg{margin-bottom:14px}.login-body label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.75px;color:var(--muted);font-weight:800;margin-bottom:6px}.login-body input{width:100%;height:42px}.login-btn{width:100%;height:43px;margin-top:4px}.login-reset{text-align:right;margin-top:10px}.login-reset button{border:0;background:none;padding:0;color:var(--forest);font:700 11px "Times New Roman",Times,serif;cursor:pointer;text-decoration:underline}.login-reset button:hover{opacity:.78}.login-error{min-height:18px;color:var(--red);font-size:11px;margin:9px 0 0;line-height:1.35}.login-success{min-height:18px;color:#267447;font-size:11px;margin:9px 0 0;line-height:1.35}.login-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:12px}.auth-user{width:38px;height:38px;border:1px solid #d7e0da;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--forest);cursor:pointer;transition:.15s ease;position:relative;flex:0 0 auto}
 .auth-user:hover{background:#f3f7f4;border-color:#b9cbbf;transform:translateY(-1px)}
 .auth-user svg{width:19px;height:19px;stroke:currentColor}
+.auth-profile-logo{width:28px;height:28px;object-fit:contain;border-radius:50%;display:block}
+.auth-role-badge{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--forest);background:#edf5f0;border:1px solid #cfe0d5;border-radius:10px;padding:3px 6px;margin-left:2px;line-height:1}
+.auth-role-badge.hidden{display:none!important}
+.role-user-only-hidden{display:none!important}
+.entry-readonly-note{font-size:10px;color:var(--muted);margin-top:7px}
+
 .auth-user::after{content:attr(data-email);position:absolute;right:0;top:45px;background:#163f31;color:#fff;border-radius:6px;padding:7px 9px;font-size:10px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(-3px);transition:.12s ease;box-shadow:0 8px 22px rgba(18,58,43,.16);z-index:2000}
 .auth-user:hover::after{opacity:1;transform:translateY(0)}
 .auth-icon-btn{width:38px;height:38px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:9px!important}
@@ -232,7 +238,6 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
   <div class="header-controls">
     <div class="header-date"><input id="headerDate" type="date" aria-label="Date" onchange="syncHeaderDate()"></div>
     <div class="header-entity-filter" style="display:flex!important;visibility:visible!important;opacity:1!important">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.6px">Entities</label>
       <div class="multi-select" id="entityMultiSelect">
         <button type="button" class="multi-select-btn" id="entityMultiBtn" onclick="toggleEntityMenu(event)">6 Entities</button>
         <div class="multi-select-menu" id="entityMultiMenu"></div>
@@ -240,11 +245,8 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
     </div>
     <div class="header-project-filter"><select id="headerProject" onchange="syncHeaderProject()"><option value="ALL">All Projects</option></select></div>
     <div class="last-updated"><small>Last Updated</small><b id="headerLastUpdated">—</b></div>
-     <button type="button" class="auth-user" id="authUser" title="Signed-in user" aria-label="Signed-in user">
-       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-         <path d="M20 21a8 8 0 0 0-16 0"></path>
-         <circle cx="12" cy="7" r="4"></circle>
-       </svg>
+     <span id="authRoleBadge" class="auth-role-badge hidden">USER</span><button type="button" class="auth-user" id="authUser" title="Signed-in user" aria-label="Signed-in user">
+       <img class="auth-profile-logo" src="data:image/png;base64,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" alt="MAIA" aria-hidden="true">
      </button>
      <button type="button" class="btn auth-icon-btn" onclick="signOutUser()" title="Logout" aria-label="Logout">
        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -259,20 +261,20 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
 <nav class="sidebar" id="sidebar">
   <button class="side-link active" data-page="dashboard"><span class="ico">⌂</span><span class="side-text">Dashboard</span></button>
   <button class="side-link" data-page="entry"><span class="ico">✎</span><span class="side-text">Data Entry</span></button>
-  <button class="side-link" data-page="compare"><span class="ico">Δ</span><span class="side-text">Compare</span></button>
+  <button class="side-link" data-page="compare" data-role="user"><span class="ico">Δ</span><span class="side-text">Movement</span></button>
   <button class="side-link" data-page="charts"><span class="ico">◔</span><span class="side-text">Charts</span></button>
-  <button class="side-link" data-page="audit"><span class="ico">▤</span><span class="side-text">Audit Log</span></button>
-  <button class="side-link" data-page="entities"><span class="ico">▥</span><span class="side-text">Entity &amp; Project Master</span></button>
+  <button class="side-link" data-page="audit" data-role="admin"><span class="ico">▤</span><span class="side-text">Audit Log</span></button>
+  <button class="side-link" data-page="entities" data-role="admin"><span class="ico">▥</span><span class="side-text">Entity &amp; Project Master</span></button>
 </nav>
 
 <main class="wrap">
 <nav class="tabs">
   <button class="tab active" data-page="dashboard">Dashboard</button>
   <button class="tab" data-page="entry">Data Entry</button>
-  <button class="tab" data-page="compare">Compare</button>
+  <button class="tab" data-page="compare" data-role="user">Movement</button>
   <button class="tab" data-page="charts">Charts</button>
-  <button class="tab" data-page="audit">Audit Log</button>
-  <button class="tab" data-page="entities">Entity &amp; Project Master</button>
+  <button class="tab" data-page="audit" data-role="admin">Audit Log</button>
+  <button class="tab" data-page="entities" data-role="admin">Entity &amp; Project Master</button>
 </nav>
 <div id="notice" class="note hidden"></div>
 
@@ -301,7 +303,7 @@ body.auth-locked>header,body.auth-locked>nav.sidebar,body.auth-locked>main.wrap{
       <div id="entryFields" class="formgrid" style="grid-column:1/-1"></div>
       <div class="fg wide"><label>Computed Preview</label><div id="previewBox" class="preview">Total Funds: ₹0.00 Cr · Liquid Funds: ₹0.00 Cr</div></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:14px"><button id="saveBtn" class="btn primary" onclick="saveEntry()">Save / Update</button><button class="btn" onclick="clearEntry()">Clear</button></div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button id="saveBtn" class="btn primary" onclick="saveEntry()">Save New Entry</button><button class="btn" onclick="clearEntry()">Clear</button></div><div id="entryReadonlyNote" class="entry-readonly-note hidden">Existing entries are view-only for User access.</div>
   </div>
   <div class="card cardpad" style="margin-top:16px">
     <div class="ct" style="margin-bottom:4px">Office Holidays</div>
@@ -415,6 +417,47 @@ const maiaAuth = firebase.auth();
 let maiaCurrentUser = null;
 let authBootstrapStarted = false;
 
+// Role setup: all Firebase users are USER by default. Approved admin accounts are listed here.
+const ADMIN_EMAILS = ['llpmaiaestates@gmail.com'];
+function getUserRole(user=maiaCurrentUser){
+  const email=String(user?.email||'').trim().toLowerCase();
+  return ADMIN_EMAILS.includes(email) ? 'ADMIN' : 'USER';
+}
+function isAdminUser(){ return getUserRole()==='ADMIN'; }
+function applyRolePermissions(){
+  const role=getUserRole();
+  document.documentElement.dataset.role=role.toLowerCase();
+  document.querySelectorAll('[data-role="admin"]').forEach(el=>{el.style.display=role==='ADMIN'?'':'none';});
+  const badge=document.getElementById('authRoleBadge');
+  if(badge){badge.textContent=role;badge.classList.remove('hidden');}
+  const auditTab=document.querySelector('.tab[data-page="audit"]');
+  const entityTab=document.querySelector('.tab[data-page="entities"]');
+  // Keep restricted pages inaccessible even if their URLs/controls are manipulated.
+  if(role!=='ADMIN') {
+    document.getElementById('audit')?.classList.remove('active');
+    document.getElementById('entities')?.classList.remove('active');
+  }
+  applyEntryPermissions();
+}
+function applyEntryPermissions(){
+  const role=getUserRole();
+  const date=document.getElementById('eDate')?.value||'';
+  const entity=document.getElementById('eEntity')?.value||'';
+  const project=document.getElementById('eProject')?.value||'';
+  const old=(date&&entity&&project)?rows.find(x=>x.date===date&&x.entity===entity&&x.project===project):null;
+  const noteEl=document.getElementById('entryReadonlyNote');
+  const save=document.getElementById('saveBtn');
+  const isReadonlyUser=role!=='ADMIN' && !!old;
+  document.querySelectorAll('#entryFields input, #entryFields textarea, #entryFields select').forEach(el=>{
+    if(el.type==='checkbox' || el.type==='radio') el.disabled=isReadonlyUser;
+    else if(el.tagName==='SELECT') el.disabled=isReadonlyUser;
+    else el.readOnly=isReadonlyUser;
+  });
+  if(save){save.disabled=isReadonlyUser;save.textContent=isReadonlyUser?'View Only':'Save New Entry';}
+  if(noteEl){noteEl.classList.toggle('hidden',!isReadonlyUser);}
+}
+
+
 function setLoginError(msg){ const e=document.getElementById("loginError"); if(e)e.textContent=msg||""; const s=document.getElementById("loginSuccess"); if(s&&msg)s.textContent=""; }
 function setLoginSuccess(msg){ const e=document.getElementById("loginSuccess"); if(e)e.textContent=msg||""; const er=document.getElementById("loginError"); if(er&&msg)er.textContent=""; }
 function setLoginBusy(busy){ const b=document.getElementById("loginBtn"); if(!b)return; b.disabled=busy; b.textContent=busy?"Signing In…":"Sign In"; }
@@ -453,7 +496,8 @@ function showDashboardForUser(user){
   window.maiaCurrentUser=user;
   document.body.classList.remove("auth-locked");
   document.getElementById("loginScreen")?.classList.add("hidden");
-  const u=document.getElementById("authUser"); if(u){u.textContent="";u.title=user?.email||"Signed-in user";u.setAttribute("data-email",user?.email||"Signed in");u.setAttribute("aria-label",user?.email?`Signed-in user: ${user.email}`:"Signed-in user");}
+  const u=document.getElementById("authUser"); if(u){u.textContent="";u.title=`${getUserRole(user)} · ${user?.email||"Signed-in user"}`;u.setAttribute("data-email",user?.email||"Signed in");u.setAttribute("aria-label",user?.email?`${getUserRole(user)}: ${user.email}`:"Signed-in user");}
+  applyRolePermissions();
   if(!authBootstrapStarted){
     authBootstrapStarted=true;
     restoreBootstrapCache();
@@ -467,6 +511,7 @@ function showLoginScreen(){
   document.getElementById("loginScreen")?.classList.remove("hidden");
   setLoginError(""); setLoginSuccess("");
   const u=document.getElementById("authUser"); if(u){u.textContent="";u.removeAttribute("data-email");u.title="Signed-in user";u.setAttribute("aria-label","Signed-in user");}
+  document.getElementById("authRoleBadge")?.classList.add("hidden");
 }
 maiaAuth.onAuthStateChanged(user=>{ if(user)showDashboardForUser(user); else showLoginScreen(); });
 
@@ -686,8 +731,8 @@ function isHoliday(d){return isWeekend(d)||isOfficeHoliday(d)}
 function previousDataDate(date){const ds=[...new Set(rows.map(r=>r.date).filter(d=>d<date))].sort();return ds.length?ds[ds.length-1]:''}
 function statusSymbolFor(entity,project,date){const r=rows.find(x=>x.date===date&&String(x.entity).toUpperCase()===String(entity).toUpperCase()&&String(x.project)===String(project));if(r){const a=audit.filter(x=>String(x.entity||'').toUpperCase()===String(entity).toUpperCase()&&String(x.date||'').slice(0,10)===date);const modified=a.some(x=>x.action==='UPDATE'&&String(x.details||'').includes(project));return modified?{symbol:'✎',cls:'modified'}:{symbol:'✓',cls:'updated'}}return isHoliday(date)?{symbol:'',cls:''}:{symbol:'◷',cls:'pending'}}
 function renderHolidayList(){const box=$("holidayList");if(!box)return;const list=(officeHolidays||[]).sort((a,b)=>String(a.date).localeCompare(String(b.date)));box.innerHTML=list.length?list.map(h=>`<div class="holiday-row"><span><b>${esc(formatDateLong(h.date))}</b> · ${esc(h.name||'Office Holiday')}</span><button class="btn sm" onclick="removeOfficeHoliday('${esc(h.date)}')">×</button></div>`).join(''):'<div class="empty">No additional office holidays.</div>'}
-async function addOfficeHoliday(){const date=$("holidayDate").value,name=$("holidayName").value.trim()||'Office Holiday';if(!date){note('Select a holiday date.',true);return}try{const r=await apiPost({action:'addHoliday',date,name,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add holiday');$("holidayDate").value='';$("holidayName").value='';await loadAll();note('✓ Office holiday added.')}catch(e){note(e.message,true)}}
-async function removeOfficeHoliday(date){try{const r=await apiPost({action:'deleteHoliday',date,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not remove holiday');await loadAll();note('✓ Office holiday removed.')}catch(e){note(e.message,true)}}
+async function addOfficeHoliday(){if(!isAdminUser()){note('Admin access required.',true);return;}const date=$("holidayDate").value,name=$("holidayName").value.trim()||'Office Holiday';if(!date){note('Select a holiday date.',true);return}try{const r=await apiPost({action:'addHoliday',date,name,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add holiday');$("holidayDate").value='';$("holidayName").value='';await loadAll();note('✓ Office holiday added.')}catch(e){note(e.message,true)}}
+async function removeOfficeHoliday(date){if(!isAdminUser()){note('Admin access required.',true);return;}try{const r=await apiPost({action:'deleteHoliday',date,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not remove holiday');await loadAll();note('✓ Office holiday removed.')}catch(e){note(e.message,true)}}
 
 function renderDashboard(){
   selectedDate=$('headerDate').value||selectedDate;
@@ -1088,10 +1133,12 @@ function renderEntryFields(){
 }
 function preview(){let r=formRow();$("previewBox").textContent=`Total Funds: ₹${total(r).toFixed(2)} Cr · Liquid Funds: ₹${liquid(r).toFixed(2)} Cr`}
 function formRow(){const r={};columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);r[c.key]=el?el.value:""});return r}
-function loadEntry(){const d=$("eDate").value,e=$("eEntity").value,p=$("eProject").value,r=rows.find(x=>x.date===d&&x.entity===e&&x.project===p);renderEntryFields();columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=r?(r[c.key]??""):""});preview()}
+function loadEntry(){const d=$("eDate").value,e=$("eEntity").value,p=$("eProject").value,r=rows.find(x=>x.date===d&&x.entity===e&&x.project===p);renderEntryFields();columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=r?(r[c.key]??""):""});preview();applyEntryPermissions();}
 async function saveEntry(){
   const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note("Date, entity and project are required.",true);return}
-  const old=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);$("saveBtn").disabled=true;
+  const old=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);
+  if(!isAdminUser() && old){note("Existing entries are view-only for User access.",true);applyEntryPermissions();return;}
+  $("saveBtn").disabled=true;
   try{
     const values=formRow();
     const res=await apiPost({action:"save",date,entity,projectCode:project,project,username:maiaCurrentUser?.email||"",...values});
@@ -1113,6 +1160,7 @@ async function saveEntry(){
 }
 
 function renderAudit(){
+  if(!isAdminUser())return;
   const table=$("auditTable"); if(!table)return;
   const ef=String($("aEntity")?.value||"ALL").toUpperCase();
   const from=String($("aFrom")?.value||""); const to=String($("aTo")?.value||"");
@@ -1158,16 +1206,19 @@ function renderColumnManager(){
   box.innerHTML=`<div class="tablewrap"><table><thead><tr><th>Key</th><th>Column Name</th><th>Active</th><th>Include in Total</th><th>Include in Liquid</th><th>Action</th></tr></thead><tbody>${list.map(c=>{const inc= c.liquidInclude===true;return `<tr><td>${esc(c.key)}</td><td><input value="${esc(c.label)}" data-col-label="${esc(c.key)}" style="min-width:180px"></td><td><select data-col-active="${esc(c.key)}"><option value="yes" ${c.active!==false?'selected':''}>Yes</option><option value="no" ${c.active===false?'selected':''}>No</option></select></td><td><select data-col-total="${esc(c.key)}"><option value="no" ${c.includeTotal?'':'selected'}>No</option><option value="yes" ${c.includeTotal?'selected':''}>Yes</option></select></td><td><select data-col-liquid="${esc(c.key)}"><option value="no" ${inc?'':'selected'}>No</option><option value="yes" ${inc?'selected':''}>Yes</option></select></td><td><button class="btn sm primary" onclick="saveColumn('${esc(c.key)}')">Save</button></td></tr>`}).join('')}</tbody></table></div>`;
 }
 async function saveColumn(key){
+  if(!isAdminUser()){note('Admin access required.',true);return;}
   const label=document.querySelector(`[data-col-label="${CSS.escape(key)}"]`)?.value.trim();if(!label){note('Column name is required.',true);return}
   const tEl=document.querySelector(`[data-col-total="${CSS.escape(key)}"]`),lEl=document.querySelector(`[data-col-liquid="${CSS.escape(key)}"]`),aEl=document.querySelector(`[data-col-active="${CSS.escape(key)}"]`);
   try{const r=await apiPost({action:'updateColumn',key,label,includeTotal:tEl?tEl.value==='yes':undefined,liquidInclude:lEl?lEl.value==='yes':undefined,active:aEl?aEl.value==='yes':undefined,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not update column');await loadAll();note('✓ Column updated.');}catch(e){note(e.message,true)}
 }
 async function addColumn(){
+  if(!isAdminUser()){note('Admin access required.',true);return;}
   const key=$('newColKey').value.trim().toLowerCase().replace(/[^a-z0-9_]+/g,'_'),label=$('newColLabel').value.trim();if(!key||!label){note('New column key and name are required.',true);return}
   try{const r=await apiPost({action:'addColumn',key,label,includeTotal:$('newColTotal').value==='yes',liquidInclude:$('newColLiquid').value==='yes',userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add column');$('newColKey').value='';$('newColLabel').value='';await loadAll();note('✓ New column added.');}catch(e){note(e.message,true)}
 }
 
 function renderEntityMaster(){
+  if(!isAdminUser()){ const sec=document.getElementById('entities'); if(sec)sec.classList.remove('active'); return; }
   renderColumnManager();
   const metaByCode=Object.fromEntries(entityMeta.map(x=>[x.entityCode,x]));
   const projectRows=(projects||[]).filter(p=>p.active!==false).map(p=>{const m=metaByCode[String(p.entityCode||'').toUpperCase()]||{};return {entityCode:String(p.entityCode||'').toUpperCase(),entityName:String(m.entityName||''),projectName:String(p.projectName||''),startDate:String(p.startDate||'').slice(0,10),projectCode:String(p.projectCode||'')};});
@@ -1177,6 +1228,7 @@ function renderEntityMaster(){
   box.dataset.rows=JSON.stringify(all);
 }
 async function addMasterRow(){
+  if(!isAdminUser()){note('Admin access required.',true);return;}
   const code=$("newCode").value.trim().toUpperCase(),name=$("newName").value.trim(),projectName=$("newProjectName").value.trim(),startDate=$("newStartDate").value;
   if(!code||!name||!projectName||!startDate){note("Entity Code, Entity Name, Project Name and Starting Date are required.",true);return}
   try{
@@ -1187,11 +1239,13 @@ async function addMasterRow(){
   }catch(e){note(e.message,true)}
 }
 function editMasterRow(index){
+  if(!isAdminUser()){note('Admin access required.',true);return;}
   ['masterName_','masterProject_','masterDate_'].forEach(prefix=>{const el=$(prefix+index);if(el){el.readOnly=false;el.style.background='#fff';}});
   const e=$('editMaster_'+index),sv=$('saveMaster_'+index);if(e)e.style.display='none';if(sv)sv.style.display='inline-block';
   const first=$('masterProject_'+index)||$('masterName_'+index);if(first){first.focus();first.select?.();}
 }
 async function saveMasterRow(index){
+  if(!isAdminUser()){note('Admin access required.',true);return;}
   const rowsMaster=JSON.parse($("masterTable").dataset.rows||'[]'),r=rowsMaster[index];if(!r)return;
   const entityName=$("masterName_"+index)?.value.trim()||'',projectName=$("masterProject_"+index)?.value.trim()||'',startDate=$("masterDate_"+index)?.value||'';
   if(!entityName||!startDate||(r.projectCode&&!projectName)){note('Entity Name, Project Name and Starting Date are required.',true);return}
@@ -1265,6 +1319,7 @@ async function exportCurrentJPG(){
   document.body.removeChild(exportWrap);const a=document.createElement('a');a.href=canvas.toDataURL('image/jpeg',0.95);a.download='MAIA_Treasury_'+selectedDate+'.jpg';a.click();
 }
 document.querySelectorAll(".side-link").forEach(t=>t.onclick=()=>{
+  if(t.dataset.role==='admin' && !isAdminUser()){note('Admin access required.',true);return;}
   document.querySelectorAll(".side-link").forEach(x=>x.classList.remove("active"));
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
@@ -1274,6 +1329,8 @@ document.querySelectorAll(".side-link").forEach(t=>t.onclick=()=>{
   if(window.innerWidth<=700)$("sidebar").classList.remove("mobile-open");
 });document.body.classList.add("sidebar-open");
 $("eDate").addEventListener("change",loadEntry);
+// Apply the USER permission matrix immediately after authentication and keep restricted pages hidden.
+setTimeout(()=>{if(maiaCurrentUser)applyRolePermissions();},0);
 // Stagger each tab's auto-refresh by a random offset (up to 90s) so every open tab
 // doesn't hit the Apps Script backend in the same instant every 10 minutes.
 (function scheduleAutoRefresh(){
