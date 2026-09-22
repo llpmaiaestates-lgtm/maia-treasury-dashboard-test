@@ -274,7 +274,19 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
   .sidebar{transform:translateX(-100%)}
   .sidebar.mobile-open{transform:translateX(0)}
 }
-</style></head>
+</style>
+<style id="previous-value-note-style">
+.entry-unit-note{font-size:10px;color:#7d8883;margin:4px 0 7px}
+</style>
+
+
+<style id="project-bank-add-style">
+.project-bank-add-row{display:flex;align-items:center;gap:9px;margin:8px 0 2px}
+.project-add-bank-btn{font-size:12px!important;padding:6px 10px!important;min-height:32px!important}
+.project-bank-add-hint{font-size:10px;color:#7d8883}
+@media(max-width:600px){.project-bank-add-row{flex-wrap:wrap}.project-bank-add-hint{width:100%}}
+</style>
+</head>
 <body class="auth-locked">
 <div id="loginScreen">
   <div class="login-shell">
@@ -1320,7 +1332,7 @@ function entryRowTemplate(row={},isNew=false,index=0){
   const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<button type="button" class="entry-row-delete" title="Remove row" onclick="removeEntryDraftRow(${index})">×</button>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
     <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
-    <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select>${bank?`<span class="entry-account-actions"><button type="button" class="btn sm" title="Add Bank Account" aria-label="Add Bank Account" onclick="addBankAccountPrompt(${index})" ${existing||userReadonly?'disabled':''}>+</button></span>`:''}</div></td>
+    <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select></div></td>
     <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${existing||userReadonly?'disabled':''}>${cats}</select></td>
     <td class="amount-col"><input class="entry-bank" type="number" step=".01" value="${esc(bankBal)}" placeholder="₹ absolute" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-brs" type="number" step=".01" value="${esc(brs)}" placeholder="₹ absolute" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
@@ -1333,14 +1345,54 @@ function renderEntryFields(){
   const rs=projectItemRows();
   if(!rs.length&&!entryDraftRows.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
   const finalList=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
-  wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument ▼</th><th class="account-col">Account / Investment ▼</th><th class="category-col">Category ▼</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col" aria-label="Row action"></th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div>`;
+  wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument ▼</th><th class="account-col">Account / Investment ▼</th><th class="category-col">Category ▼</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col" aria-label="Row action"></th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div>
+    <div class="project-bank-add-row">
+      <button type="button" class="btn sm project-add-bank-btn" onclick="addBankAccountPrompt(-1)" ${!isAdminUser()?'disabled':''}>＋ Add Bank Account</button>
+      <span class="project-bank-add-hint">Adds the new bank account to the selected Entity + Project.</span>
+    </div>`;
   syncDraftFromDom();applyEntryPermissions();
 }
 function syncDraftFromDom(){const rowsEl=[...document.querySelectorAll('#entryFields tbody tr')];rowsEl.forEach((tr,i)=>{if(tr.classList.contains('entry-row-existing'))return;const d=entryDraftRows.find((x,idx)=>idx===i-projectItemRows().length);if(!d)return;d.instrument=tr.querySelector('.entry-instrument')?.value||'Bank';d.account=tr.querySelector('.entry-account')?.value||'';d.category=tr.querySelector('.entry-category')?.value||'Liquid';d.bankBalance=tr.querySelector('.entry-bank')?.value||'';d.brs=tr.querySelector('.entry-brs')?.value||'';d.booksBalance=tr.querySelector('.entry-books')?.value||'';});}
 
+
+// Populate a new entry row with the latest prior saved values for the same
+// Entity + Project + Instrument + Account. Values remain editable.
+async function populatePreviousIntoDraft_(rowIndex){
+  try{
+    const d = entryDraftRows[rowIndex-projectItemRows().length];
+    if(!d || !d.instrument || !d.account) return;
+    const date = $("eDate")?.value || "";
+    const entity = $("eEntity")?.value || "";
+    const projectCode = $("eProject")?.value || "";
+    if(!date || !entity || !projectCode) return;
+
+    // Use the existing bootstrap data first; it is the fastest source.
+    const candidates = (Array.isArray(treasuryItems)?treasuryItems:[]).filter(x =>
+      String(x.entity||"").toUpperCase()===String(entity).toUpperCase() &&
+      String(x.projectCode||x.project||"").toUpperCase()===String(projectCode).toUpperCase() &&
+      String(x.instrument||"").toUpperCase()===String(d.instrument).toUpperCase() &&
+      String(x.account||"").toUpperCase()===String(d.account).toUpperCase() &&
+      String(x.date||"") < String(date)
+    ).sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+
+    const prev=candidates[0];
+    if(!prev) return;
+
+    d.bankBalance = d.instrument==="Bank" ? fmtAbsInput(crToAbs(prev.bankBalance)) : "";
+    d.brs = d.instrument==="Bank" ? fmtAbsInput(crToAbs(prev.brs)) : "";
+    d.booksBalance = d.instrument==="Bank"
+      ? fmtAbsInput(crToAbs(Number(prev.bankBalance||0)+Number(prev.brs||0)))
+      : fmtAbsInput(crToAbs(prev.booksBalance));
+
+    renderEntryFields();
+  }catch(e){
+    console.warn("Previous-value population skipped:",e);
+  }
+}
+
 function entryInstrumentChanged(i){syncDraftFromDom();const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);if(!tr)return;const instrument=tr.querySelector('.entry-instrument').value;const row=entryDraftRows[i-projectItemRows().length]||{};row.instrument=instrument;row.account='';row.category='Liquid';row.bankBalance='';row.brs='';row.booksBalance='';if(instrument!=='Bank'){const opts=V40_FIXED_ACCOUNTS[instrument]||[];row.account=opts[0]||'';row.category=parseFixedCategoryClient(row.account);}renderEntryFields();}
 function parseFixedCategoryClient(v){const s=String(v||'');const hit=V40_CATEGORIES.find(c=>new RegExp(' - '+c+'$','i').test(s));return hit||'Liquid';}
-function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();}
+function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();populatePreviousIntoDraft_(i);}
 function entryCategoryChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.category=tr?.querySelector('.entry-category')?.value||'Liquid';}
 function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=(Number(bank.value)||0)+(Number(brs.value)||0);books.value=String(Math.round(v));}}});syncDraftFromDom();updateEntrySummary();}
 function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
