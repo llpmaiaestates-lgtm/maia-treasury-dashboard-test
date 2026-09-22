@@ -23,7 +23,7 @@ input,select,textarea{font-family:"Times New Roman",Times,serif;font-size:inheri
 .pos{color:#267447;font-weight:800}.neg{color:var(--red);font-weight:800}.zero{color:#89958e}.tag{display:inline-block;padding:4px 7px;border-radius:12px;background:var(--forest3);color:var(--forest);font-size:10px;font-weight:800}
 .formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.fg{display:flex;flex-direction:column;gap:5px}.fg label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800}.wide{grid-column:span 2}.reason{grid-column:1/-1}.reason textarea{min-height:75px;resize:vertical}
 .preview{background:#f6f2e6;border:1px solid #e4d5ad;border-radius:8px;padding:11px;color:#654e1d;font-weight:800}
-.note{padding:10px 12px;background:var(--forest3);border:1px solid #cfe0d5;border-radius:8px;color:#315542;margin-bottom:13px;font-size:12px}.warn{background:#fbf5e6;border-color:#ead8a9;color:#71551c}
+.note{padding:10px 14px;background:var(--forest3);border:1px solid #cfe0d5;border-radius:8px;color:#315542;margin-bottom:13px;font-size:12px}.note#notice{position:fixed;top:94px;right:24px;z-index:9999;max-width:min(520px,calc(100vw - 48px));box-shadow:0 10px 30px rgba(18,55,38,.16);margin:0;font-weight:700}.warn{background:#fbf5e6;border-color:#ead8a9;color:#71551c}
 .compare-controls{display:flex;gap:9px;align-items:end;flex-wrap:wrap}.control label{display:block;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}
 .compare-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.sum{padding:14px;background:#fff;border:1px solid var(--line);border-radius:9px}.sum b{font:700 19px "Times New Roman",Times,serif}.sum span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
 .movement-remark-cell{min-width:300px;width:320px;text-align:left!important;white-space:normal!important}.movement-remark-wrap{display:flex;gap:7px;align-items:flex-start}.movement-remark-input{width:100%;min-height:46px;resize:vertical;padding:7px 8px;line-height:1.25}.movement-remark-input[readonly]{background:#f7f9f7;color:#59675f;cursor:default}.movement-remark-save{flex:0 0 auto;align-self:flex-start}.movement-remark-meta{font-size:10px;color:var(--muted);margin-top:4px}.movement-remark-locked{font-size:10px;color:#7a5b22;margin-top:4px}
@@ -518,21 +518,24 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 const INR_PER_CRORE = 10000000;
 function toCrValue(v){
   const n=Number(String(v??'').replace(/,/g,''));
-  if(!Number.isFinite(n)) return 0;
-  // Accept both legacy absolute-₹ values and current crore values safely.
-  return Math.abs(n) > 100000 ? n/INR_PER_CRORE : n;
+  return Number.isFinite(n)?n:0;
 }
-function absToCr(v){ return toCrValue(v); }
-function crToAbs(v){ const n=toCrValue(v); return n*INR_PER_CRORE; }
+function absToCr(v){ const n=parseINR(v); return Number.isFinite(n)?n/INR_PER_CRORE:0; }
+function crToAbs(v){ const n=Number(v); return Number.isFinite(n)?n*INR_PER_CRORE:0; }
 function formatIndianINR(v){
   let s=String(v??'').replace(/,/g,'').trim();
   if(!s || s==='-') return s;
-  const neg=s.startsWith('-')?'':'';
-  if(neg) s=s.slice(1);
+  let neg='';
+  if(s.startsWith('-')) { neg='-'; s=s.slice(1); }
   let [whole,dec]=s.split('.');
   whole=(whole||'0').replace(/\D/g,'')||'0';
   whole=whole.length>3 ? whole.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+whole.slice(-3) : whole;
-  return (neg?'-':'')+whole+(dec!==undefined?'.'+dec.replace(/\D/g,''):'');
+  return neg+whole+(dec!==undefined?'.'+dec.replace(/\D/g,''):'');
+}
+function formatIndianDecimal(v,decimals=2){
+  const n=Number(v);
+  if(!Number.isFinite(n)) return '0.00';
+  return new Intl.NumberFormat('en-IN',{minimumFractionDigits:decimals,maximumFractionDigits:decimals}).format(n);
 }
 function parseINR(v){
   const n=Number(String(v??'').replace(/,/g,''));
@@ -721,14 +724,14 @@ const $=id=>document.getElementById(id);
 const n=v=>Number(v)||0;
 const total=r=>Number.isFinite(Number(r?.totalTreasury))?Number(r.totalTreasury):+(Number(r?.bank||0)+Number(r?.fd||0)+Number(r?.sweep||0)+Number(r?.mf||0)+Number(r?.bonds||0)).toFixed(2);
 const liquid=r=>Number.isFinite(Number(r?.liquid))?Number(r.liquid):0;
-const fmtNum=v=>{const x=Number(v)||0;return x<0?`(₹${Math.abs(x).toFixed(2)} Cr)`:`₹${x.toFixed(2)} Cr`};
-const fmtCell=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)})`:x.toFixed(2)};
-const fmtPct=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)}%)`:`${x.toFixed(2)}%`};
+const fmtNum=v=>{const x=Number(v)||0;return x<0?`(₹${formatIndianDecimal(Math.abs(x),2)} Cr)`:`₹${formatIndianDecimal(x,2)} Cr`};
+const fmtCell=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${formatIndianDecimal(Math.abs(x),2)})`:formatIndianDecimal(x,2)};
+const fmtPct=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${formatIndianDecimal(Math.abs(x),2)}%)`:`${formatIndianDecimal(x,2)}%`};
 const fmtDate=s=>{if(!s)return "—";let p=String(s).slice(0,10).split("-");return p.length===3?new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):s};
 const pct=(a,b)=>b?((a/b)*100).toFixed(2)+"%":"—";
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
-function note(msg,bad=false){const e=$("notice");e.textContent=msg;e.className="note "+(bad?"warn":"");e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),5000)}
+function note(msg,bad=false,duration=5000){const e=$("notice");if(!e)return;e.textContent=msg;e.className="note "+(bad?"warn":"");e.classList.remove("hidden");clearTimeout(e._noteTimer);e._noteTimer=setTimeout(()=>e.classList.add("hidden"),duration)}
 function status(msg){const e=$("sync");if(e)e.textContent="● "+msg;const b=$("headerStatus");if(b)b.textContent=msg}
 async function apiGet(action){
   if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");
@@ -1005,7 +1008,7 @@ function renderDashboardCharts(){
   if(charts.allocation)charts.allocation.destroy();
   const dates=[...new Set(rows.map(r=>r.date))].sort().slice(-5);
   const trendData=dates.map(d=>+filteredRows(d).reduce((s,r)=>s+total(r),0).toFixed(2));
-  charts.trend=new Chart($("trendChart"),{type:"line",data:{labels:dates.map(fmtDate),datasets:[{label:"Total Funds",data:trendData,tension:.3,fill:true,borderColor:"#1f513b",backgroundColor:"rgba(31,81,59,.12)",pointBackgroundColor:"#b18a3a",pointBorderColor:"#fff",pointBorderWidth:2,borderWidth:3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"bottom"},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>"₹ "+Number(c.raw).toFixed(2)+" Cr"}}},scales:{x:{grid:{display:false},ticks:{font:{family:"Times New Roman"}}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores",font:{family:"Times New Roman",weight:"bold"}},ticks:{font:{family:"Times New Roman"}}}}}});
+  charts.trend=new Chart($("trendChart"),{type:"line",data:{labels:dates.map(fmtDate),datasets:[{label:"Total Funds",data:trendData,tension:.3,fill:true,borderColor:"#1f513b",backgroundColor:"rgba(31,81,59,.12)",pointBackgroundColor:"#b18a3a",pointBorderColor:"#fff",pointBorderWidth:2,borderWidth:3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"bottom"},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>"₹ "+formatIndianDecimal(c.raw,2)+" Cr"}}},scales:{x:{grid:{display:false},ticks:{font:{family:"Times New Roman"}}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores",font:{family:"Times New Roman",weight:"bold"}},ticks:{font:{family:"Times New Roman"}}}}}});
   const d=filteredRows(selectedDate);
   const fundDefs=[
     {key:'bank',label:'Bank Balance'},{key:'fd',label:'FD'},{key:'sweep',label:'Sweep FD'},
@@ -1013,10 +1016,10 @@ function renderDashboardCharts(){
   ];
   const labels=fundDefs.map(c=>c.label), vals=fundDefs.map(c=>+d.reduce((s,r)=>s+n(r[c.key]),0).toFixed(2));
   const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88"];
-  charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
+  charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+formatIndianDecimal(v,2)+" Cr ("+(tot?formatIndianDecimal(v/tot*100,1):"0.0")+"%)"}}}}}});
 }
 
-function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return n<0?`(${Math.abs(n).toFixed(2)})`:n.toFixed(2);}
+function formatChartCr(v){const n=Number(v);if(!Number.isFinite(n))return '';return n<0?`(${formatIndianDecimal(Math.abs(n),2)})`:formatIndianDecimal(n,2);}
 function oneMetricColor(key,idx=0){
   const fixed={
     total:'#1F5B45', liquid:'#B58A3A', nonliquid:'#8C633E',
@@ -1399,6 +1402,7 @@ function entryRowTemplate(row={},isNew=false,index=0){
   const fixed=instrument!=='Bank';
   const instrOpts=V40_INSTRUMENTS.map(v=>`<option value="${esc(v)}" ${v===instrument?'selected':''}>${esc(v)}</option>`).join('');
   const cats=V40_CATEGORIES.map(v=>`<option value="${esc(v)}" ${v===category?'selected':''}>${esc(v)}</option>`).join('');
+  const categoryDisabled=instrument!=='Bank'||!isAdminUser();
   let accOpts='';
   if(instrument==='Bank'){
     const banks=bankItemsForCurrent();
@@ -1407,15 +1411,18 @@ function entryRowTemplate(row={},isNew=false,index=0){
     accOpts=(V40_FIXED_ACCOUNTS[instrument]||[]).map(v=>`<option value="${esc(v)}" ${v===account?'selected':''}>${esc(v)}</option>`).join('');
   }
   const bank=instrument==='Bank';
-  const bankBal=bank?fmtAbsInput(crToAbs(toCrValue(row.bankBalance??''))):'';
-  const brs=bank?fmtAbsInput(crToAbs(toCrValue(row.brs??''))):'';
-  const storedBooks=toCrValue(row.booksBalance??(toCrValue(row.bankBalance||0)+toCrValue(row.brs||0)));
-  const books=bank?fmtAbsInput(crToAbs(storedBooks)):fmtAbsInput(crToAbs(toCrValue(row.booksBalance??'')));
+  const draftAbsolute=!!row.__draft;
+  const bankBal=bank?(draftAbsolute?fmtAbsInput(parseINR(row.bankBalance??'')):fmtAbsInput(crToAbs(toCrValue(row.bankBalance??'')))):'';
+  const brs=bank?(draftAbsolute?fmtAbsInput(parseINR(row.brs??'')):fmtAbsInput(crToAbs(toCrValue(row.brs??'')))):'';
+  const storedBooks=draftAbsolute
+    ? (row.booksBalance!==undefined&&row.booksBalance!==''?parseINR(row.booksBalance):parseINR(row.bankBalance||0)+parseINR(row.brs||0))
+    : toCrValue(row.booksBalance??(toCrValue(row.bankBalance||0)+toCrValue(row.brs||0)));
+  const books=bank?fmtAbsInput(draftAbsolute?storedBooks:crToAbs(storedBooks)):(draftAbsolute?fmtAbsInput(parseINR(row.booksBalance??'')):fmtAbsInput(crToAbs(toCrValue(row.booksBalance??''))));
   const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<span class="entry-view-pill" title="Carried forward from ${esc(row.__sourceDate||'previous date')}">Previous</span>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
     <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
     <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select></div></td>
-    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${existing||userReadonly?'disabled':''}>${cats}</select></td>
+    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${categoryDisabled?'disabled':''} ${userReadonly?'disabled':''} title="${instrument==='Bank'&&isAdminUser()?'Admin can change this category retrospectively for all dates.':'Category is fixed; only Admin can change a Bank category retrospectively.'}">${cats}</select></td>
     <td class="amount-col"><input class="entry-bank" type="text" inputmode="decimal" value="${esc(bankBal)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-brs" type="text" inputmode="decimal" value="${esc(brs)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-books" type="text" inputmode="decimal" value="${esc(books)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${bank||userReadonly?'disabled':''}></td>
@@ -1425,7 +1432,7 @@ function entryRowTemplate(row={},isNew=false,index=0){
 function renderEntryFields(){
   const wrap=$("entryFields");if(!wrap)return;
   const rs=projectItemRows();
-  if(!rs.length&&!entryDraftRows.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
+  if(!rs.length&&!entryDraftRows.length)entryDraftRows=[{__new:true,__draft:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
   const finalList=[...rs.map(x=>({...x,__existing:x.__existing===true})),...entryDraftRows];
   wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument ▼</th><th class="account-col">Account / Investment ▼</th><th class="category-col">Category ▼</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col" aria-label="Row action"></th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div>
     <div class="project-bank-add-row">
@@ -1477,9 +1484,9 @@ function parseFixedCategoryClient(v){const s=String(v||'');const hit=V40_CATEGOR
 function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();populatePreviousIntoDraft_(i);}
 function entryCategoryChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.category=tr?.querySelector('.entry-category')?.value||'Liquid';}
 function formatEntryInput(el){if(!el)return;const raw=String(el.value||'').replace(/,/g,'');if(raw===''||raw==='-')return;el.value=formatIndianINR(raw);}
-function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=parseINR(bank.value)+parseINR(brs.value);books.value=formatIndianINR(Math.round(v));}}});syncDraftFromDom();updateEntrySummary();}
-function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
-function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
+function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=parseINR(bank.value)+parseINR(brs.value);books.value=formatIndianINR(Math.round(v));}}});syncDraftFromDom();}
+function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,__draft:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
+function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,__draft:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
 async function addBankAccountPrompt(){
   const entity=$("eEntity")?.value||"";
   const project=$("eProject")?.value||"";
@@ -1491,8 +1498,6 @@ async function addBankAccountPrompt(){
   const name=(prompt("Enter Bank Account / Account Name:")||"").trim();
   if(!name)return;
 
-  const category=(prompt("Category (Liquid / Long-term / Restricted / Locked):","Liquid")||"Liquid").trim()||"Liquid";
-
   try{
     note("Adding bank account…");
     const r=await apiPost({
@@ -1500,7 +1505,6 @@ async function addBankAccountPrompt(){
       entity,
       projectCode:project,
       account:name,
-      category,
       username:maiaCurrentUser?.email||"",
       userAgent:navigator.userAgent
     });
@@ -1514,7 +1518,7 @@ async function addBankAccountPrompt(){
       projectCode:String(project).toUpperCase(),
       instrument:"Bank",
       account:String(r.account||name),
-      category:String(r.category||category),
+      category:String(r.category||"Liquid"),
       active:true
     };
 
@@ -1523,9 +1527,12 @@ async function addBankAccountPrompt(){
 
     // Add it directly to the current entry as a new editable row.
     entryDraftRows.push({
+      __new:true,
+      __draft:true,
+      itemId:item.itemId,
       instrument:"Bank",
       account:item.account,
-      category:item.category,
+      category:item.category||"Liquid",
       bankBalance:"",
       brs:"",
       booksBalance:"",
@@ -1537,56 +1544,63 @@ async function addBankAccountPrompt(){
       ? "✓ Bank account already existed and is now available."
       : "✓ Bank account added successfully.");
 
-    // Refresh in background; never block the newly-added row on refresh.
-    loadAll().catch(()=>{});
+    // Keep the newly-added row on screen so the user can enter the first balance immediately.
   }catch(e){
     note(e?.message||"Could not add bank account.",true);
   }
 }
 async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
 async function saveOneEntryRow(r,idx,existing){
-  const p={action:'save',date:$("eDate").value,entity:$("eEntity").value,projectCode:$("eProject").value,itemId:existing?r.itemId:'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?absToCr(parseINR(r.bankBalance)):0,brs:r.instrument==='Bank'?absToCr(parseINR(r.brs)):0,booksBalance:r.instrument==='Bank'?0:absToCr(parseINR(r.booksBalance)),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
+  const p={action:'save',date:$('eDate').value,entity:$('eEntity').value,projectCode:$('eProject').value,itemId:r.itemId||'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?absToCr(r.bankBalance):0,brs:r.instrument==='Bank'?absToCr(r.brs):0,booksBalance:r.instrument==='Bank'?0:absToCr(r.booksBalance),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
   if(!p.instrument||!p.account||!p.category)return {status:'error',message:`Row ${idx+1}: Instrument, Account / Investment and Category are required.`};
   return await apiPost(p);
 }
 async function saveEntry(){
-  const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note('Date, Entity and Project are required.',true);return;}
-  syncDraftFromDom();const rs=projectItemRows();const rowsToSave=[...entryDraftRows,...projectItemRows().filter(r=>r.__prefill)];
-  // Admin can update existing items; User can only add new items.
-  if(!isAdminUser() && rs.length===0 && rowsToSave.length===0){note('Add at least one treasury item.',true);return;}
-  $("saveBtn").disabled=true;
+  const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;
+  if(!date||!entity||!project){note('Date, Entity and Project are required.',true);return;}
+  syncDraftFromDom();
+  const rs=projectItemRows();
+  const trs=[...document.querySelectorAll('#entryFields tbody tr')];
+  const items=[];
+  trs.forEach((tr,i)=>{
+    const source=i<rs.length?rs[i]:entryDraftRows[i-rs.length];
+    if(!source)return;
+    const isExisting=!!source.__existing;
+    if(!isAdminUser() && isExisting)return;
+    const instrument=tr.querySelector('.entry-instrument')?.value||source.instrument||'Bank';
+    const account=tr.querySelector('.entry-account')?.value||source.account||'';
+    const category=tr.querySelector('.entry-category')?.value||source.category||'Liquid';
+    const bank=tr.querySelector('.entry-bank')?.value??source.bankBalance??'';
+    const brs=tr.querySelector('.entry-brs')?.value??source.brs??'';
+    const books=tr.querySelector('.entry-books')?.value??source.booksBalance??'';
+    if(!instrument||!account)return;
+    items.push({
+      itemId:source.itemId||'',
+      instrument,account,category,
+      bankBalance:instrument==='Bank'?parseINR(bank):0,
+      brs:instrument==='Bank'?parseINR(brs):0,
+      booksBalance:instrument==='Bank'?0:parseINR(books),
+      remarks:source.remarks||''
+    });
+  });
+  if(!items.length){note('Add at least one treasury item.',true);return;}
+  const btn=$("saveBtn");
+  if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  note(`Saving ${items.length} treasury item${items.length===1?'':'s'}…`,false,30000);
   try{
-    if(isAdminUser()){
-      const tbody=[...document.querySelectorAll('#entryFields tbody tr')];
-      for(let i=0;i<tbody.length;i++){
-        const tr=tbody[i];const isExisting=tr.classList.contains('entry-row-existing');const source=i<rs.length?rs[i]:entryDraftRows[i-rs.length];if(!source)continue;
-        const bank=tr.querySelector('.entry-bank')?.value||'',brs=tr.querySelector('.entry-brs')?.value||'',books=tr.querySelector('.entry-books')?.value||'';
-        source.bankBalance=bank;source.brs=brs;source.booksBalance=books;
-        if(!isExisting){
-          source.instrument=tr.querySelector('.entry-instrument')?.value||source.instrument;
-          source.account=tr.querySelector('.entry-account')?.value||source.account;
-          source.category=tr.querySelector('.entry-category')?.value||source.category;
-        }
-        const res=await saveOneEntryRow(source,i,isExisting);if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);
-      }
-    }else{
-      for(let i=0;i<rowsToSave.length;i++){
-        const source=rowsToSave[i];
-        const tr=[...document.querySelectorAll('#entryFields tbody tr')].find(x=>x.dataset.entryIndex===String(projectItemRows().indexOf(source)));
-        if(tr){
-          source.bankBalance=tr.querySelector('.entry-bank')?.value||source.bankBalance||'';
-          source.brs=tr.querySelector('.entry-brs')?.value||source.brs||'';
-          source.booksBalance=tr.querySelector('.entry-books')?.value||source.booksBalance||'';
-        }
-        const res=await saveOneEntryRow(source,i,false);
-        if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);
-      }
-    }
-    entryDraftRows=[];renderEntryFields();renderDashboard();
-    note('✓ Treasury table saved and audit logged.');
-    // Refresh in the background; do not make the user wait for the full dashboard reload.
+    const res=await apiPost({action:'saveBatch',date,entity,projectCode:project,items,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent,inputUnit:'INR'});
+    if(!res||res.status!=='ok')throw Error(res?.message||'Treasury save failed.');
+    entryDraftRows=[];
+    renderEntryFields();
+    renderDashboard();
+    note(`✓ ${res.message||'Treasury data saved successfully.'}`);
+    status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
     loadAll().catch(()=>{});
-  }catch(e){note(e.message,true)}finally{$("saveBtn").disabled=false}
+  }catch(e){
+    note(e?.message||'Treasury save failed.',true);
+  }finally{
+    if(btn){btn.disabled=false;applyEntryPermissions();}
+  }
 }
 function loadEntry(){const d=$("eDate")?.value||'',e=String($("eEntity")?.value||'').toUpperCase(),p=String($("eProject")?.value||'').toUpperCase();if(!d||!e||!p)return;entryDraftRows=[];renderEntryFields();}
 function clearEntry(){entryDraftRows=[];renderEntryFields();}
