@@ -1645,5 +1645,112 @@ if(typeof updateOneChartControls==='function')updateOneChartControls(false);
 // Begin downloading Chart.js immediately on page open.
 ensureChartJs().catch(()=>{});
 </script>
+
+<div id="idleWarningModal" aria-hidden="true">
+  <div class="idle-card">
+    <div class="idle-title">Session expiring</div>
+    <div class="idle-text">You have been inactive for 55 minutes. Your session will expire in <b id="idleCountdown">5:00</b>.</div>
+    <div class="idle-actions">
+      <button class="idle-stay" type="button" onclick="stayLoggedIn()">Stay Logged In</button>
+    </div>
+  </div>
+</div>
+
+
+<style id="idle-timeout-style">
+#idleWarningModal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999}
+#idleWarningModal .idle-card{background:#fff;border-radius:12px;padding:24px 28px;width:min(420px,calc(100vw - 40px));box-shadow:0 18px 60px rgba(0,0,0,.25);font-family:inherit}
+#idleWarningModal .idle-title{font-size:18px;font-weight:700;margin-bottom:8px}
+#idleWarningModal .idle-text{font-size:13px;line-height:1.5;margin-bottom:18px}
+#idleWarningModal .idle-actions{display:flex;gap:10px;justify-content:flex-end}
+#idleWarningModal button{padding:9px 16px;border:0;border-radius:7px;cursor:pointer;font-size:13px}
+#idleWarningModal .idle-stay{background:#286c52;color:#fff}
+</style>
+
+
+<script id="idle-timeout-script">
+(function(){
+  const IDLE_LIMIT = 60 * 60 * 1000;
+  const WARNING_AT = 55 * 60 * 1000;
+  const CHECK_EVERY = 1000;
+  let lastActivity = Date.now();
+  let warningShown = false;
+  let timer = null;
+
+  function isLoggedIn(){
+    // Support the common login containers used by the MAIA dashboard.
+    const login = document.querySelector('#loginScreen,#login,form[id*="login" i]');
+    const app = document.querySelector('#app,.app,.dashboard,#mainApp');
+    if (login && app) return getComputedStyle(login).display === 'none';
+    return true;
+  }
+
+  function touch(){
+    lastActivity = Date.now();
+    if(warningShown) hideIdleWarning();
+  }
+
+  function showIdleWarning(){
+    const m=document.getElementById('idleWarningModal');
+    if(!m)return;
+    warningShown=true;
+    m.style.display='flex';
+    m.setAttribute('aria-hidden','false');
+  }
+
+  function hideIdleWarning(){
+    const m=document.getElementById('idleWarningModal');
+    if(!m)return;
+    warningShown=false;
+    m.style.display='none';
+    m.setAttribute('aria-hidden','true');
+  }
+
+  function logoutForIdle(){
+    hideIdleWarning();
+    // Prefer the dashboard's existing logout function if present.
+    try{
+      if(typeof logout==='function'){ logout(); return; }
+      if(typeof doLogout==='function'){ doLogout(); return; }
+      if(typeof signOut==='function'){ signOut(); return; }
+    }catch(e){}
+    // Fallback: clear common session/local storage and reload.
+    try{
+      sessionStorage.clear();
+      localStorage.removeItem('maiaTreasurySession');
+      localStorage.removeItem('treasuryUser');
+      localStorage.removeItem('loggedInUser');
+    }catch(e){}
+    location.reload();
+  }
+
+  window.stayLoggedIn=function(){
+    touch();
+  };
+
+  ['mousemove','mousedown','keydown','scroll','touchstart','click'].forEach(ev=>{
+    document.addEventListener(ev,touch,{passive:true});
+  });
+
+  timer=setInterval(function(){
+    if(!isLoggedIn()) return;
+    const idle=Date.now()-lastActivity;
+    if(idle>=IDLE_LIMIT){
+      logoutForIdle();
+      return;
+    }
+    if(idle>=WARNING_AT){
+      showIdleWarning();
+      const remaining=Math.max(0,IDLE_LIMIT-idle);
+      const el=document.getElementById('idleCountdown');
+      if(el){
+        const s=Math.ceil(remaining/1000);
+        el.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+      }
+    }
+  },CHECK_EVERY);
+})();
+</script>
+
 </body>
 </html>
