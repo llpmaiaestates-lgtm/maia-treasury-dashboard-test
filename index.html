@@ -754,25 +754,64 @@ function apiGetJSONP(action){
     document.head.appendChild(script);
   });
 }
+function jsonpWriteRequest(payload, timeoutMs=20000){
+  if(!maiaCurrentUser)return Promise.reject(Error("Please sign in to access the dashboard."));
+  return new Promise((resolve,reject)=>{
+    const action=String(payload?.action||'save');
+    const body={...payload,username:payload?.username||maiaCurrentUser.email||""};
+    const cb="maiaWrite_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    const script=document.createElement("script");
+    const url=API_URL+"?action="+encodeURIComponent(action)+"&payload="+encodeURIComponent(JSON.stringify(body))+"&_ts="+Date.now()+"&callback="+cb;
+    const timer=setTimeout(()=>{cleanup();reject(Error("Google Apps Script did not respond within 20 seconds."))},timeoutMs);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
+    window[cb]=data=>{cleanup();resolve(data)};
+    script.onerror=()=>{cleanup();reject(Error("Google Apps Script request failed. The save request was not completed."))};
+    script.src=url;
+    document.head.appendChild(script);
+  });
+}
+
+function buildWriteUrlLength(payload){
+  const action=String(payload?.action||'save');
+  const body={...payload,username:payload?.username||maiaCurrentUser?.email||""};
+  const cb="maiaWrite_TEST";
+  return (API_URL+"?action="+encodeURIComponent(action)+"&payload="+encodeURIComponent(JSON.stringify(body))+"&_ts=123&callback="+cb).length;
+}
+
 async function apiPost(payload){
-  if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");
-  const body={...payload,username:payload?.username||maiaCurrentUser.email||""};
-  // Google Apps Script web-app redirects can prevent a GitHub Pages browser
-  // from reading a cross-origin POST response. A simple no-cors POST avoids
-  // the CORS response-read problem; Apps Script still receives and executes it.
-  // The save caller verifies the write afterward with a normal GET.
-  try{
-    await fetch(API_URL,{
-      method:"POST",
-      mode:"no-cors",
-      body:JSON.stringify(body),
-      cache:"no-store",
-      keepalive:false
-    });
-    return {status:"accepted",message:"Save request submitted."};
-  }catch(e){
-    throw Error("Google Apps Script request failed. Please retry.");
+  const action=String(payload?.action||'save');
+
+  // GitHub Pages -> Apps Script writes are sent through JSONP GET so the browser
+  // does not get blocked by Apps Script's cross-origin redirect. A large JSON
+  // batch can exceed practical URL limits, so split only oversized save batches.
+  if(action==='saveBatch' && Array.isArray(payload.items) && payload.items.length>1){
+    const LIMIT=6800;
+    if(buildWriteUrlLength(payload)<=LIMIT) return await jsonpWriteRequest(payload);
+
+    const chunks=[];
+    let current=[];
+    for(const item of payload.items){
+      const candidate={...payload,items:[...current,item]};
+      if(current.length && buildWriteUrlLength(candidate)>LIMIT){
+        chunks.push(current);
+        current=[item];
+      }else{
+        current.push(item);
+      }
+    }
+    if(current.length)chunks.push(current);
+
+    let added=0,updated=0;
+    for(let i=0;i<chunks.length;i++){
+      const r=await jsonpWriteRequest({...payload,items:chunks[i]});
+      if(!r || r.status!=='ok') throw Error(r?.message||`Treasury save failed on batch ${i+1} of ${chunks.length}.`);
+      added+=Number(r.added||0);
+      updated+=Number(r.updated||0);
+    }
+    return {status:'ok',message:`${payload.items.length} Treasury items saved successfully.`,added,updated};
   }
+
+  return await jsonpWriteRequest(payload);
 }
 function normalizeRows(data){
   const arr=data.data||data.rows||data.records||[];
@@ -1417,6 +1456,8 @@ function entryRowTemplate(row={},isNew=false,index=0){
   }
   const bank=instrument==='Bank';
   const draftAbsolute=!!row.__draft;
+  // Treasury_Data is absolute INR. Saved rows arrive in Cr through normalizeRows(),
+  // while brand-new draft rows are already absolute INR.
   const bankBal=bank?(draftAbsolute?fmtAbsInput(parseINR(row.bankBalance??'')):fmtAbsInput(crToAbs(Number(row.bankBalance||0)))):'';
   const brs=bank?(draftAbsolute?fmtAbsInput(parseINR(row.brs??'')):fmtAbsInput(crToAbs(Number(row.brs||0)))):'';
   // For Bank, Books Balance is always Bank Balance + BRS.
@@ -1531,20 +1572,8 @@ async function addBankAccountPrompt(){
     treasuryItems=(treasuryItems||[]).filter(x=>String(x.itemId||"")!==item.itemId);
     treasuryItems.push(item);
 
-    // Add it directly to the current entry as a new editable row.
-    entryDraftRows.push({
-      __new:true,
-      __draft:true,
-      itemId:item.itemId,
-      instrument:"Bank",
-      account:item.account,
-      category:item.category||"Liquid",
-      bankBalance:"",
-      brs:"",
-      booksBalance:"",
-      remarks:""
-    });
-
+    // The master item now appears automatically in the current project entry.
+    // Do not add a second draft row for the same Bank Account.
     renderEntryFields();
     note(r.created===false
       ? "✓ Bank account already existed and is now available."
@@ -1557,7 +1586,8 @@ async function addBankAccountPrompt(){
 }
 async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
 async function saveOneEntryRow(r,idx,existing){
-  const p={action:'save',date:$('eDate').value,entity:$('eEntity').value,projectCode:$('eProject').value,itemId:r.itemId||'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?absToCr(r.bankBalance):0,brs:r.instrument==='Bank'?absToCr(r.brs):0,booksBalance:r.instrument==='Bank'?0:absToCr(r.booksBalance),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
+  // Backend Treasury_Data values are absolute INR.
+  const p={action:'save',date:$('eDate').value,entity:$('eEntity').value,projectCode:$('eProject').value,itemId:r.itemId||'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?parseINR(r.bankBalance):0,brs:r.instrument==='Bank'?parseINR(r.brs):0,booksBalance:r.instrument==='Bank'?parseINR(r.booksBalance):0,remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent,inputUnit:'INR'};
   if(!p.instrument||!p.account||!p.category)return {status:'error',message:`Row ${idx+1}: Instrument, Account / Investment and Category are required.`};
   return await apiPost(p);
 }
@@ -1590,41 +1620,31 @@ async function saveEntry(){
     });
   });
   if(!items.length){note('Add at least one treasury item.',true);return;}
+
+  // One Treasury Item = one saved row for the selected date. Keep the latest
+  // UI version when the same item appears more than once in the rendered table.
+  const unique=new Map();
+  items.forEach(x=>{
+    const k=String(x.itemId||'').trim().toUpperCase() ||
+      [x.instrument,x.account].map(v=>String(v||'').trim().toUpperCase()).join('|');
+    unique.set(k,x);
+  });
+  const saveItems=[...unique.values()];
+
   const btn=$("saveBtn");
   if(btn){btn.disabled=true;btn.textContent='Saving…';}
-  note(`Saving ${items.length} treasury item${items.length===1?'':'s'}…`,false,10000);
+  note(`Saving ${saveItems.length} treasury item${saveItems.length===1?'':'s'}…`,false,10000);
   try{
-    // Fire the write once. The no-cors POST returns as soon as the browser has
-    // submitted the request, so the user is never held hostage by response-read/CORS delays.
-    await apiPost({action:'saveBatch',date,entity,projectCode:project,items,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent,inputUnit:'INR'});
+    const res=await apiPost({action:'saveBatch',date,entity,projectCode:project,items:saveItems,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent,inputUnit:'INR'});
+    if(!res || res.status!=='ok')throw Error(res?.message||'Treasury save failed.');
 
     entryDraftRows=[];
     renderEntryFields();
     renderDashboard();
-    note('✓ Treasury save submitted.');
-    status(`Save submitted · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
-
-    // Verify once in the background. This never blocks Save or creates a 2-minute wait.
-    setTimeout(async()=>{
-      try{
-        const b=await apiGet('getBootstrap');
-        const data=Array.isArray(b?.data)?b.data:[];
-        const matches=data.filter(x=>
-          String(x.date||'').slice(0,10)===date &&
-          String(x.entity||'').toUpperCase()===String(entity).toUpperCase() &&
-          String(x.project||'').toUpperCase()===String(project).toUpperCase()
-        );
-        if(matches.length>=items.length){
-          note('✓ Treasury data saved successfully.');
-          status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
-          loadAll(true).catch(()=>{});
-        }else{
-          status('Save submitted · waiting for Sheet refresh');
-        }
-      }catch(e){
-        status('Save submitted · verification pending');
-      }
-    },1200);
+    note(`✓ ${res.message||'Treasury data saved successfully.'}`);
+    status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
+    // Refresh only after the successful response; never block the user on verification.
+    setTimeout(()=>loadAll(true).catch(()=>{}),150);
   }catch(e){
     note(e?.message||'Treasury save failed.',true);
   }finally{
