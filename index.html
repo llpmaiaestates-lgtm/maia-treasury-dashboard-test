@@ -489,15 +489,34 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 
 <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
 <script>
-// Treasury amounts: user enters absolute INR; backend/dashboard stores and displays ₹ Crores.
+// Treasury amounts: data-entry uses absolute INR; dashboard/reporting uses ₹ Crores.
 const INR_PER_CRORE = 10000000;
-function absToCr(v){ const n=Number(v); return Number.isFinite(n) ? n/INR_PER_CRORE : 0; }
-function crToAbs(v){ const n=Number(v); return Number.isFinite(n) ? n*INR_PER_CRORE : 0; }
+function toCrValue(v){
+  const n=Number(String(v??'').replace(/,/g,''));
+  if(!Number.isFinite(n)) return 0;
+  // Accept both legacy absolute-₹ values and current crore values safely.
+  return Math.abs(n) > 100000 ? n/INR_PER_CRORE : n;
+}
+function absToCr(v){ return toCrValue(v); }
+function crToAbs(v){ const n=toCrValue(v); return n*INR_PER_CRORE; }
+function formatIndianINR(v){
+  let s=String(v??'').replace(/,/g,'').trim();
+  if(!s || s==='-') return s;
+  const neg=s.startsWith('-')?'':'';
+  if(neg) s=s.slice(1);
+  let [whole,dec]=s.split('.');
+  whole=(whole||'0').replace(/\D/g,'')||'0';
+  whole=whole.length>3 ? whole.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+whole.slice(-3) : whole;
+  return (neg?'-':'')+whole+(dec!==undefined?'.'+dec.replace(/\D/g,''):'');
+}
+function parseINR(v){
+  const n=Number(String(v??'').replace(/,/g,''));
+  return Number.isFinite(n)?n:0;
+}
 function fmtAbsInput(v){
   const n=Number(v);
-  return Number.isFinite(n) ? String(Math.round(n)) : '';
+  return Number.isFinite(n) ? formatIndianINR(Math.round(n)) : '';
 }
-
 </script>
 <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
 <script>
@@ -724,7 +743,15 @@ function apiGetJSONP(action){
   });
 }
 async function apiPost(payload){if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");const body={...payload,username:payload?.username||maiaCurrentUser.email||""};const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(body)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
-function normalizeRows(data){const arr=data.data||data.rows||data.records||[];return arr.map(x=>({...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()})).filter(x=>x.date&&x.entity)}
+function normalizeRows(data){
+  const arr=data.data||data.rows||data.records||[];
+  const numeric=['bank','fd','sweep','mf','bonds','brs','reserved','restricted','longTerm','liquid','totalTreasury','bankBalance','booksBalance'];
+  return arr.map(x=>{
+    const y={...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()};
+    numeric.forEach(k=>{if(y[k]!==undefined && y[k]!=='' && y[k]!==null)y[k]=toCrValue(y[k]);});
+    return y;
+  }).filter(x=>x.date&&x.entity)
+}
 const BOOT_CACHE_KEY='maiaTreasuryBootstrapV40_ITEM';
 const BOOT_CACHE_MAX_AGE_MS=60*60*1000;
 function restoreBootstrapCache(){
@@ -1306,14 +1333,44 @@ const V40_FIXED_ACCOUNTS={
   'Mutual Fund':['Mutual Fund - Liquid','Mutual Fund - Long-term','Mutual Fund - Restricted','Mutual Fund - Reserved'],
   'Bonds / Debentures':['Bond / Debenture - Liquid','Bond / Debenture - Long-term','Bond / Debenture - Restricted','Bond / Debenture - Reserved']
 };
-function projectItemRows(){const d=$("eDate")?.value||"",e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return itemRows.filter(r=>r.date===d&&String(r.entity||"").toUpperCase()===e&&String(r.project||"").toUpperCase()===p);}
+function projectItemRows(){
+  const d=$("eDate")?.value||"",e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();
+  if(!d||!e||!p)return [];
+
+  // For each treasury item, use the value saved on the selected date.
+  // If the selected date has no value yet, use the latest value before that date.
+  // This makes the next day's entry automatically start from the last saved day.
+  const keyOf=r=>[String(r.entity||"").toUpperCase(),String(r.project||r.projectCode||"").toUpperCase(),
+    String(r.instrument||"").toUpperCase(),String(r.account||"").toUpperCase()].join("|");
+  const all=[...(Array.isArray(itemRows)?itemRows:[]),...(Array.isArray(treasuryItems)?treasuryItems:[])];
+  const candidates=all.filter(r=>
+    String(r.entity||"").toUpperCase()===e &&
+    String(r.project||r.projectCode||"").toUpperCase()===p &&
+    String(r.instrument||"").trim() &&
+    String(r.account||"").trim()
+  );
+
+  const keys=[...new Set(candidates.map(keyOf))];
+  return keys.map(key=>{
+    const list=candidates.filter(r=>keyOf(r)===key && String(r.date||"")<=d)
+      .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+    const r=list[0];
+    if(!r)return null;
+    const isCurrent=String(r.date||"")===d;
+    return {...r,__existing:isCurrent,__prefill:!isCurrent,__sourceDate:String(r.date||"")};
+  }).filter(Boolean).sort((a,b)=>{
+    const ia=String(a.instrument||""),ib=String(b.instrument||"");
+    if(ia!==ib)return ia.localeCompare(ib);
+    return String(a.account||"").localeCompare(String(b.account||""));
+  });
+}
 function bankItemsForCurrent(){const e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return treasuryItems.filter(x=>x.active!==false&&String(x.entity||"").toUpperCase()===e&&String(x.project||"").toUpperCase()===p&&x.instrument==='Bank');}
 function entryRowTemplate(row={},isNew=false,index=0){
   const instrument=row.instrument||'Bank';
   const account=row.account||'';
   const category=row.category||'Liquid';
   const existing=!isNew&&row.itemId;
-  const userReadonly=existing&&!isAdminUser();
+  const userReadonly=existing&&!isAdminUser()&&!row.__prefill;
   const fixed=instrument!=='Bank';
   const instrOpts=V40_INSTRUMENTS.map(v=>`<option value="${esc(v)}" ${v===instrument?'selected':''}>${esc(v)}</option>`).join('');
   const cats=V40_CATEGORIES.map(v=>`<option value="${esc(v)}" ${v===category?'selected':''}>${esc(v)}</option>`).join('');
@@ -1325,18 +1382,18 @@ function entryRowTemplate(row={},isNew=false,index=0){
     accOpts=(V40_FIXED_ACCOUNTS[instrument]||[]).map(v=>`<option value="${esc(v)}" ${v===account?'selected':''}>${esc(v)}</option>`).join('');
   }
   const bank=instrument==='Bank';
-  const bankBal=bank?fmtAbsInput(crToAbs(row.bankBalance??'')):'';
-  const brs=bank?fmtAbsInput(crToAbs(row.brs??'')):'';
-  const storedBooks=Number(row.booksBalance??(Number(bankBal||0)+Number(brs||0)));
-  const books=bank?fmtAbsInput(crToAbs(storedBooks)):fmtAbsInput(crToAbs(row.booksBalance??''));
-  const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<button type="button" class="entry-row-delete" title="Remove row" onclick="removeEntryDraftRow(${index})">×</button>`;
+  const bankBal=bank?fmtAbsInput(crToAbs(toCrValue(row.bankBalance??''))):'';
+  const brs=bank?fmtAbsInput(crToAbs(toCrValue(row.brs??''))):'';
+  const storedBooks=toCrValue(row.booksBalance??(toCrValue(row.bankBalance||0)+toCrValue(row.brs||0)));
+  const books=bank?fmtAbsInput(crToAbs(storedBooks)):fmtAbsInput(crToAbs(toCrValue(row.booksBalance??'')));
+  const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<span class="entry-view-pill" title="Carried forward from ${esc(row.__sourceDate||'previous date')}">Previous</span>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
     <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
     <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select></div></td>
     <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${existing||userReadonly?'disabled':''}>${cats}</select></td>
-    <td class="amount-col"><input class="entry-bank" type="number" step=".01" value="${esc(bankBal)}" placeholder="₹ absolute" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
-    <td class="amount-col"><input class="entry-brs" type="number" step=".01" value="${esc(brs)}" placeholder="₹ absolute" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
-    <td class="amount-col"><input class="entry-books" type="number" step=".01" value="${esc(books)}" placeholder="₹ absolute" oninput="entryAmountChanged(${index})" ${bank||userReadonly?'disabled':''}></td>
+    <td class="amount-col"><input class="entry-bank" type="text" inputmode="decimal" value="${esc(bankBal)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
+    <td class="amount-col"><input class="entry-brs" type="text" inputmode="decimal" value="${esc(brs)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
+    <td class="amount-col"><input class="entry-books" type="text" inputmode="decimal" value="${esc(books)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${bank||userReadonly?'disabled':''}></td>
     <td class="action-col">${action}</td>
   </tr>`;
 }
@@ -1344,7 +1401,7 @@ function renderEntryFields(){
   const wrap=$("entryFields");if(!wrap)return;
   const rs=projectItemRows();
   if(!rs.length&&!entryDraftRows.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
-  const finalList=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
+  const finalList=[...rs.map(x=>({...x,__existing:x.__existing===true})),...entryDraftRows];
   wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument ▼</th><th class="account-col">Account / Investment ▼</th><th class="category-col">Category ▼</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col" aria-label="Row action"></th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div>
     <div class="project-bank-add-row">
       <button type="button" class="btn sm project-add-bank-btn" onclick="addBankAccountPrompt(-1)" ${!isAdminUser()?'disabled':''}>＋ Add Bank Account</button>
@@ -1378,11 +1435,11 @@ async function populatePreviousIntoDraft_(rowIndex){
     const prev=candidates[0];
     if(!prev) return;
 
-    d.bankBalance = d.instrument==="Bank" ? fmtAbsInput(crToAbs(prev.bankBalance)) : "";
-    d.brs = d.instrument==="Bank" ? fmtAbsInput(crToAbs(prev.brs)) : "";
+    d.bankBalance = d.instrument==="Bank" ? fmtAbsInput(crToAbs(toCrValue(prev.bankBalance))) : "";
+    d.brs = d.instrument==="Bank" ? fmtAbsInput(crToAbs(toCrValue(prev.brs))) : "";
     d.booksBalance = d.instrument==="Bank"
-      ? fmtAbsInput(crToAbs(Number(prev.bankBalance||0)+Number(prev.brs||0)))
-      : fmtAbsInput(crToAbs(prev.booksBalance));
+      ? fmtAbsInput(crToAbs(toCrValue(prev.bankBalance)+toCrValue(prev.brs)))
+      : fmtAbsInput(crToAbs(toCrValue(prev.booksBalance)));
 
     renderEntryFields();
   }catch(e){
@@ -1394,7 +1451,8 @@ function entryInstrumentChanged(i){syncDraftFromDom();const tr=document.querySel
 function parseFixedCategoryClient(v){const s=String(v||'');const hit=V40_CATEGORIES.find(c=>new RegExp(' - '+c+'$','i').test(s));return hit||'Liquid';}
 function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();populatePreviousIntoDraft_(i);}
 function entryCategoryChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.category=tr?.querySelector('.entry-category')?.value||'Liquid';}
-function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=(Number(bank.value)||0)+(Number(brs.value)||0);books.value=String(Math.round(v));}}});syncDraftFromDom();updateEntrySummary();}
+function formatEntryInput(el){if(!el)return;const raw=String(el.value||'').replace(/,/g,'');if(raw===''||raw==='-')return;el.value=formatIndianINR(raw);}
+function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=parseINR(bank.value)+parseINR(brs.value);books.value=formatIndianINR(Math.round(v));}}});syncDraftFromDom();updateEntrySummary();}
 function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
 function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
 async function addBankAccountPrompt(i){
@@ -1469,13 +1527,13 @@ async function addBankAccountPrompt(i){
 }
 async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
 async function saveOneEntryRow(r,idx,existing){
-  const p={action:'save',date:$("eDate").value,entity:$("eEntity").value,projectCode:$("eProject").value,itemId:existing?r.itemId:'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?absToCr(r.bankBalance):0,brs:r.instrument==='Bank'?absToCr(r.brs):0,booksBalance:r.instrument==='Bank'?0:absToCr(r.booksBalance),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
+  const p={action:'save',date:$("eDate").value,entity:$("eEntity").value,projectCode:$("eProject").value,itemId:existing?r.itemId:'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?absToCr(parseINR(r.bankBalance)):0,brs:r.instrument==='Bank'?absToCr(parseINR(r.brs)):0,booksBalance:r.instrument==='Bank'?0:absToCr(parseINR(r.booksBalance)),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
   if(!p.instrument||!p.account||!p.category)return {status:'error',message:`Row ${idx+1}: Instrument, Account / Investment and Category are required.`};
   return await apiPost(p);
 }
 async function saveEntry(){
   const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note('Date, Entity and Project are required.',true);return;}
-  syncDraftFromDom();const rs=projectItemRows();const rowsToSave=[...entryDraftRows];
+  syncDraftFromDom();const rs=projectItemRows();const rowsToSave=[...entryDraftRows,...projectItemRows().filter(r=>r.__prefill)];
   // Admin can update existing items; User can only add new items.
   if(!isAdminUser() && rs.length===0 && rowsToSave.length===0){note('Add at least one treasury item.',true);return;}
   $("saveBtn").disabled=true;
@@ -1483,12 +1541,28 @@ async function saveEntry(){
     if(isAdminUser()){
       const tbody=[...document.querySelectorAll('#entryFields tbody tr')];
       for(let i=0;i<tbody.length;i++){
-        const tr=tbody[i];const isExisting=tr.classList.contains('entry-row-existing');const source=isExisting?rs[i]:entryDraftRows[i-rs.length];if(!source)continue;
-        if(isExisting){const bank=tr.querySelector('.entry-bank')?.value||'',brs=tr.querySelector('.entry-brs')?.value||'',books=tr.querySelector('.entry-books')?.value||'';source.bankBalance=bank;source.brs=brs;source.booksBalance=books;}else{source.instrument=tr.querySelector('.entry-instrument')?.value||source.instrument;source.account=tr.querySelector('.entry-account')?.value||source.account;source.category=tr.querySelector('.entry-category')?.value||source.category;source.bankBalance=tr.querySelector('.entry-bank')?.value||source.bankBalance;source.brs=tr.querySelector('.entry-brs')?.value||source.brs;source.booksBalance=tr.querySelector('.entry-books')?.value||source.booksBalance;}
+        const tr=tbody[i];const isExisting=tr.classList.contains('entry-row-existing');const source=i<rs.length?rs[i]:entryDraftRows[i-rs.length];if(!source)continue;
+        const bank=tr.querySelector('.entry-bank')?.value||'',brs=tr.querySelector('.entry-brs')?.value||'',books=tr.querySelector('.entry-books')?.value||'';
+        source.bankBalance=bank;source.brs=brs;source.booksBalance=books;
+        if(!isExisting){
+          source.instrument=tr.querySelector('.entry-instrument')?.value||source.instrument;
+          source.account=tr.querySelector('.entry-account')?.value||source.account;
+          source.category=tr.querySelector('.entry-category')?.value||source.category;
+        }
         const res=await saveOneEntryRow(source,i,isExisting);if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);
       }
     }else{
-      for(let i=0;i<rowsToSave.length;i++){const res=await saveOneEntryRow(rowsToSave[i],i,false);if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);}
+      for(let i=0;i<rowsToSave.length;i++){
+        const source=rowsToSave[i];
+        const tr=[...document.querySelectorAll('#entryFields tbody tr')].find(x=>x.dataset.entryIndex===String(projectItemRows().indexOf(source)));
+        if(tr){
+          source.bankBalance=tr.querySelector('.entry-bank')?.value||source.bankBalance||'';
+          source.brs=tr.querySelector('.entry-brs')?.value||source.brs||'';
+          source.booksBalance=tr.querySelector('.entry-books')?.value||source.booksBalance||'';
+        }
+        const res=await saveOneEntryRow(source,i,false);
+        if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);
+      }
     }
     entryDraftRows=[];renderEntryFields();renderDashboard();
     note('✓ Treasury table saved and audit logged.');
