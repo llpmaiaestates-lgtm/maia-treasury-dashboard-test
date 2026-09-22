@@ -205,6 +205,57 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .entry-row-delete:hover{background:#fff6f6}
 .entry-view-pill{font-size:9px;color:var(--muted)}
 .entry-table input:disabled,.entry-table select:disabled{background:#f7f9f7;color:#6d7b73;opacity:1}
+/* V40 compact data-entry controls */
+#entryFields{font-size:12px}
+#entryFields .entry-table{min-width:930px}
+#entryFields .entry-table th{font-size:9px;padding:8px 8px;letter-spacing:.35px}
+#entryFields .entry-table td{padding:6px 8px}
+#entryFields .entry-table select,#entryFields .entry-table input{height:34px;min-width:0;padding:6px 8px;font-size:12px}
+#entryFields .entry-table .instrument-col{width:135px;min-width:135px}
+#entryFields .entry-table .account-col{width:235px;min-width:235px}
+#entryFields .entry-table .category-col{width:115px;min-width:115px}
+#entryFields .entry-table .amount-col{width:125px;min-width:125px}
+#entryFields .entry-account-actions{margin-top:4px}
+#entryFields .entry-account-actions .btn{font-size:10px;padding:5px 7px}
+#entryFields .entry-row-delete{font-size:16px}
+@media(max-width:650px){
+  #entryFields .entry-table{min-width:900px}
+  #entryFields .entry-table th{font-size:8px}
+  #entryFields .entry-table select,#entryFields .entry-table input{height:32px;font-size:11px;padding:5px 6px}
+}
+
+
+/* V40: compact Treasury Data Entry */
+#entry .fg label { font-size: 11px; }
+#entry input, #entry select, #entryFields input, #entryFields select {
+  font-size: 13px;
+  min-height: 38px;
+  height: 38px;
+  padding: 7px 9px;
+}
+#entryFields .fg { min-width: 0; }
+#entryFields input::placeholder {
+  color: #9aa3a0;
+  opacity: 1;
+  font-weight: 500;
+}
+#entryFields input.previous-placeholder::placeholder {
+  color: #a1aaa6;
+  font-style: italic;
+}
+@media (max-width: 900px) {
+  #entry .formgrid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+  #entryFields { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 600px) {
+  #entry .formgrid, #entryFields { grid-template-columns: 1fr !important; }
+  #entry input, #entry select, #entryFields input, #entryFields select {
+    font-size: 12.5px;
+    min-height: 40px;
+    height: 40px;
+  }
+}
+
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
 /* FINAL ONE CUSTOM CHART UI */
@@ -454,7 +505,31 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 <div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
 </main>
 
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js">
+
+/* V40: previous-value placeholder helper.
+   The app can call setPreviousPlaceholder(input, value) after loading the
+   latest prior value for the same Entity + Project + Instrument + Account. */
+function setPreviousPlaceholder(input, value) {
+  if (!input) return;
+  const hasValue = value !== undefined && value !== null && String(value).trim() !== "";
+  if (!hasValue) {
+    input.placeholder = "";
+    input.classList.remove("previous-placeholder");
+    return;
+  }
+  const n = Number(value);
+  input.placeholder = Number.isFinite(n) ? n.toFixed(2) : String(value);
+  input.classList.add("previous-placeholder");
+}
+function clearPreviousPlaceholderOnInput(input) {
+  if (!input) return;
+  input.addEventListener("input", function () {
+    input.classList.remove("previous-placeholder");
+  }, { once: true });
+}
+
+</script>
 <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz5FeeE5v5tGh7beoKX3Hx3ZTjPFD9CB6Xov9_QDSYrdfzxLjfunW_a0tcpxSarDFIL/exec";
@@ -1312,7 +1387,33 @@ function entryCategoryChanged(i){const base=projectItemRows().length;const d=ent
 function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=(Number(bank.value)||0)+(Number(brs.value)||0);books.value=v.toFixed(2);}}});syncDraftFromDom();updateEntrySummary();}
 function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
 function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
-async function addBankAccountPrompt(i){const base=projectItemRows().length;syncDraftFromDom();const d=entryDraftRows[i-base];if(!d)return;if(d.instrument!=='Bank')return;const name=(prompt('Enter Bank Account name:')||'').trim();if(!name)return;const category=d.category||'Liquid';try{const r=await apiPost({action:'addBankAccount',entity:$("eEntity").value,projectCode:$("eProject").value,account:name,category,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add bank account');treasuryItems=treasuryItems.filter(x=>x.itemId!==r.itemId);treasuryItems.push({itemId:r.itemId,entity:String($("eEntity").value).toUpperCase(),project:String($("eProject").value).toUpperCase(),instrument:'Bank',account:r.account,category:r.category,active:true});d.account=r.account;renderEntryFields();note(r.created===false?'✓ Bank account already available.':'✓ Bank account added.');}catch(e){note(e.message,true)}}
+async function addBankAccountPrompt(i){
+  const base=projectItemRows().length;
+  syncDraftFromDom();
+  const d=entryDraftRows[i-base];
+  if(!d || d.instrument!=='Bank') return;
+  const entity=$("eEntity")?.value||'';
+  const project=$("eProject")?.value||'';
+  if(!entity||!project){note('Please select Entity and Project first.',true);return;}
+  const name=(prompt('Enter Bank Account / Account Name:')||'').trim();
+  if(!name)return;
+  const category=d.category||'Liquid';
+  try{
+    note('Adding bank account…');
+    const r=await apiPost({
+      action:'addBankAccount',entity,projectCode:project,account:name,category,
+      username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent
+    });
+    if(!r || r.status!=='ok') throw Error(r?.message||'Could not add bank account.');
+    // Reload the authoritative item master from Apps Script instead of relying on
+    // the browser's old list. This makes the new account immediately available.
+    await loadAll();
+    const fresh=bankItemsForCurrent().find(x=>String(x.itemId||'')===String(r.itemId||'')) || bankItemsForCurrent().find(x=>String(x.account||'').toUpperCase()===name.toUpperCase());
+    if(fresh)d.account=fresh.account;
+    renderEntryFields();
+    note(r.created===false?'✓ Bank account already existed; it is now available.':'✓ Bank account added successfully.');
+  }catch(e){note(e?.message||'Could not add bank account.',true);}
+}
 async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
 async function saveOneEntryRow(r,idx,existing){
   const p={action:'save',date:$("eDate").value,entity:$("eEntity").value,projectCode:$("eProject").value,itemId:existing?r.itemId:'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?n(r.bankBalance):0,brs:r.instrument==='Bank'?n(r.brs):0,booksBalance:r.instrument==='Bank'?0:n(r.booksBalance),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
