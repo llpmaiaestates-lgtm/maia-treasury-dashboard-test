@@ -773,25 +773,22 @@ function apiGetJSONP(action){
 async function apiPost(payload){
   if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");
   const body={...payload,username:payload?.username||maiaCurrentUser.email||""};
-  // Google Apps Script web-app POST responses can be blocked by browser CORS/redirect
-  // handling. Use JSONP GET for writes so the browser receives the response reliably.
-  return await apiWriteJSONP(body);
-}
-function apiWriteJSONP(payload){
-  return new Promise((resolve,reject)=>{
-    const cb="maiaWrite_"+Date.now()+"_"+Math.floor(Math.random()*100000);
-    const script=document.createElement("script");
-    let encoded;
-    try{ encoded=encodeURIComponent(JSON.stringify(payload)); }
-    catch(e){ reject(Error("Could not prepare the Google Apps Script request.")); return; }
-    const url=API_URL+"?action="+encodeURIComponent(payload.action||"save")+"&payload="+encoded+"&_ts="+Date.now()+"&callback="+cb;
-    const timer=setTimeout(()=>{cleanup();reject(Error("Google Apps Script request timed out."))},30000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
-    window[cb]=data=>{cleanup();resolve(data)};
-    script.onerror=()=>{cleanup();reject(Error("Google Apps Script request failed."))};
-    script.src=url;
-    document.head.appendChild(script);
-  });
+  // Google Apps Script web-app redirects can prevent a GitHub Pages browser
+  // from reading a cross-origin POST response. A simple no-cors POST avoids
+  // the CORS response-read problem; Apps Script still receives and executes it.
+  // The save caller verifies the write afterward with a normal GET.
+  try{
+    await fetch(API_URL,{
+      method:"POST",
+      mode:"no-cors",
+      body:JSON.stringify(body),
+      cache:"no-store",
+      keepalive:false
+    });
+    return {status:"accepted",message:"Save request submitted."};
+  }catch(e){
+    throw Error("Google Apps Script request failed. Please retry.");
+  }
 }
 function normalizeRows(data){
   const arr=data.data||data.rows||data.records||[];
@@ -1614,12 +1611,28 @@ async function saveEntry(){
   note(`Saving ${items.length} treasury item${items.length===1?'':'s'}…`,false,30000);
   try{
     const res=await apiPost({action:'saveBatch',date,entity,projectCode:project,items,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent,inputUnit:'INR'});
-    if(!res||res.status!=='ok')throw Error(res?.message||'Treasury save failed.');
+    if(!res||res.status!=='accepted')throw Error(res?.message||'Treasury save request failed.');
+    note('Save request submitted. Verifying with Google Sheets…',false,15000);
+    let verified=false;
+    for(let attempt=0;attempt<6;attempt++){
+      await new Promise(r=>setTimeout(r,1000));
+      try{
+        const b=await apiGet('getBootstrap');
+        const data=Array.isArray(b?.data)?b.data:[];
+        const matches=data.filter(x=>String(x.date||'').slice(0,10)===date && String(x.entity||'').toUpperCase()===String(entity).toUpperCase() && String(x.project||'').toUpperCase()===String(project).toUpperCase());
+        if(matches.length>=items.length){verified=true;break;}
+      }catch(e){}
+    }
     entryDraftRows=[];
     renderEntryFields();
     renderDashboard();
-    note(`✓ ${res.message||'Treasury data saved successfully.'}`);
-    status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
+    if(verified){
+      note('✓ Treasury table saved successfully.');
+      status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
+    }else{
+      note('Save request was submitted, but Google Sheets could not be verified yet. Please refresh once before entering the same data again.',true,15000);
+      status('Save submitted · verification pending');
+    }
     loadAll(true).catch(()=>{});
   }catch(e){
     note(e?.message||'Treasury save failed.',true);
