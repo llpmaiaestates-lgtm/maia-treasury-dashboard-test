@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MAIA Treasury Dashboard V38 Final - Secure</title>
+<meta name="maia-ui-version" content="V40-ITEM-LEVEL-FINAL"><title>MAIA Treasury Dashboard V40 - Secure</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin>
@@ -186,6 +186,25 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .entry-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px}.entry-table{width:100%;min-width:1060px;border-collapse:collapse}.entry-table th{background:#f1f5f2;text-align:left!important}.entry-table td{vertical-align:top;text-align:left!important}.entry-table input,.entry-table select{width:100%;min-width:120px}.entry-table .instrument-col{min-width:135px}.entry-table .account-col{min-width:260px}.entry-table .category-col{min-width:125px}.entry-table .amount-col{min-width:135px}.entry-table .action-col{min-width:130px}.entry-row-existing td{background:#fbfcfb}.entry-row-new td{background:#fffdf7}.entry-row-existing .readonly-field{background:#f3f6f3;color:#52635a}.entry-account-actions{display:flex;gap:6px;align-items:center;margin-top:5px}.entry-account-actions button{white-space:nowrap}.entry-inline-note{font-size:10px;color:var(--muted);margin-top:4px}.entry-actions{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}.entry-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}.entry-summary-box{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fafcfb}.entry-summary-box span{display:block;font-size:9px;text-transform:uppercase;color:var(--muted);letter-spacing:.7px}.entry-summary-box b{display:block;margin-top:4px;font-size:16px;color:var(--forest)}
 @media(max-width:1000px){.entry-summary{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.entry-summary{grid-template-columns:1fr 1fr}.entry-summary-box b{font-size:14px}}
+
+/* ===== V40 FINAL ITEM-LEVEL TREASURY UI ===== */
+.entry-table-wrap{overflow-x:auto;width:100%;border:1px solid var(--line);border-radius:9px;background:#fff}
+.entry-table{width:100%;min-width:1060px;border-collapse:collapse}
+.entry-table th{background:#f1f5f2;color:#52635a;text-transform:uppercase;font-size:10px;letter-spacing:.6px;padding:11px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+.entry-table td{padding:9px 10px;border-bottom:1px solid #eef2ef;vertical-align:middle}
+.entry-table tr:last-child td{border-bottom:0}
+.entry-table select,.entry-table input{width:100%;height:40px}
+.entry-table .instrument-col{width:170px;min-width:170px}
+.entry-table .account-col{width:300px;min-width:300px}
+.entry-table .category-col{width:155px;min-width:155px}
+.entry-table .amount-col{width:150px;min-width:150px}
+.entry-table .action-col{width:45px;min-width:45px;text-align:center}
+.entry-account-actions{margin-top:5px}
+.entry-account-actions .btn{font-size:10px;padding:5px 8px}
+.entry-row-delete{width:28px;height:28px;border:1px solid #e5c0c0;border-radius:6px;background:#fff;color:var(--red);font-size:18px;line-height:1;cursor:pointer}
+.entry-row-delete:hover{background:#fff6f6}
+.entry-view-pill{font-size:9px;color:var(--muted)}
+.entry-table input:disabled,.entry-table select:disabled{background:#f7f9f7;color:#6d7b73;opacity:1}
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
 /* FINAL ONE CUSTOM CHART UI */
@@ -337,7 +356,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 </section>
 
 <section id="entry" class="page">
-  <div class="head"><div><div class="eyebrow">Daily update</div><div class="title">Data Entry</div><div class="sub">One treasury table per Date + Entity + Project. Bank accounts are reusable; other instruments use fixed particulars.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Daily update</div><div class="title">Data Entry</div><div class="sub">Enter treasury items for the selected Date + Entity + Project. One table handles all instruments.</div></div></div>
   <div class="card cardpad">
     <div class="formgrid">
       <div class="fg"><label>Date *</label><input id="eDate" type="date" onchange="loadEntry()"></div>
@@ -430,21 +449,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
         <tbody id="masterTable"></tbody>
       </table>
     </div>
-  </div>
-
-  <div class="card cardpad" style="margin-top:16px;display:none">
-    <div class="ct" style="margin-bottom:4px">Treasury Columns</div>
-    <div class="sub" style="margin-bottom:12px">Rename existing columns or add a new numeric treasury column. New columns appear in Data Entry and the dashboard table.</div>
-    <div id="columnManager"></div>
-    <div class="formgrid" style="grid-template-columns:1fr 1.6fr 120px 130px 130px;align-items:end;margin-top:14px">
-      <div class="fg"><label>New Column Key *</label><input id="newColKey" placeholder="commercial_paper"></div>
-      <div class="fg"><label>Column Name *</label><input id="newColLabel" placeholder="Commercial Paper"></div>
-      <div class="fg"><label>Include in Total</label><select id="newColTotal"><option value="no">No</option><option value="yes">Yes</option></select></div>
-      <div class="fg"><label>Include in Liquid</label><select id="newColLiquid"><option value="no">No</option><option value="yes">Yes</option></select></div>
-      <button class="btn primary" onclick="addColumn()">+ Add Column</button>
-    </div>
-  </div>
-</section>
+  </div></section>
 
 <div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
 </main>
@@ -1259,17 +1264,31 @@ const V40_FIXED_ACCOUNTS={
 };
 function projectItemRows(){const d=$("eDate")?.value||"",e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return itemRows.filter(r=>r.date===d&&String(r.entity||"").toUpperCase()===e&&String(r.project||"").toUpperCase()===p);}
 function bankItemsForCurrent(){const e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return treasuryItems.filter(x=>x.active!==false&&String(x.entity||"").toUpperCase()===e&&String(x.project||"").toUpperCase()===p&&x.instrument==='Bank');}
-function entryRowTemplate(row={},isNew=false,index=0){const instrument=row.instrument||'Bank', account=row.account||'', category=row.category||'Liquid', admin=isAdminUser();const existing=!isNew&&row.itemId;const userReadonly=existing && !admin;const fixed=instrument!=='Bank';
+function entryRowTemplate(row={},isNew=false,index=0){
+  const instrument=row.instrument||'Bank';
+  const account=row.account||'';
+  const category=row.category||'Liquid';
+  const existing=!isNew&&row.itemId;
+  const userReadonly=existing&&!isAdminUser();
+  const fixed=instrument!=='Bank';
   const instrOpts=V40_INSTRUMENTS.map(v=>`<option value="${esc(v)}" ${v===instrument?'selected':''}>${esc(v)}</option>`).join('');
   const cats=V40_CATEGORIES.map(v=>`<option value="${esc(v)}" ${v===category?'selected':''}>${esc(v)}</option>`).join('');
-  let accOpts='';if(instrument==='Bank'){const banks=bankItemsForCurrent();accOpts=`<option value="">Select Bank Account</option>`+banks.map(x=>`<option value="${esc(x.account)}" data-item-id="${esc(x.itemId)}" ${x.account===account?'selected':''}>${esc(x.account)}</option>`).join('');}else{accOpts=V40_FIXED_ACCOUNTS[instrument].map(v=>`<option value="${esc(v)}" ${v===account?'selected':''}>${esc(v)}</option>`).join('');}
-  const bank=(instrument==='Bank');const bankBal=bank?(row.bankBalance??''):'';const brs=bank?(row.brs??''):'';const books=bank?(Number(row.booksBalance??(Number(bankBal||0)+Number(brs||0))).toFixed(2)):(row.booksBalance??'');
-  const disabledExisting=userReadonly?'disabled':'';
-  const action=existing?(admin?`<button class="btn sm danger" onclick="deleteEntryRow(${index})">Delete</button>`:`<span class="entry-inline-note">View only</span>`):`<button class="btn sm" onclick="removeEntryDraftRow(${index})">Remove</button>`;
+  let accOpts='';
+  if(instrument==='Bank'){
+    const banks=bankItemsForCurrent();
+    accOpts=`<option value="">Select Bank Account</option>`+banks.map(x=>`<option value="${esc(x.account)}" ${x.account===account?'selected':''}>${esc(x.account)}</option>`).join('');
+  }else{
+    accOpts=(V40_FIXED_ACCOUNTS[instrument]||[]).map(v=>`<option value="${esc(v)}" ${v===account?'selected':''}>${esc(v)}</option>`).join('');
+  }
+  const bank=instrument==='Bank';
+  const bankBal=bank?(row.bankBalance??''):'';
+  const brs=bank?(row.brs??''):'';
+  const books=bank?Number(row.booksBalance??(Number(bankBal||0)+Number(brs||0))).toFixed(2):(row.booksBalance??'');
+  const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<button type="button" class="entry-row-delete" title="Remove row" onclick="removeEntryDraftRow(${index})">×</button>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
-    <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${disabledExisting}>${instrOpts}</select></td>
-    <td class="account-col"><select class="entry-account" onchange="entryAccountChanged(${index})" ${disabledExisting}>${accOpts}</select>${bank?`<div class="entry-account-actions"><button type="button" class="btn sm" onclick="addBankAccountPrompt(${index})">+ Add Bank Account</button></div>`:''}<div class="entry-inline-note">${existing?'Existing item':'New item'}</div></td>
-    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${disabledExisting}>${cats}</select></td>
+    <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
+    <td class="account-col"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select>${bank?`<div class="entry-account-actions"><button type="button" class="btn sm" onclick="addBankAccountPrompt(${index})" ${existing||userReadonly?'disabled':''}>+ Add Bank Account</button></div>`:''}</td>
+    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${existing||userReadonly?'disabled':''}>${cats}</select></td>
     <td class="amount-col"><input class="entry-bank" type="number" step=".01" value="${esc(bankBal)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-brs" type="number" step=".01" value="${esc(brs)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-books" type="number" step=".01" value="${esc(books)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${bank||userReadonly?'disabled':''}></td>
@@ -1277,14 +1296,15 @@ function entryRowTemplate(row={},isNew=false,index=0){const instrument=row.instr
   </tr>`;
 }
 function renderEntryFields(){
-  const wrap=$("entryFields");if(!wrap)return;const rs=projectItemRows();const list=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
-  if(!list.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
+  const wrap=$("entryFields");if(!wrap)return;
+  const rs=projectItemRows();
+  if(!rs.length&&!entryDraftRows.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
   const finalList=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
-  wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument</th><th class="account-col">Account / Investment</th><th class="category-col">Category</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col">Action</th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div><div id="entrySummary" class="entry-summary"></div>`;
-  syncDraftFromDom();updateEntrySummary();applyEntryPermissions();
+  wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument ▼</th><th class="account-col">Account / Investment ▼</th><th class="category-col">Category ▼</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col" aria-label="Row action"></th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div>`;
+  syncDraftFromDom();applyEntryPermissions();
 }
 function syncDraftFromDom(){const rowsEl=[...document.querySelectorAll('#entryFields tbody tr')];rowsEl.forEach((tr,i)=>{if(tr.classList.contains('entry-row-existing'))return;const d=entryDraftRows.find((x,idx)=>idx===i-projectItemRows().length);if(!d)return;d.instrument=tr.querySelector('.entry-instrument')?.value||'Bank';d.account=tr.querySelector('.entry-account')?.value||'';d.category=tr.querySelector('.entry-category')?.value||'Liquid';d.bankBalance=tr.querySelector('.entry-bank')?.value||'';d.brs=tr.querySelector('.entry-brs')?.value||'';d.booksBalance=tr.querySelector('.entry-books')?.value||'';});}
-function updateEntrySummary(){const box=$("entrySummary");if(!box)return;const rs=projectItemRows();const draft=[...entryDraftRows];const instTotal=(inst)=>rs.filter(r=>r.instrument===inst).reduce((s,r)=>s+(inst==='Bank'?n(r.bankBalance):n(r.booksBalance)),0);const bank=instTotal('Bank')+draft.filter(r=>r.instrument==='Bank').reduce((s,r)=>s+n(r.bankBalance),0);const fd=instTotal('FD')+draft.filter(r=>r.instrument==='FD').reduce((s,r)=>s+n(r.booksBalance),0);const sweep=instTotal('Sweep FD')+draft.filter(r=>r.instrument==='Sweep FD').reduce((s,r)=>s+n(r.booksBalance),0);const mf=instTotal('Mutual Fund')+draft.filter(r=>r.instrument==='Mutual Fund').reduce((s,r)=>s+n(r.booksBalance),0);const bonds=instTotal('Bonds / Debentures')+draft.filter(r=>r.instrument==='Bonds / Debentures').reduce((s,r)=>s+n(r.booksBalance),0);const totalCurrent=bank+fd+sweep+mf+bonds;const liquidCurrent=rs.reduce((s,r)=>s+(r.category==='Liquid'?(r.instrument==='Bank'?n(r.bankBalance):n(r.booksBalance)):0),0)+draft.reduce((s,r)=>{const v=r.instrument==='Bank'?n(r.bankBalance):n(r.booksBalance);return s+(r.category==='Liquid'?v:0)},0);box.innerHTML=`<div class="entry-summary-box"><span>Bank Balance</span><b>${fmtCell(bank)}</b></div><div class="entry-summary-box"><span>FD</span><b>${fmtCell(fd)}</b></div><div class="entry-summary-box"><span>Sweep FD</span><b>${fmtCell(sweep)}</b></div><div class="entry-summary-box"><span>Mutual Funds</span><b>${fmtCell(mf)}</b></div><div class="entry-summary-box"><span>Bonds / Debentures</span><b>${fmtCell(bonds)}</b></div><div class="entry-summary-box"><span>Total Treasury</span><b>${fmtCell(totalCurrent)}</b></div><div class="entry-summary-box"><span>Liquid</span><b>${fmtCell(liquidCurrent)}</b></div><div class="entry-summary-box"><span>Rows</span><b>${rs.length+draft.length}</b></div>`;}
+
 function entryInstrumentChanged(i){syncDraftFromDom();const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);if(!tr)return;const instrument=tr.querySelector('.entry-instrument').value;const row=entryDraftRows[i-projectItemRows().length]||{};row.instrument=instrument;row.account='';row.category='Liquid';row.bankBalance='';row.brs='';row.booksBalance='';if(instrument!=='Bank'){const opts=V40_FIXED_ACCOUNTS[instrument]||[];row.account=opts[0]||'';row.category=parseFixedCategoryClient(row.account);}renderEntryFields();}
 function parseFixedCategoryClient(v){const s=String(v||'');const hit=V40_CATEGORIES.find(c=>new RegExp(' - '+c+'$','i').test(s));return hit||'Liquid';}
 function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();}
