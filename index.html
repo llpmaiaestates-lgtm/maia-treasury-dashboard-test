@@ -26,6 +26,8 @@ input,select,textarea{font-family:"Times New Roman",Times,serif;font-size:inheri
 .note{padding:10px 12px;background:var(--forest3);border:1px solid #cfe0d5;border-radius:8px;color:#315542;margin-bottom:13px;font-size:12px}.warn{background:#fbf5e6;border-color:#ead8a9;color:#71551c}
 .compare-controls{display:flex;gap:9px;align-items:end;flex-wrap:wrap}.control label{display:block;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}
 .compare-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.sum{padding:14px;background:#fff;border:1px solid var(--line);border-radius:9px}.sum b{font:700 19px "Times New Roman",Times,serif}.sum span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.movement-remark-cell{min-width:300px;width:320px;text-align:left!important;white-space:normal!important}.movement-remark-wrap{display:flex;gap:7px;align-items:flex-start}.movement-remark-input{width:100%;min-height:46px;resize:vertical;padding:7px 8px;line-height:1.25}.movement-remark-input[readonly]{background:#f7f9f7;color:#59675f;cursor:default}.movement-remark-save{flex:0 0 auto;align-self:flex-start}.movement-remark-meta{font-size:10px;color:var(--muted);margin-top:4px}.movement-remark-locked{font-size:10px;color:#7a5b22;margin-top:4px}
+@media(max-width:650px){.movement-remark-cell{min-width:250px;width:250px}.movement-remark-wrap{flex-direction:column}.movement-remark-save{width:100%}}
  .auditfilters{display:flex;gap:8px;flex-wrap:wrap}.audit-detail,.reasontext{font-size:11px;color:#46564d;max-width:330px;white-space:normal;text-align:left}
 .export-modal{position:fixed;inset:0;background:rgba(10,35,25,.42);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}.export-dialog{width:min(920px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:12px;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.2)}.export-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.export-head b{font-size:17px;color:var(--forest)}.export-body{padding:14px 18px}.remarks-table{width:100%;min-width:0}.remarks-table th{background:#f1f5f2}.remarks-table td,.remarks-table th{padding:8px}.remarks-table td{text-align:left}.remarks-table input{width:100%;padding:7px 8px}.export-foot{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.export-note{font-size:11px;color:var(--muted);margin-bottom:10px}
 .entitygrid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px}.list{display:flex;flex-wrap:wrap;gap:8px}.entitychip{border:1px solid var(--line);padding:8px 10px;border-radius:8px;background:#fafcfb;display:flex;gap:7px;align-items:center}.entitychip b{color:var(--forest)}.entitychip button{border:0;background:none;cursor:pointer;color:var(--red)}
@@ -179,10 +181,15 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 .custom-one-controls{grid-template-columns:repeat(4,minmax(180px,1fr))!important}
 @media(max-width:1100px){.custom-one-controls{grid-template-columns:repeat(2,minmax(220px,1fr))!important}}
 @media(max-width:650px){.custom-one-controls{grid-template-columns:1fr!important}}
+
+/* V40 item-level Data Entry */
+.entry-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px}.entry-table{width:100%;min-width:1060px;border-collapse:collapse}.entry-table th{background:#f1f5f2;text-align:left!important}.entry-table td{vertical-align:top;text-align:left!important}.entry-table input,.entry-table select{width:100%;min-width:120px}.entry-table .instrument-col{min-width:135px}.entry-table .account-col{min-width:260px}.entry-table .category-col{min-width:125px}.entry-table .amount-col{min-width:135px}.entry-table .action-col{min-width:130px}.entry-row-existing td{background:#fbfcfb}.entry-row-new td{background:#fffdf7}.entry-row-existing .readonly-field{background:#f3f6f3;color:#52635a}.entry-account-actions{display:flex;gap:6px;align-items:center;margin-top:5px}.entry-account-actions button{white-space:nowrap}.entry-inline-note{font-size:10px;color:var(--muted);margin-top:4px}.entry-actions{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}.entry-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}.entry-summary-box{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fafcfb}.entry-summary-box span{display:block;font-size:9px;text-transform:uppercase;color:var(--muted);letter-spacing:.7px}.entry-summary-box b{display:block;margin-top:4px;font-size:16px;color:var(--forest)}
+@media(max-width:1000px){.entry-summary{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.entry-summary{grid-template-columns:1fr 1fr}.entry-summary-box b{font-size:14px}}
 </style>
 <style>.holiday-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fafcfb;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:12px}.kpi-move{font-size:13px!important}.kprev span{font-size:12px!important;text-transform:none!important;letter-spacing:0!important}.kprev b{display:inline-block;margin-left:8px}.status-symbol{margin-left:4px}.status-symbol.updated{color:#267447}.status-symbol.modified{color:#b18a3a}.status-symbol.pending{color:#9a6b2f}
 /* FINAL ONE CUSTOM CHART UI */
-.custom-one-card{overflow:visible!important}.custom-one-card .cardhead{align-items:center}.custom-chart-actions{display:flex;gap:7px;align-items:center}.custom-one-controls{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;padding:16px 18px 8px}.custom-one-controls .control label,.custom-one-date .control label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800;margin-bottom:5px}.custom-one-controls select,.custom-one-date select,.custom-one-date input{width:100%;height:40px}.custom-one-date{display:flex;gap:12px;align-items:end;flex-wrap:wrap;padding:0 18px 8px}.custom-one-date .control{min-width:200px;flex:1}.one-date-fixed{height:40px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;display:flex;align-items:center;gap:9px;padding:0 10px;color:var(--muted);font-weight:700}.one-date-fixed input{border:0;padding:0;height:38px;flex:1;min-width:145px;box-shadow:none!important}.custom-one-note{padding:0 18px 8px;color:var(--muted);font-size:11px;min-height:22px}.custom-one-stage{min-height:480px;height:auto;padding:4px 18px 18px;position:relative;overflow:visible}.one-chart-scroller{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:5px}.one-chart-scroller canvas{display:block;height:470px!important}.custom-saved-card{margin-bottom:0!important}.saved-chart-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.saved-chart-row:last-child{border-bottom:0}.saved-chart-name{font-weight:700;color:var(--forest)}.saved-chart-meta{font-size:10px;color:var(--muted);margin-top:2px}@media(max-width:950px){.custom-one-controls{grid-template-columns:1fr 1fr}.custom-one-date .control{min-width:180px}}@media(max-width:650px){.custom-one-controls{grid-template-columns:1fr}.custom-one-date{flex-direction:column;align-items:stretch}.custom-one-stage{padding-left:10px;padding-right:10px}.saved-chart-row{grid-template-columns:1fr}.custom-chart-actions{align-self:flex-end}}
+.custom-one-card{overflow:visible!important}.custom-one-card .cardhead{align-items:center}.custom-chart-actions{display:flex;gap:7px;align-items:center}.custom-one-controls{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;padding:16px 18px 8px}.custom-one-controls .control label,.custom-one-date .control label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:800;margin-bottom:5px}.custom-one-controls select,.custom-one-date select,.custom-one-date input{width:100%;height:40px}.custom-one-date{display:flex;gap:12px;align-items:end;flex-wrap:wrap;padding:0 18px 8px}.custom-one-date .control{min-width:200px;flex:1}.one-date-fixed{height:40px;border:1px solid #ccd8d0;border-radius:7px;background:#fff;display:flex;align-items:center;gap:9px;padding:0 10px;color:var(--muted);font-weight:700}.one-date-fixed input{border:0;padding:0;height:38px;flex:1;min-width:145px;box-shadow:none!important}.custom-one-note{padding:0 18px 8px;color:var(--muted);font-size:11px;min-height:22px}.one-chart-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:stretch;padding:0 18px 18px}.custom-one-stage{min-height:480px;height:auto;padding:4px 0 0;position:relative;overflow:visible}.one-chart-scroller{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:5px}.one-chart-scroller canvas{display:block;height:470px!important}.chart-detail-panel{display:none;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(25,55,40,.08);overflow:hidden;align-self:stretch}.chart-detail-panel.open{display:flex;flex-direction:column}.chart-detail-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid var(--line);background:#f7faf8}.chart-detail-kicker{font-size:9px;text-transform:uppercase;letter-spacing:.75px;color:var(--muted);font-weight:800}.chart-detail-title{font-size:14px;color:var(--forest);font-weight:800;margin-top:2px}.chart-detail-total{font-size:12px;color:var(--ink);font-weight:800;margin-top:4px}.chart-detail-close{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:3px 5px}.chart-detail-body{padding:10px 12px;overflow:auto;max-height:480px}.chart-detail-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #edf1ee;font-size:11px}.chart-detail-row:last-child{border-bottom:0}.chart-detail-row span{color:var(--muted)}.chart-detail-row b{color:var(--ink);white-space:nowrap}.chart-detail-empty{padding:18px 4px;color:var(--muted);font-size:11px;line-height:1.4}@media(max-width:900px){.one-chart-layout{grid-template-columns:1fr}.chart-detail-panel.open{min-height:220px}.chart-detail-body{max-height:360px}}@media(max-width:650px){.one-chart-layout{padding:0 10px 14px}.custom-one-stage{min-height:420px}.one-chart-scroller canvas{height:430px!important}}.custom-saved-card{margin-bottom:0!important}.saved-chart-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.saved-chart-row:last-child{border-bottom:0}.saved-chart-name{font-weight:700;color:var(--forest)}.saved-chart-meta{font-size:10px;color:var(--muted);margin-top:2px}@media(max-width:950px){.custom-one-controls{grid-template-columns:1fr 1fr}.custom-one-date .control{min-width:180px}}@media(max-width:650px){.custom-one-controls{grid-template-columns:1fr}.custom-one-date{flex-direction:column;align-items:stretch}.custom-one-stage{padding-left:10px;padding-right:10px}.saved-chart-row{grid-template-columns:1fr}.custom-chart-actions{align-self:flex-end}}
 </style><style>/* Firebase Authentication */
 #loginScreen{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#eef4f0 0%,#f7f8f6 52%,#f3eee2 100%)}
 #loginScreen.hidden{display:none!important}
@@ -330,15 +337,16 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 </section>
 
 <section id="entry" class="page">
-  <div class="head"><div><div class="eyebrow">Daily update</div><div class="title">Data Entry</div><div class="sub">One record per Date + Entity + Project. Existing records are updated, not duplicated.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Daily update</div><div class="title">Data Entry</div><div class="sub">One treasury table per Date + Entity + Project. Bank accounts are reusable; other instruments use fixed particulars.</div></div></div>
   <div class="card cardpad">
     <div class="formgrid">
-      <div class="fg"><label>Date *</label><input id="eDate" type="date"></div>
-      <div class="fg"><label>Entity *</label><select id="eEntity" onchange="loadEntryProjects()"></select></div><div class="fg"><label>Project *</label><select id="eProject" onchange="loadEntry()"></select></div>
-      <div id="entryFields" class="formgrid" style="grid-column:1/-1"></div>
-      <div class="fg wide"><label>Computed Preview</label><div id="previewBox" class="preview">Total Funds: ₹0.00 Cr · Liquid Funds: ₹0.00 Cr</div></div>
+      <div class="fg"><label>Date *</label><input id="eDate" type="date" onchange="loadEntry()"></div>
+      <div class="fg"><label>Entity *</label><select id="eEntity" onchange="loadEntryProjects()"></select></div>
+      <div class="fg"><label>Project *</label><select id="eProject" onchange="loadEntry()"></select></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:14px"><button id="saveBtn" class="btn primary" onclick="saveEntry()">Save New Entry</button><button class="btn" onclick="clearEntry()">Clear</button></div><div id="entryReadonlyNote" class="entry-readonly-note hidden">Existing entries are view-only for User access.</div>
+    <div id="entryFields" style="margin-top:16px"></div>
+    <div class="entry-actions"><button id="addEntryRowBtn" class="btn" onclick="addEntryDraftRow()">+ Add Row</button><button class="btn primary" onclick="saveEntry()" id="saveBtn">Save Table</button><button class="btn" onclick="clearEntry()">Clear</button></div>
+    <div id="entryReadonlyNote" class="entry-readonly-note hidden">Existing entries are view-only for User access. You can still add a new treasury item.</div>
   </div>
   <div class="card cardpad" style="margin-top:16px">
     <div class="ct" style="margin-bottom:4px">Office Holidays</div>
@@ -355,7 +363,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 <section id="compare" class="page">
   <div class="head"><div><div class="eyebrow">Movement analysis</div><div class="title">Entity-wise Comparison</div><div class="sub">Compare Total Funds entity by entity and identify the major reason for movement.</div></div></div>
   <div class="card cardpad"><div class="compare-controls">
-    <div class="control"><label>From Date</label><input id="c1" type="date"></div><div class="control"><label>To Date</label><input id="c2" type="date"></div>
+    <div class="control"><label>From Date</label><input id="c1" type="date" onchange="clearCompareView()"></div><div class="control"><label>To Date</label><input id="c2" type="date" onchange="clearCompareView()"></div>
     <button class="btn primary" onclick="renderCompare()">Compare</button>
   </div></div>
   <div id="compareSummary" class="compare-summary"></div>
@@ -366,9 +374,9 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 
 
 <section id="charts" class="page">
-  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Treasury Chart</div><div class="sub">Build one chart from your treasury data using Category, up to 3 Metrics / Values, Chart Type and the applicable date option.</div></div></div>
+  <div class="head"><div><div class="eyebrow">Visual analysis</div><div class="title">Custom Treasury Chart</div><div class="sub">Build one chart from your treasury data using Category, up to 3 Metrics / Values, Chart Type and the applicable date option. Smart labels avoid overlap; click any bar or point for the full breakdown.</div></div></div>
   <div class="card custom-one-card">
-    <div class="cardhead"><div><div class="ct">Custom Chart</div><div class="cs">One fully configurable chart · values always shown</div></div><div class="custom-chart-actions"><button class="btn sm" onclick="resetOneCustomChart()">Reset</button><button class="btn sm primary" onclick="saveOneCustomChart()">Save Chart</button></div></div>
+    <div class="cardhead"><div><div class="ct">Custom Chart</div><div class="cs">One fully configurable chart · smart labels + click for full breakdown</div></div><div class="custom-chart-actions"><button class="btn sm" onclick="resetOneCustomChart()">Reset</button><button class="btn sm primary" onclick="saveOneCustomChart()">Save Chart</button></div></div>
     <div class="custom-one-controls">
       <div class="control"><label>CATEGORY / AXIS</label><select id="oneAxis" onchange="oneChartControlChanged()"></select></div>
       <div class="control"><label>METRIC / VALUE <span style="font-weight:700;color:var(--forest)">(up to 3)</span></label><div class="metric-multi" id="oneMetricMulti"><button type="button" class="metric-multi-btn" id="oneMetricBtn" onclick="toggleOneMetricMenu(event)">1 value selected</button><div class="metric-multi-menu" id="oneMetricMenu"></div></div><div class="metric-multi-help">Select up to three amount parameters.</div></div>
@@ -377,7 +385,16 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
     </div>
     <div id="oneDateControls" class="custom-one-date"></div>
     <div id="oneChartNote" class="custom-one-note"></div>
-    <div id="oneChartStage" class="custom-one-stage"></div>
+    <div class="one-chart-layout">
+      <div id="oneChartStage" class="custom-one-stage"></div>
+      <aside id="oneChartDetail" class="chart-detail-panel" aria-live="polite">
+        <div class="chart-detail-head">
+          <div><div class="chart-detail-kicker">Selected category</div><div id="oneChartDetailTitle" class="chart-detail-title">Select a bar</div><div id="oneChartDetailTotal" class="chart-detail-total"></div></div>
+          <button type="button" class="chart-detail-close" aria-label="Close details" onclick="closeOneChartDetail()">×</button>
+        </div>
+        <div id="oneChartDetailBody" class="chart-detail-body"><div class="chart-detail-empty">Click any bar, segment or point to see the full breakdown here.</div></div>
+      </aside>
+    </div>
   </div>
   <div class="card cardpad custom-saved-card">
     <div class="ct" style="margin-bottom:4px">Saved Charts</div>
@@ -415,7 +432,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
     </div>
   </div>
 
-  <div class="card cardpad" style="margin-top:16px">
+  <div class="card cardpad" style="margin-top:16px;display:none">
     <div class="ct" style="margin-bottom:4px">Treasury Columns</div>
     <div class="sub" style="margin-bottom:12px">Rename existing columns or add a new numeric treasury column. New columns appear in Data Entry and the dashboard table.</div>
     <div id="columnManager"></div>
@@ -605,12 +622,12 @@ function loadScriptOnce(key){if(window[LIB_URLS[key].global])return Promise.reso
 function ensureChartJs(){return loadScriptOnce("chart")}function ensureExcelJs(){return loadScriptOnce("excel")}function ensureHtml2Canvas(){return loadScriptOnce("canvas")}
 function warmChartLibrary(){ensureChartJs().then(()=>{if(typeof renderDashboardCharts==='function')renderDashboardCharts();if(document.getElementById("charts")?.classList.contains("active")){renderOneCustomChart()}}).catch(()=>{})}
 const REFRESH_MS = 10*60*1000;
-let rows=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL";
+let rows=[], itemRows=[], treasuryItems=[], entities=[], entityMeta=[], projects=[], audit=[], columns=[], officeHolidays=[], movementRemarks={}, selectedDate="", charts={}, selectedEntities=[], selectedProject="ALL", entryDraftRows=[];
 
 const $=id=>document.getElementById(id);
 const n=v=>Number(v)||0;
-const total=r=>+(columns.filter(c=>c.active!==false&&c.includeTotal).reduce((s,c)=>s+n(r[c.key]),0)).toFixed(2);
-const liquid=r=>+columns.filter(c=>c.active!==false&&c.liquidInclude===true).reduce((s,c)=>s+n(r[c.key]),0).toFixed(2);
+const total=r=>Number.isFinite(Number(r?.totalTreasury))?Number(r.totalTreasury):+(Number(r?.bank||0)+Number(r?.fd||0)+Number(r?.sweep||0)+Number(r?.mf||0)+Number(r?.bonds||0)).toFixed(2);
+const liquid=r=>Number.isFinite(Number(r?.liquid))?Number(r.liquid):0;
 const fmtNum=v=>{const x=Number(v)||0;return x<0?`(₹${Math.abs(x).toFixed(2)} Cr)`:`₹${x.toFixed(2)} Cr`};
 const fmtCell=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)})`:x.toFixed(2)};
 const fmtPct=v=>{const x=Number(v);if(!Number.isFinite(x))return "—";return x<0?`(${Math.abs(x).toFixed(2)}%)`:`${x.toFixed(2)}%`};
@@ -657,9 +674,9 @@ function apiGetJSONP(action){
     document.head.appendChild(script);
   });
 }
-async function apiPost(payload){if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
+async function apiPost(payload){if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");const body={...payload,username:payload?.username||maiaCurrentUser.email||""};const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(body)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
 function normalizeRows(data){const arr=data.data||data.rows||data.records||[];return arr.map(x=>({...x,date:String(x.date||"").slice(0,10),entity:String(x.entity||"").toUpperCase()})).filter(x=>x.date&&x.entity)}
-const BOOT_CACHE_KEY='maiaTreasuryBootstrapV39_FAST';
+const BOOT_CACHE_KEY='maiaTreasuryBootstrapV40_ITEM';
 const BOOT_CACHE_MAX_AGE_MS=60*60*1000;
 function restoreBootstrapCache(){
   try{
@@ -668,7 +685,9 @@ function restoreBootstrapCache(){
     const b=cached.payload;
     const age=Date.now()-Number(cached.ts||0);
     if(!Number.isFinite(age)||age<0||age>BOOT_CACHE_MAX_AGE_MS)return false;
-    rows=normalizeRows({data:b.data});
+    itemRows=normalizeRows({data:b.data});
+    rows=normalizeRows({data:b.summary||[]});
+    treasuryItems=Array.isArray(b.treasuryItems)?b.treasuryItems:[];
     entityMeta=Array.isArray(b.entityMeta)?b.entityMeta:[];
     entities=Array.isArray(b.entities)?b.entities:[];
     columns=Array.isArray(b.columns)?b.columns.map(x=>({...x,liquidInclude:x.liquidInclude!==undefined?!!x.liquidInclude:(x.liquidExclude!==true)})):defaultColumns();
@@ -677,7 +696,7 @@ function restoreBootstrapCache(){
     audit=Array.isArray(b.audit)?b.audit:[];
     savedCharts=Array.isArray(b.savedCharts)?b.savedCharts:[];
     officeHolidays=Array.isArray(b.holidays)?b.holidays:[];
-    const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();
+    const dates=[...new Set(itemRows.map(r=>r.date).filter(Boolean))].sort();
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates.at(-1)):'';
     populateControls(dates); renderEntryFields(); renderDashboard(); renderCompare(); renderAudit(); renderEntityMaster(); renderHolidayList();
     status('Cached · refreshing');
@@ -687,7 +706,7 @@ function restoreBootstrapCache(){
 }
 function saveBootstrapCache(b){
   try{
-    const payload={data:b.data||[],entityMeta,entities,columns,projects,audit:b.audit||[],savedCharts:b.savedCharts||[],holidays:officeHolidays};
+    const payload={data:b.data||[],summary:b.summary||[],treasuryItems:b.treasuryItems||[],entityMeta,entities,columns,projects,audit:b.audit||[],savedCharts:b.savedCharts||[],holidays:officeHolidays};
     localStorage.setItem(BOOT_CACHE_KEY,JSON.stringify({ts:Date.now(),payload}));
   }catch(e){}
 }
@@ -730,7 +749,9 @@ async function loadAll(){
     const b=await apiGet("getBootstrap");
     clearTimeout(slowHint);
     if(!b || b.status==="error") throw Error((b&&b.message)||"Treasury API error");
-    rows=normalizeRows({data:b.data||[]});
+    itemRows=normalizeRows({data:b.data||[]});
+    rows=normalizeRows({data:b.summary||[]});
+    treasuryItems=Array.isArray(b.treasuryItems)?b.treasuryItems:[];
     const master=(b.entities||[]);
     entityMeta=master.map(x=>typeof x==="string"?{entityCode:String(x).toUpperCase(),entityName:"",startDate:""}:{entityCode:String(x.entityCode||x.code||x.entity||x.name||"").toUpperCase(),entityName:String(x.entityName||""),startDate:String(x.startDate||"").slice(0,10)}).filter(x=>x.entityCode);
     // Active master entities are authoritative. If an entity has saved Treasury_Data rows
@@ -758,9 +779,10 @@ async function loadAll(){
     // remain visible even if their historical project is not yet in the master.
     audit=b.audit||[];
     officeHolidays=b.holidays||[];
+    movementRemarks=(b.movementRemarks&&typeof b.movementRemarks==="object")?b.movementRemarks:{};
     saveBootstrapCache(b);
     savedCharts=Array.isArray(b.savedCharts)?b.savedCharts:savedCharts;
-    const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();
+    const dates=[...new Set(itemRows.map(r=>r.date).filter(Boolean))].sort();
     selectedDate=dates.length?(selectedDate&&dates.includes(selectedDate)?selectedDate:dates[dates.length-1]):"";
     populateControls(dates);
     renderEntryFields();
@@ -824,98 +846,37 @@ async function addOfficeHoliday(){if(!isAdminUser()){note('Admin access required
 async function removeOfficeHoliday(date){if(!isAdminUser()){note('Admin access required.',true);return;}try{const r=await apiPost({action:'deleteHoliday',date,userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not remove holiday');await loadAll();note('✓ Office holiday removed.')}catch(e){note(e.message,true)}}
 
 function renderDashboard(){
-  selectedDate=$('headerDate').value||selectedDate;
-  const lu=$('headerLastUpdated');if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
+  selectedDate=$("headerDate")?.value||selectedDate;
+  const lu=$("headerLastUpdated");if(lu)lu.textContent=latestUpdatedForDate(selectedDate);
   renderProjectFilter();
   if(typeof Chart!=="undefined")renderDashboardCharts();
   if(typeof Chart!=="undefined" && $("charts")?.classList.contains("active"))renderOneCustomChart();
   const source=filteredRows(selectedDate);
   const prev=previousDataDate(selectedDate),pd=filteredRows(prev);
 
-  let T=0,L=0,R=0,RS=0,LO=0;
-  source.forEach(r=>{T+=total(r);L+=liquid(r);R+=n(r.reserve);RS+=n(r.restricted);LO+=n(r.locked_funds)});
-  const pT=pd.reduce((a,r)=>a+total(r),0),pL=pd.reduce((a,r)=>a+liquid(r),0),pR=pd.reduce((a,r)=>a+n(r.reserve),0),pRL=pd.reduce((a,r)=>a+n(r.restricted)+n(r.locked_funds),0);
-  const kpis=[['Total Funds',T,pT],['Liquid Funds',L,pL],['Reserve Fund',R,pR],['Restricted + Locked',RS+LO,pRL],['Submission',source.length,pd.length]];
-  $('kpis').innerHTML=kpis.map(x=>{
-    const has=prev!=='';const delta=x[1]-x[2];const pctMove=has&&x[2]!==0?(delta/Math.abs(x[2])*100):0;const sym=!has?'—':(delta>0?'↑':delta<0?'↓':'→');
-    const val=x[0]==='Submission'?String(x[1]):fmtNum(x[1]);const pv=has?(x[0]==='Submission'?String(x[2]):fmtNum(x[2])):'—';
-    return `<div class="kpi"><div class="kl">${x[0]}</div><div class="kv">${val}</div><div class="kprev"><span>vs ${pv}</span><b class="kpi-move ${delta>0?'pos':delta<0?'neg':'zero'}">${sym}${has&&x[0]!=='Submission'?` ${fmtPct(Math.abs(pctMove))}`:''}</b></div></div>`;
-  }).join('');
+  const totalNow=source.reduce((s,r)=>s+total(r),0), totalPrev=pd.reduce((s,r)=>s+total(r),0);
+  const liquidNow=source.reduce((s,r)=>s+liquid(r),0), liquidPrev=pd.reduce((s,r)=>s+liquid(r),0);
+  const bankNow=source.reduce((s,r)=>s+n(r.bank),0), fdNow=source.reduce((s,r)=>s+n(r.fd),0), sweepNow=source.reduce((s,r)=>s+n(r.sweep),0), mfNow=source.reduce((s,r)=>s+n(r.mf),0), bondsNow=source.reduce((s,r)=>s+n(r.bonds),0), brsNow=source.reduce((s,r)=>s+n(r.brs),0);
+  const reserveNow=source.reduce((s,r)=>s+n(r.reserved),0);
+  const restrictedNow=source.reduce((s,r)=>s+n(r.restricted),0);
+  const longTermNow=source.reduce((s,r)=>s+n(r.longTerm),0);
+  const kpis=[['Total Treasury',totalNow,totalPrev],['Liquid Funds',liquidNow,liquidPrev],['Long-term',longTermNow,pd.reduce((s,r)=>s+n(r.longTerm),0)],['Restricted',restrictedNow,pd.reduce((s,r)=>s+n(r.restricted),0)],['Projects Updated',source.length,pd.length]];
+  $("kpis").innerHTML=kpis.map(x=>{const has=prev!=='';const delta=x[1]-x[2];const pctMove=has&&x[2]!==0?(delta/Math.abs(x[2])*100):0;const sym=!has?'—':(delta>0?'↑':delta<0?'↓':'→');const val=x[0]==='Projects Updated'?String(x[1]):fmtNum(x[1]);const pv=has?(x[0]==='Projects Updated'?String(x[2]):fmtNum(x[2])):'—';return `<div class="kpi"><div class="kl">${x[0]}</div><div class="kv">${val}</div><div class="kprev"><span>vs ${pv}</span><b class="kpi-move ${delta>0?'pos':delta<0?'neg':'zero'}">${sym}${has&&x[0]!=='Projects Updated'?` ${fmtPct(Math.abs(pctMove))}`:''}</b></div></div>`;}).join('');
 
-  // Always merge the six core balance types with Treasury_Columns. This prevents
-  // an older backend response from accidentally hiding the core balances.
-  const coreDefs=[
-    {key:'bank',label:'Bank Balance',sort:1,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'sweep',label:'Sweep Deposit',sort:2,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'fd',label:'Fixed Deposits',sort:3,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'mf',label:'Mutual Funds',sort:4,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'bonds',label:'Bonds / Debentures',sort:5,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'brs',label:'BRS',sort:6,custom:false,includeTotal:true,liquidInclude:true},
-    {key:'reserve',label:'Reserve Fund',sort:7,custom:false,includeTotal:false,liquidInclude:false},
-    {key:'restricted',label:'Restricted Fund',sort:8,custom:false,includeTotal:false,liquidInclude:false},
-    {key:'locked_funds',label:'Locked Funds',sort:9,custom:false,includeTotal:false,liquidInclude:false}
-  ];
-  const byKey=new Map();
-  coreDefs.forEach(c=>byKey.set(c.key,{...c}));
-  columns.forEach(c=>byKey.set(c.key,{...c}));
-  const allDefs=[...byKey.values()].filter(c=>c.active!==false);
-  const hasData=c=>source.some(r=>r.__present&&r.__present[c.key]);
-  const balanceDefs0=allDefs.filter(c=>c.includeTotal===true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
-  const customNonTotal=allDefs.filter(c=>c.custom===true&&c.includeTotal!==true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
-  // Non-total custom balances are still balance columns and remain before Total Funds.
-  const balanceDefsAll=[...balanceDefs0,...customNonTotal];
-  const deductionDefs0=allDefs.filter(c=>c.includeTotal!==true&&c.custom!==true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
-  const liquidDefs=allDefs.filter(c=>c.liquidInclude===true&&hasData(c)).sort((a,b)=>(Number(a.sort)||999)-(Number(b.sort)||999));
-
-  let codeIndex=0;const codeFor=()=>letter(codeIndex++);
-  const balanceDefs=balanceDefsAll.map(c=>({c,code:codeFor()}));
-  const totalCode=codeFor();
-  const deductionDefs=deductionDefs0.map(c=>({c,code:codeFor()}));
-  const liquidRefByKey=new Map([...balanceDefs,...deductionDefs].map(x=>[x.c.key,x.code]));
-  const liquidRefs=liquidDefs.map(x=>liquidRefByKey.get(x.key)).filter(Boolean);
-  const liquidCode=codeFor(),movementCode=codeFor();
-  const th=(name,code,formula='')=>`<th><span class="th-name">${esc(name)}</span>${formula?`<span class="th-formula">${esc(formula)}</span>`:''}<span class="th-code">(${code.toUpperCase()})</span></th>`;
-  const thFormulaOnly=(name,formula)=>`<th><span class="th-name">${esc(name)}</span><span class="th-formula">${esc(formula)}</span></th>`;
-  let head=`<tr class="treasury-head"><th><span class="th-name">ENTITY</span></th><th class="project-head"><span class="th-name">PROJECT NAME</span></th>`;
-  balanceDefs.forEach(x=>head+=th(x.c.label,x.code));
-  const totalFormula=balanceDefs.length?`(${balanceDefs[0].code.toUpperCase()}) TO (${balanceDefs[balanceDefs.length-1].code.toUpperCase()})`:'No components';
-  // Total/Liquid references are shown once only: the formula itself carries the column reference.
-  head+=thFormulaOnly('TOTAL FUNDS',totalFormula);
-  deductionDefs.forEach(x=>head+=th(x.c.label,x.code));
-  const excludedLiquidKeys=allDefs.filter(c=>c.active!==false&&c.liquidInclude!==true&&hasData(c)).map(c=>c.key);const codeMapAll=new Map([...balanceDefs,...deductionDefs].map(x=>[x.c.key,x.code]));const excludedFromLiquid=excludedLiquidKeys.map(k=>codeMapAll.get(k)).filter(Boolean).map(x=>x.toUpperCase());const liquidFormula=`(${liquidCode.toUpperCase()}) = (${totalCode.toUpperCase()}${excludedFromLiquid.map(x=>' - '+x).join('')})`;
-  head+=thFormulaOnly('LIQUID FUNDS',liquidFormula);
-  head+=`<th><span class="th-name">MOVEMENT</span><span class="th-formula">FROM ${prev?fmtDate(prev).toUpperCase():'—'}</span><span class="th-code">(${movementCode.toUpperCase()})</span></th></tr>`;
-  $('dashHead').innerHTML=head;
-
-  let h='';
-  const displayRows=[];
+  const head=`<tr class="treasury-head"><th>ENTITY</th><th class="project-head">PROJECT NAME</th><th>BANK BALANCE</th><th>FD</th><th>SWEEP FD</th><th>MUTUAL FUNDS</th><th>BONDS / DEBENTURES</th><th>BRS</th><th>TOTAL TREASURY</th><th>LIQUID</th><th>LONG-TERM</th><th>RESTRICTED</th><th>RESERVED</th></tr>`;
+  $("dashHead").innerHTML=head;
   const dashEntities=new Set(getDashboardEntities());
-  const dashProjects=(projects||[]).filter(p=>p.active!==false&&dashEntities.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode).toUpperCase()===String(selectedProject).toUpperCase()));
-  const used=new Set();
-  dashProjects.forEach(p=>{
-    const entity=String(p.entityCode||'').toUpperCase(),project=String(p.projectCode||'').trim().toUpperCase(),key=entity+'|'+project;
-    const rr=rows.find(x=>x.date===selectedDate&&String(x.entity||'').toUpperCase()===entity&&String(x.project||'').trim().toUpperCase()===project);
-    if(rr){displayRows.push(rr);used.add(key)}else{displayRows.push({date:selectedDate,entity,project,projectName:p.projectName,__missing:true});used.add(key)}
-  });
-  rows.filter(r=>r.date===selectedDate&&dashEntities.has(String(r.entity||'').toUpperCase())&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase())).forEach(r=>{
-    const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').trim().toUpperCase();if(!used.has(key)){displayRows.push(r);used.add(key)}
-  });
-
-  displayRows.forEach(r=>{
-    const actual=!r.__missing;
-    const pr=rows.find(x=>x.date===prev&&String(x.entity).toUpperCase()===String(r.entity).toUpperCase()&&String(x.project).toUpperCase()===String(r.project).toUpperCase());
-    const t=actual?total(r):0,l=actual?liquid(r):0,mv=actual&&pr?+(t-total(pr)).toFixed(2):null;
-    const st=statusSymbolFor(r.entity,r.project,selectedDate);
-    h+=`<tr><td class="entity-cell"><span class="status-symbol ${st.cls} entity-status">${st.symbol}</span><b>${esc(r.entity)}</b></td><td class="project-cell">${esc(projectName(r.project))}</td>`;
-    balanceDefs.forEach(x=>h+=`<td>${actual?fmtCell(r[x.c.key]):'—'}</td>`);
-    h+=`<td><b>${actual?fmtCell(t):'—'}</b></td>`;
-    deductionDefs.forEach(x=>h+=`<td>${actual?fmtCell(r[x.c.key]):'—'}</td>`);
-    h+=`<td><b>${actual?fmtCell(l):'—'}</b></td><td class="${mv>0?'pos':mv<0?'neg':'zero'}">${mv===null?'—':(mv>0?'▲ ':'▼ ')+fmtCell(Math.abs(mv))}</td></tr>`;
-  });
-  const colCount=2+balanceDefs.length+1+deductionDefs.length+2;
-  $('dashTable').innerHTML=h||`<tr><td colspan="${colCount}" class="empty">No data</td></tr>`;
-  const td=$('dashTableDate');if(td)td.textContent=selectedDate?` · ${formatDateLong(selectedDate)}`:'';
-  const tableWrap=$('dashTable')?.closest('.tablewrap');if(tableWrap)tableWrap.scrollLeft=0;
+  const sourceMap=new Map(source.map(r=>[String(r.entity||'').toUpperCase()+'|'+String(r.project||'').toUpperCase(),r]));
+  const projectList=(projects||[]).filter(p=>p.active!==false&&dashEntities.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode||'').toUpperCase()===String(selectedProject).toUpperCase()));
+  const display=[];const seen=new Set();
+  projectList.forEach(p=>{const key=String(p.entityCode||'').toUpperCase()+'|'+String(p.projectCode||'').toUpperCase();const r=sourceMap.get(key);display.push(r||{entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase(),projectName:p.projectName,__missing:true});seen.add(key);});
+  source.forEach(r=>{const key=String(r.entity||'').toUpperCase()+'|'+String(r.project||'').toUpperCase();if(!seen.has(key)){display.push(r);seen.add(key);}});
+  let h='';
+  display.forEach(r=>{const actual=!r.__missing;const mv=actual?(prev?+(total(r)-total(rows.find(x=>x.date===prev&&x.entity===r.entity&&x.project===r.project)||{})).toFixed(2):null):null;const st=statusSymbolFor(r.entity,r.project,selectedDate);h+=`<tr><td class="entity-cell"><span class="status-symbol ${st.cls} entity-status">${st.symbol}</span><b>${esc(r.entity)}</b></td><td class="project-cell">${esc(projectName(r.project))}</td><td>${actual?fmtCell(r.bank):'—'}</td><td>${actual?fmtCell(r.fd):'—'}</td><td>${actual?fmtCell(r.sweep):'—'}</td><td>${actual?fmtCell(r.mf):'—'}</td><td>${actual?fmtCell(r.bonds):'—'}</td><td>${actual?fmtCell(r.brs):'—'}</td><td><b>${actual?fmtCell(r.totalTreasury):'—'}</b></td><td>${actual?fmtCell(r.liquid):'—'}</td><td>${actual?fmtCell(r.longTerm):'—'}</td><td>${actual?fmtCell(r.restricted):'—'}</td><td>${actual?fmtCell(r.reserved):'—'}</td></tr>`;});
+  const colCount=13;
+  $("dashTable").innerHTML=h||`<tr><td colspan="${colCount}" class="empty">No data</td></tr>`;
+  const td=$("dashTableDate");if(td)td.textContent=selectedDate?` · ${formatDateLong(selectedDate)}`:'';
+  const tableWrap=$("dashTable")?.closest('.tablewrap');if(tableWrap)tableWrap.scrollLeft=0;
 }
 function projectName(code){const key=String(code||'').toUpperCase();const p=projects.find(x=>String(x.projectCode||'').toUpperCase()===key);if(p&&p.projectName)return p.projectName;const r=rows.find(x=>String(x.project||'').toUpperCase()===key&&x.projectName);return r&&r.projectName?r.projectName:(code||'General')}
 
@@ -926,7 +887,7 @@ function formatDateLong(date){
   return dt.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
 }
 function latestUpdatedForDate(date){
-  const rs=rows.filter(r=>r.date===date&&r.updatedAt);
+  const rs=itemRows.filter(r=>r.date===date&&r.updatedAt);
   if(!rs.length)return "—";
   const v=rs.map(r=>String(r.updatedAt)).sort().at(-1);
   const dt=new Date(v);if(isNaN(dt))return v;
@@ -945,12 +906,12 @@ function renderDashboardCharts(){
   const trendData=dates.map(d=>+filteredRows(d).reduce((s,r)=>s+total(r),0).toFixed(2));
   charts.trend=new Chart($("trendChart"),{type:"line",data:{labels:dates.map(fmtDate),datasets:[{label:"Total Funds",data:trendData,tension:.3,fill:true,borderColor:"#1f513b",backgroundColor:"rgba(31,81,59,.12)",pointBackgroundColor:"#b18a3a",pointBorderColor:"#fff",pointBorderWidth:2,borderWidth:3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"bottom"},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>"₹ "+Number(c.raw).toFixed(2)+" Cr"}}},scales:{x:{grid:{display:false},ticks:{font:{family:"Times New Roman"}}},y:{beginAtZero:true,title:{display:true,text:"₹ Crores",font:{family:"Times New Roman",weight:"bold"}},ticks:{font:{family:"Times New Roman"}}}}}});
   const d=filteredRows(selectedDate);
-  // Fund Allocation is strictly the composition of Total Funds.
-  // Reserve / Restricted / Locked and any balance type with Include in Total = No
-  // must never appear in this chart.
-  const fundDefs=columns.filter(c=>c.active!==false&&c.includeTotal===true&&d.some(r=>r.__present&&r.__present[c.key]));
+  const fundDefs=[
+    {key:'bank',label:'Bank Balance'},{key:'fd',label:'FD'},{key:'sweep',label:'Sweep FD'},
+    {key:'mf',label:'Mutual Funds'},{key:'bonds',label:'Bonds / Debentures'}
+  ];
   const labels=fundDefs.map(c=>c.label), vals=fundDefs.map(c=>+d.reduce((s,r)=>s+n(r[c.key]),0).toFixed(2));
-  const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88","#8B6F47","#A84B4B","#5E6F82","#2D7A61","#C17C3A"];
+  const palette=["#1F513B","#B18A3A","#3B6F8F","#4E8A78","#7B5C88"];
   charts.allocation=new Chart($("allocationChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:palette.slice(0,Math.max(vals.length,1)),borderColor:"#ffffff",borderWidth:3,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"right",labels:{boxWidth:12,padding:9,font:{family:"Times New Roman",size:11}}},tooltip:{titleFont:{family:"Times New Roman",size:12},bodyFont:{family:"Times New Roman",size:12},callbacks:{label:c=>{const v=Number(c.raw),tot=vals.reduce((a,b)=>a+b,0);return c.label+": ₹ "+v.toFixed(2)+" Cr ("+(tot?(v/tot*100).toFixed(1):0)+"%)"}}}}}});
 }
 
@@ -1019,14 +980,15 @@ let savedCharts=[];
 function oneChartDefs(){
   const core=[
     {key:'bank',label:'Bank Balance',sort:1,includeTotal:true,liquidInclude:true,active:true},
-    {key:'sweep',label:'Sweep Deposit',sort:2,includeTotal:true,liquidInclude:true,active:true},
-    {key:'fd',label:'Fixed Deposits',sort:3,includeTotal:true,liquidInclude:true,active:true},
+    {key:'fd',label:'FD',sort:2,includeTotal:true,liquidInclude:true,active:true},
+    {key:'sweep',label:'Sweep FD',sort:3,includeTotal:true,liquidInclude:true,active:true},
     {key:'mf',label:'Mutual Funds',sort:4,includeTotal:true,liquidInclude:true,active:true},
     {key:'bonds',label:'Bonds / Debentures',sort:5,includeTotal:true,liquidInclude:true,active:true},
-    {key:'brs',label:'BRS',sort:6,includeTotal:true,liquidInclude:true,active:true},
-    {key:'reserve',label:'Reserve Fund',sort:7,includeTotal:false,liquidInclude:false,active:true},
-    {key:'restricted',label:'Restricted Fund',sort:8,includeTotal:false,liquidInclude:false,active:true},
-    {key:'locked_funds',label:'Locked Funds',sort:9,includeTotal:false,liquidInclude:false,active:true}
+    {key:'brs',label:'BRS',sort:6,includeTotal:false,liquidInclude:false,active:true},
+    {key:'liquid',label:'Liquid',sort:7,includeTotal:false,liquidInclude:false,active:true},
+    {key:'longTerm',label:'Long-term',sort:8,includeTotal:false,liquidInclude:false,active:true},
+    {key:'restricted',label:'Restricted',sort:9,includeTotal:false,liquidInclude:false,active:true},
+    {key:'reserved',label:'Reserved',sort:10,includeTotal:false,liquidInclude:false,active:true}
   ];
   const m=new Map(core.map(x=>[x.key,x]));
   (columns||[]).forEach(c=>m.set(c.key,{...m.get(c.key),...c}));
@@ -1052,7 +1014,7 @@ function oneDateOptions(axis){
   if(axis!=='date')return [{v:'asof',l:'As of Date'}];
   return [{v:'latest5',l:'Latest 5 Available Dates'},{v:'latest10',l:'Latest 10 Available Dates'},{v:'last30',l:'Last 30 Days'},{v:'last90',l:'Last 90 Days'},{v:'custom',l:'Custom Date Range'}];
 }
-function oneUniqueDates(){return [...new Set((rows||[]).map(r=>String(r.date||'').slice(0,10)).filter(Boolean))].sort();}
+function oneUniqueDates(){return [...new Set((itemRows||[]).map(r=>String(r.date||'').slice(0,10)).filter(Boolean))].sort();}
 function oneMaxDate(){const d=oneUniqueDates();return d.length?d[d.length-1]:'';}
 function oneAddDays(s,days){const d=new Date(String(s).slice(0,10)+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
 function oneDatesForConfig(cfg){
@@ -1076,7 +1038,7 @@ function oneProjectItems(){
   return (projects||[]).filter(p=>p.active!==false&&es.has(String(p.entityCode||'').toUpperCase())&&(selectedProject==='ALL'||String(p.projectCode||'').toUpperCase()===String(selectedProject).toUpperCase()))
     .map(p=>({key:String(p.projectCode||'').toUpperCase(),label:String(p.projectName||p.projectCode||'').trim(),fullLabel:String(p.entityCode||'').toUpperCase()+' · '+String(p.projectName||p.projectCode||'').trim(),entity:String(p.entityCode||'').toUpperCase(),project:String(p.projectCode||'').toUpperCase()}));
 }
-function oneFundItems(date){const rs=filteredRows(date);return oneChartDefs().filter(c=>rs.some(r=>r[c.key]!==''&&r[c.key]!==null&&r[c.key]!==undefined&&Number.isFinite(Number(r[c.key])))).map(c=>({key:c.key,label:c.label,fullLabel:c.label}));}
+function oneFundItems(date){const rs=filteredRows(date);const defs=oneChartDefs().filter(c=>['bank','fd','sweep','mf','bonds'].includes(c.key));return defs.filter(c=>rs.some(r=>Number(r[c.key]||0)!==0)).map(c=>({key:c.key,label:c.label,fullLabel:c.label}));}
 function oneCategoryItems(cfg,date){if(cfg.axis==='entity')return oneEntityItems();if(cfg.axis==='project')return oneProjectItems();if(cfg.axis==='fund')return oneFundItems(date);return oneDatesForConfig(cfg).map(d=>({key:d,label:fmtDate(d),fullLabel:fmtDate(d),date:d}));}
 function oneCount(cfg){return oneCategoryItems(cfg,oneAsOf(cfg)).length;}
 function oneDisplayLabel(cfg,item,count){
@@ -1164,23 +1126,94 @@ function oneOptions(indexAxis,stacked=false,percent=false,cfg=null,count=0){
   const o={responsive:true,maintainAspectRatio:false,animation:{duration:0},indexAxis,layout:{padding:{top:24,right:100,bottom:rotate?95:42,left:30}},plugins:{legend:{display:!cfg||cfg.legend!==false,position:'bottom',labels:{font:{family:'Times New Roman',size:11},color:'#35584a',padding:12,usePointStyle:true,boxWidth:12}},tooltip:{titleFont:{family:'Times New Roman',size:12},bodyFont:{family:'Times New Roman',size:12},callbacks:{label:c=>{const lab=Array.isArray(c.label)?c.label.join(' '):c.label;return `${c.dataset.label||lab}: ₹ ${formatChartCr(c.raw)} Cr`;}}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:true,maxRotation:rotate?90:0,minRotation:rotate?90:0},title:{display:indexAxis==='y',text:indexAxis==='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}},y:{grid:{display:false},ticks:{font:{family:'Times New Roman',size:10},color:'#35584a',autoSkip:false,padding:8},title:{display:indexAxis!=='y',text:indexAxis!=='y'?'₹ Crores':'',font:{family:'Times New Roman',size:11,weight:'bold'},color:'#35584a'}}}};
   if(stacked){o.scales.x.stacked=true;o.scales.y.stacked=true;}if(percent){o.scales.x.min=0;o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+'%';o.scales.x.stacked=true;o.scales.y.stacked=true;}return o;
 }
-function oneValuePlugin(id,cfg){return{id,afterDatasetsDraw(chart){const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.fillStyle='#35584a';ctx.textBaseline='middle';const indexAxis=chart.options.indexAxis;chart.data.datasets.forEach((ds,di)=>chart.getDatasetMeta(di).data.forEach((el,i)=>{const raw=Number(ds.data[i]);if(!Number.isFinite(raw)||cfg.type==='doughnut')return;if((cfg.type==='stackedBar'||cfg.type==='percentStackedBar')){const pr=el.getProps(['base','x','y'],true);const span=indexAxis==='y'?Math.abs(pr.x-(pr.base??pr.x)):Math.abs(pr.y-(pr.base??pr.y));if(span<54)return;}const p=el.tooltipPosition();let x=p.x,y=p.y-9;if(indexAxis==='y'){x=p.x+9;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}ctx.fillText(cfg.type==='percentStackedBar'?raw.toFixed(1)+'%':formatChartCr(raw),x,y);}));ctx.restore();}};}
+function oneMetricDefsForChart(cfg,date,items){
+  if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
+    const selectedMetrics=oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis);
+    return (selectedMetrics.length>1||selectedMetrics[0]!=='total')?selectedMetrics.map(m=>({key:m,label:oneMetricLabel(m)})):oneTotalDefs();
+  }
+  return (cfg.metrics||[]).map(m=>({key:m,label:oneMetricLabel(m)}));
+}
+function showOneChartDetail(cfg,date,items,index,defs){
+  const panel=$('oneChartDetail');if(!panel||!items[index])return;
+  const item=items[index];
+  const title=oneDisplayLabel(cfg,item,items.length);
+  const rows=defs.map(d=>({label:d.label,value:oneMetricData(cfg,date,d.key,item)}));
+  const total=rows.reduce((s,r)=>s+Number(r.value||0),0);
+  const titleEl=$('oneChartDetailTitle'),totalEl=$('oneChartDetailTotal'),body=$('oneChartDetailBody');
+  if(titleEl)titleEl.textContent=title;
+  if(totalEl)totalEl.textContent=cfg.type==='percentStackedBar'?`Total: 100% · ₹ ${formatChartCr(total)} Cr`:`Total: ₹ ${formatChartCr(total)} Cr`;
+  if(body){
+    body.innerHTML=rows.length?rows.map(r=>`<div class="chart-detail-row"><span>${esc(r.label)}</span><b>₹ ${formatChartCr(r.value)} Cr</b></div>`).join(''):'<div class="chart-detail-empty">No component data available.</div>';
+  }
+  panel.classList.add('open');
+}
+function closeOneChartDetail(){const panel=$('oneChartDetail');if(panel)panel.classList.remove('open');}
+function wireOneChartClick(o,cfg,date,items,defs){
+  o.onClick=(evt,active)=>{
+    if(!active||!active.length)return;
+    const index=active[0].index;
+    showOneChartDetail(cfg,date,items,index,defs);
+  };
+}
+function oneValuePlugin(id,cfg,items,date,defs){
+  return {id,afterDatasetsDraw(chart){
+    if(!items||!items.length)return;
+    const ctx=chart.ctx;ctx.save();ctx.font='700 10px "Times New Roman"';ctx.textBaseline='middle';
+    const indexAxis=chart.options.indexAxis;
+    const stacked=cfg.type==='stackedBar'||cfg.type==='percentStackedBar';
+    const percent=cfg.type==='percentStackedBar';
+    chart.data.datasets.forEach((ds,di)=>chart.getDatasetMeta(di).data.forEach((el,i)=>{
+      const raw=Number(ds.data[i]);if(!Number.isFinite(raw)||cfg.type==='doughnut')return;
+      const pr=el.getProps(['base','x','y','width','height'],true);
+      const span=indexAxis==='y'?Math.abs(pr.x-(pr.base??pr.x)):Math.abs(pr.y-(pr.base??pr.y));
+      if(stacked){
+        // Smart labels: only draw a value when the segment is wide/tall enough to contain it.
+        const minSpan=indexAxis==='y'?72:34;
+        if(span<minSpan)return;
+        const p=el.tooltipPosition();
+        let x=p.x,y=p.y;
+        ctx.textAlign='center';
+        ctx.fillStyle='#ffffff';
+        ctx.fillText(percent?raw.toFixed(1)+'%':formatChartCr(raw),x,y);
+      }else{
+        const p=el.tooltipPosition();let x=p.x,y=p.y-9;ctx.fillStyle='#35584a';
+        if(indexAxis==='y'){x=p.x+8;y=p.y;ctx.textAlign='left';}else{ctx.textAlign='center';}
+        ctx.fillText(percent?raw.toFixed(1)+'%':formatChartCr(raw),x,y);
+      }
+    }));
+    // Always show the total at the end of each stacked bar.
+    if(stacked && chart.data.datasets.length){
+      chart.data.labels.forEach((_,i)=>{
+        const meta=chart.getDatasetMeta(chart.data.datasets.length-1),el=meta.data[i];if(!el)return;
+        const pr=el.getProps(['base','x','y','width','height'],true);const p=el.tooltipPosition();
+        let total;
+        if(percent){total=100;}
+        else total=chart.data.datasets.reduce((s,d)=>s+Number(d.data[i]||0),0);
+        ctx.fillStyle='#35584a';ctx.font='700 10px "Times New Roman"';
+        if(indexAxis==='y'){const end=Math.max(pr.x,pr.base??pr.x);ctx.textAlign='left';ctx.fillText(percent?'100%':formatChartCr(total)+' Cr',end+8,p.y);}
+        else{const top=Math.min(pr.y,pr.base??pr.y);ctx.textAlign='center';ctx.fillText(percent?'100%':formatChartCr(total)+' Cr',p.x,top-10);}
+      });
+    }
+    ctx.restore();
+  }};
+}
+
 function makeOneCanvas(width,height){const st=$('oneChartStage');if(!st)return null;st.innerHTML='<div id="oneChartScroller" class="one-chart-scroller"><div class="one-chart-canvas-wrap"><canvas id="oneChartCanvas"></canvas></div></div>';const canvas=$('oneChartCanvas');canvas.style.height=height+'px';canvas.style.width=(width||'100%')+(width?'px':'');if(width)canvas.style.minWidth=width+'px';return canvas;}
 function oneRenderChart(){
+  closeOneChartDetail();
   const cfg=oneSafeConfig(oneChartConfig);oneChartConfig=cfg;destroyChartKey('oneCustom');if(!rows.length){chartNoData('oneChartStage','No treasury data available.');return;}if(typeof Chart==='undefined'){chartNoData('oneChartStage','Chart library is loading…');ensureChartJs().then(oneRenderChart).catch(()=>chartNoData('oneChartStage','Chart library could not be loaded.'));return;}
   const date=oneAsOf(cfg),items=oneCategoryItems(cfg,date),count=items.length;if(!count){chartNoData('oneChartStage','No data available for this selection.');return;}
   const canvas=makeOneCanvas(oneStageWidth(cfg,count),oneStageHeight(cfg,count));if(!canvas)return;Chart.defaults.font.family='"Times New Roman", Times, serif';Chart.defaults.font.size=12;Chart.defaults.color='#52635a';
   const labels=items.map(it=>oneDisplayLabel(cfg,it,count));let chartType=cfg.type==='doughnut'?'doughnut':(cfg.type==='line'||cfg.type==='area'?'line':'bar');let indexAxis=cfg.type==='horizontalBar'||cfg.type==='stackedBar'||cfg.type==='percentStackedBar'?'y':'x';if(cfg.axis==='project')indexAxis='y';
   if(cfg.type==='doughnut'){
-    const vals=items.map(it=>oneMetricData(cfg,date,cfg.metrics[0],it));const ds={label:oneMetricLabel(cfg.metrics[0]),data:vals,backgroundColor:items.map((it,i)=>oneMetricColor(it.key,i)),borderColor:'#fff',borderWidth:3,hoverOffset:5};const o=oneOptions('x',false,false,cfg,count);delete o.scales;o.cutout='62%';o.plugins.legend={display:cfg.legend!==false,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(vals[i])} Cr`}))}};o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[ds]},options:o});
+    const vals=items.map(it=>oneMetricData(cfg,date,cfg.metrics[0],it));const ds={label:oneMetricLabel(cfg.metrics[0]),data:vals,backgroundColor:items.map((it,i)=>oneMetricColor(it.key,i)),borderColor:'#fff',borderWidth:3,hoverOffset:5};const o=oneOptions('x',false,false,cfg,count);delete o.scales;o.cutout='62%';o.plugins.legend={display:cfg.legend!==false,position:'right',labels:{padding:10,usePointStyle:true,boxWidth:12,font:{family:'Times New Roman',size:11},generateLabels:chart=>Chart.defaults.plugins.legend.labels.generateLabels(chart).map((it,i)=>({...it,text:`${labels[i]} — ₹ ${formatChartCr(vals[i])} Cr`}))}};o.plugins.tooltip.callbacks.label=c=>`${c.label}: ₹ ${formatChartCr(c.raw)} Cr`;wireOneChartClick(o,cfg,date,items,[{key:cfg.metrics[0],label:oneMetricLabel(cfg.metrics[0])}]);charts.oneCustom=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[ds]},options:o});
   }else if(cfg.type==='stackedBar'||cfg.type==='percentStackedBar'){
-    const selectedMetrics=oneNormaliseMetrics(cfg.metrics||cfg.metric,cfg.axis);
-    const defs=(selectedMetrics.length>1||selectedMetrics[0]!=='total')?selectedMetrics.map((m)=>({key:m,label:oneMetricLabel(m)})):oneTotalDefs();
+    const defs=oneMetricDefsForChart(cfg,date,items);
     const ds=defs.map((d,i)=>({label:d.label,data:items.map(it=>oneMetricData(cfg,date,d.key,it)),backgroundColor:oneMetricColor(d.key,i),borderColor:'#fff',borderWidth:1,borderRadius:3}));
     if(cfg.type==='percentStackedBar'){const totals=labels.map((_,i)=>ds.reduce((s,d)=>s+Number(d.data[i]||0),0));ds.forEach(d=>d.data=d.data.map((v,i)=>totals[i]?+(v/totals[i]*100).toFixed(2):0));}
-    const o=oneOptions('y',true,cfg.type==='percentStackedBar',cfg,count);o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg)]});
+    const o=oneOptions('y',true,cfg.type==='percentStackedBar',cfg,count);o.plugins.tooltip.callbacks.label=c=>`${c.dataset.label}: ${cfg.type==='percentStackedBar'?Number(c.raw).toFixed(1)+'%':'₹ '+formatChartCr(c.raw)+' Cr'}`;wireOneChartClick(o,cfg,date,items,defs);charts.oneCustom=new Chart(canvas,{type:'bar',data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg,items,date,defs)]});
   }else{
-    const ds=oneBuildMetricDatasets(cfg,date,items);const o=oneOptions(indexAxis,false,false,cfg,count);if(cfg.type==='line'||cfg.type==='area'){o.scales.x.ticks.autoSkip=true;o.scales.x.ticks.maxRotation=0;o.scales.x.ticks.minRotation=0;}charts.oneCustom=new Chart(canvas,{type:chartType,data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg)]});
+    const defs=oneMetricDefsForChart(cfg,date,items);const ds=oneBuildMetricDatasets(cfg,date,items);const o=oneOptions(indexAxis,false,false,cfg,count);if(cfg.type==='line'||cfg.type==='area'){o.scales.x.ticks.autoSkip=true;o.scales.x.ticks.maxRotation=0;o.scales.x.ticks.minRotation=0;}wireOneChartClick(o,cfg,date,items,defs);charts.oneCustom=new Chart(canvas,{type:chartType,data:{labels,datasets:ds},options:o,plugins:[oneValuePlugin('oneValues',cfg,items,date,defs)]});
   }
   $('oneChartNote').textContent=oneSummary(cfg,count,date);
 }
@@ -1216,38 +1249,79 @@ async function deleteSavedChart(id){if(!confirm('Delete this saved chart?'))retu
 function resetChartSettings(){resetOneCustomChart();}
 function renderCustomChart(){renderOneCustomChart();}
 
-function renderEntryFields(){
-  const wrap=$("entryFields");if(!wrap)return;
-  wrap.innerHTML=columns.filter(c=>c.active!==false).map(c=>`<div class="fg"><label>${esc(c.label)}</label><input id="e_${esc(c.key)}" type="number" step=".01" oninput="preview()"></div>`).join("");
+const V40_INSTRUMENTS=['Bank','FD','Sweep FD','Mutual Fund','Bonds / Debentures'];
+const V40_CATEGORIES=['Liquid','Long-term','Restricted','Reserved'];
+const V40_FIXED_ACCOUNTS={
+  'FD':['Fixed Deposit - Liquid','Fixed Deposit - Long-term','Fixed Deposit - Restricted','Fixed Deposit - Reserved'],
+  'Sweep FD':['Sweep Deposit - Liquid','Sweep Deposit - Long-term','Sweep Deposit - Restricted','Sweep Deposit - Reserved'],
+  'Mutual Fund':['Mutual Fund - Liquid','Mutual Fund - Long-term','Mutual Fund - Restricted','Mutual Fund - Reserved'],
+  'Bonds / Debentures':['Bond / Debenture - Liquid','Bond / Debenture - Long-term','Bond / Debenture - Restricted','Bond / Debenture - Reserved']
+};
+function projectItemRows(){const d=$("eDate")?.value||"",e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return itemRows.filter(r=>r.date===d&&String(r.entity||"").toUpperCase()===e&&String(r.project||"").toUpperCase()===p);}
+function bankItemsForCurrent(){const e=String($("eEntity")?.value||"").toUpperCase(),p=String($("eProject")?.value||"").toUpperCase();return treasuryItems.filter(x=>x.active!==false&&String(x.entity||"").toUpperCase()===e&&String(x.project||"").toUpperCase()===p&&x.instrument==='Bank');}
+function entryRowTemplate(row={},isNew=false,index=0){const instrument=row.instrument||'Bank', account=row.account||'', category=row.category||'Liquid', admin=isAdminUser();const existing=!isNew&&row.itemId;const userReadonly=existing && !admin;const fixed=instrument!=='Bank';
+  const instrOpts=V40_INSTRUMENTS.map(v=>`<option value="${esc(v)}" ${v===instrument?'selected':''}>${esc(v)}</option>`).join('');
+  const cats=V40_CATEGORIES.map(v=>`<option value="${esc(v)}" ${v===category?'selected':''}>${esc(v)}</option>`).join('');
+  let accOpts='';if(instrument==='Bank'){const banks=bankItemsForCurrent();accOpts=`<option value="">Select Bank Account</option>`+banks.map(x=>`<option value="${esc(x.account)}" data-item-id="${esc(x.itemId)}" ${x.account===account?'selected':''}>${esc(x.account)}</option>`).join('');}else{accOpts=V40_FIXED_ACCOUNTS[instrument].map(v=>`<option value="${esc(v)}" ${v===account?'selected':''}>${esc(v)}</option>`).join('');}
+  const bank=(instrument==='Bank');const bankBal=bank?(row.bankBalance??''):'';const brs=bank?(row.brs??''):'';const books=bank?(Number(row.booksBalance??(Number(bankBal||0)+Number(brs||0))).toFixed(2)):(row.booksBalance??'');
+  const disabledExisting=userReadonly?'disabled':'';
+  const action=existing?(admin?`<button class="btn sm danger" onclick="deleteEntryRow(${index})">Delete</button>`:`<span class="entry-inline-note">View only</span>`):`<button class="btn sm" onclick="removeEntryDraftRow(${index})">Remove</button>`;
+  return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
+    <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${disabledExisting}>${instrOpts}</select></td>
+    <td class="account-col"><select class="entry-account" onchange="entryAccountChanged(${index})" ${disabledExisting}>${accOpts}</select>${bank?`<div class="entry-account-actions"><button type="button" class="btn sm" onclick="addBankAccountPrompt(${index})">+ Add Bank Account</button></div>`:''}<div class="entry-inline-note">${existing?'Existing item':'New item'}</div></td>
+    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${disabledExisting}>${cats}</select></td>
+    <td class="amount-col"><input class="entry-bank" type="number" step=".01" value="${esc(bankBal)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
+    <td class="amount-col"><input class="entry-brs" type="number" step=".01" value="${esc(brs)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
+    <td class="amount-col"><input class="entry-books" type="number" step=".01" value="${esc(books)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${bank||userReadonly?'disabled':''}></td>
+    <td class="action-col">${action}</td>
+  </tr>`;
 }
-function preview(){let r=formRow();$("previewBox").textContent=`Total Funds: ₹${total(r).toFixed(2)} Cr · Liquid Funds: ₹${liquid(r).toFixed(2)} Cr`}
-function formRow(){const r={};columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);r[c.key]=el?el.value:""});return r}
-function loadEntry(){const d=$("eDate").value,e=$("eEntity").value,p=$("eProject").value,r=rows.find(x=>x.date===d&&x.entity===e&&x.project===p);renderEntryFields();columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=r?(r[c.key]??""):""});preview();applyEntryPermissions();}
+function renderEntryFields(){
+  const wrap=$("entryFields");if(!wrap)return;const rs=projectItemRows();const list=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
+  if(!list.length)entryDraftRows=[{__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''}];
+  const finalList=[...rs.map(x=>({...x,__existing:true})),...entryDraftRows];
+  wrap.innerHTML=`<div class="entry-table-wrap"><table class="entry-table"><thead><tr><th class="instrument-col">Instrument</th><th class="account-col">Account / Investment</th><th class="category-col">Category</th><th class="amount-col">Bank Balance</th><th class="amount-col">BRS</th><th class="amount-col">Books Balance</th><th class="action-col">Action</th></tr></thead><tbody>${finalList.map((r,i)=>entryRowTemplate(r,!r.__existing,i)).join('')}</tbody></table></div><div id="entrySummary" class="entry-summary"></div>`;
+  syncDraftFromDom();updateEntrySummary();applyEntryPermissions();
+}
+function syncDraftFromDom(){const rowsEl=[...document.querySelectorAll('#entryFields tbody tr')];rowsEl.forEach((tr,i)=>{if(tr.classList.contains('entry-row-existing'))return;const d=entryDraftRows.find((x,idx)=>idx===i-projectItemRows().length);if(!d)return;d.instrument=tr.querySelector('.entry-instrument')?.value||'Bank';d.account=tr.querySelector('.entry-account')?.value||'';d.category=tr.querySelector('.entry-category')?.value||'Liquid';d.bankBalance=tr.querySelector('.entry-bank')?.value||'';d.brs=tr.querySelector('.entry-brs')?.value||'';d.booksBalance=tr.querySelector('.entry-books')?.value||'';});}
+function updateEntrySummary(){const box=$("entrySummary");if(!box)return;const rs=projectItemRows();const draft=[...entryDraftRows];const instTotal=(inst)=>rs.filter(r=>r.instrument===inst).reduce((s,r)=>s+(inst==='Bank'?n(r.bankBalance):n(r.booksBalance)),0);const bank=instTotal('Bank')+draft.filter(r=>r.instrument==='Bank').reduce((s,r)=>s+n(r.bankBalance),0);const fd=instTotal('FD')+draft.filter(r=>r.instrument==='FD').reduce((s,r)=>s+n(r.booksBalance),0);const sweep=instTotal('Sweep FD')+draft.filter(r=>r.instrument==='Sweep FD').reduce((s,r)=>s+n(r.booksBalance),0);const mf=instTotal('Mutual Fund')+draft.filter(r=>r.instrument==='Mutual Fund').reduce((s,r)=>s+n(r.booksBalance),0);const bonds=instTotal('Bonds / Debentures')+draft.filter(r=>r.instrument==='Bonds / Debentures').reduce((s,r)=>s+n(r.booksBalance),0);const totalCurrent=bank+fd+sweep+mf+bonds;const liquidCurrent=rs.reduce((s,r)=>s+(r.category==='Liquid'?(r.instrument==='Bank'?n(r.bankBalance):n(r.booksBalance)):0),0)+draft.reduce((s,r)=>{const v=r.instrument==='Bank'?n(r.bankBalance):n(r.booksBalance);return s+(r.category==='Liquid'?v:0)},0);box.innerHTML=`<div class="entry-summary-box"><span>Bank Balance</span><b>${fmtCell(bank)}</b></div><div class="entry-summary-box"><span>FD</span><b>${fmtCell(fd)}</b></div><div class="entry-summary-box"><span>Sweep FD</span><b>${fmtCell(sweep)}</b></div><div class="entry-summary-box"><span>Mutual Funds</span><b>${fmtCell(mf)}</b></div><div class="entry-summary-box"><span>Bonds / Debentures</span><b>${fmtCell(bonds)}</b></div><div class="entry-summary-box"><span>Total Treasury</span><b>${fmtCell(totalCurrent)}</b></div><div class="entry-summary-box"><span>Liquid</span><b>${fmtCell(liquidCurrent)}</b></div><div class="entry-summary-box"><span>Rows</span><b>${rs.length+draft.length}</b></div>`;}
+function entryInstrumentChanged(i){syncDraftFromDom();const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);if(!tr)return;const instrument=tr.querySelector('.entry-instrument').value;const row=entryDraftRows[i-projectItemRows().length]||{};row.instrument=instrument;row.account='';row.category='Liquid';row.bankBalance='';row.brs='';row.booksBalance='';if(instrument!=='Bank'){const opts=V40_FIXED_ACCOUNTS[instrument]||[];row.account=opts[0]||'';row.category=parseFixedCategoryClient(row.account);}renderEntryFields();}
+function parseFixedCategoryClient(v){const s=String(v||'');const hit=V40_CATEGORIES.find(c=>new RegExp(' - '+c+'$','i').test(s));return hit||'Liquid';}
+function entryAccountChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.account=tr?.querySelector('.entry-account')?.value||'';if(d.instrument!=='Bank')d.category=parseFixedCategoryClient(d.account);renderEntryFields();}
+function entryCategoryChanged(i){const base=projectItemRows().length;const d=entryDraftRows[i-base];if(!d)return;const tr=document.querySelector(`#entryFields tr[data-entry-index="${i}"]`);d.category=tr?.querySelector('.entry-category')?.value||'Liquid';}
+function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=(Number(bank.value)||0)+(Number(brs.value)||0);books.value=v.toFixed(2);}}});syncDraftFromDom();updateEntrySummary();}
+function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
+function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
+async function addBankAccountPrompt(i){const base=projectItemRows().length;syncDraftFromDom();const d=entryDraftRows[i-base];if(!d)return;if(d.instrument!=='Bank')return;const name=(prompt('Enter Bank Account name:')||'').trim();if(!name)return;const category=d.category||'Liquid';try{const r=await apiPost({action:'addBankAccount',entity:$("eEntity").value,projectCode:$("eProject").value,account:name,category,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(r.status!=='ok')throw Error(r.message||'Could not add bank account');treasuryItems=treasuryItems.filter(x=>x.itemId!==r.itemId);treasuryItems.push({itemId:r.itemId,entity:String($("eEntity").value).toUpperCase(),project:String($("eProject").value).toUpperCase(),instrument:'Bank',account:r.account,category:r.category,active:true});d.account=r.account;renderEntryFields();note(r.created===false?'✓ Bank account already available.':'✓ Bank account added.');}catch(e){note(e.message,true)}}
+async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
+async function saveOneEntryRow(r,idx,existing){
+  const p={action:'save',date:$("eDate").value,entity:$("eEntity").value,projectCode:$("eProject").value,itemId:existing?r.itemId:'',instrument:r.instrument,account:r.account,category:r.category,bankBalance:r.instrument==='Bank'?n(r.bankBalance):0,brs:r.instrument==='Bank'?n(r.brs):0,booksBalance:r.instrument==='Bank'?0:n(r.booksBalance),remarks:r.remarks||'',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent};
+  if(!p.instrument||!p.account||!p.category)return {status:'error',message:`Row ${idx+1}: Instrument, Account / Investment and Category are required.`};
+  return await apiPost(p);
+}
 async function saveEntry(){
-  const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note("Date, entity and project are required.",true);return}
-  const old=rows.find(x=>x.date===date&&x.entity===entity&&x.project===project);
-  if(!isAdminUser() && old){note("Existing entries are view-only for User access.",true);applyEntryPermissions();return;}
+  const date=$("eDate").value,entity=$("eEntity").value,project=$("eProject").value;if(!date||!entity||!project){note('Date, Entity and Project are required.',true);return;}
+  syncDraftFromDom();const rs=projectItemRows();const rowsToSave=[...entryDraftRows];
+  // Admin can update existing items; User can only add new items.
+  if(!isAdminUser() && rs.length===0 && rowsToSave.length===0){note('Add at least one treasury item.',true);return;}
   $("saveBtn").disabled=true;
   try{
-    const values=formRow();
-    const res=await apiPost({action:"save",date,entity,projectCode:project,project,username:maiaCurrentUser?.email||"",...values});
-    if(res.status!=="ok")throw Error(res.message||"Save failed");
-    const updated={date,entity:String(entity).toUpperCase(),project:String(project).toUpperCase(),projectName:projectName(project),updatedAt:new Date().toISOString()};
-    columns.filter(c=>c.active!==false).forEach(c=>updated[c.key]=n(values[c.key]));
-    const idx=rows.findIndex(x=>x.date===date&&x.entity===String(entity).toUpperCase()&&x.project===String(project).toUpperCase());
-    if(idx>=0)rows[idx]=updated;else rows.push(updated);
-    rows.sort((a,b)=>(a.date+a.entity+a.project).localeCompare(b.date+b.entity+b.project));
-    const auditEntry={timestamp:new Date().toISOString(),action:old?"UPDATE":"ADD",date,entity:String(entity).toUpperCase(),details:old?(project+" · Updated"):("Initial treasury entry · "+project),movement:"",reason:old?"":"Initial entry",username:maiaCurrentUser?.email||"",ip:"",userAgent:navigator.userAgent};
-    audit=[auditEntry,...audit].slice(0,200);
-    populateControls([...new Set(rows.map(r=>r.date).filter(Boolean))].sort());
-    renderDashboard();
-    if(typeof renderCompare==='function')renderCompare();
-    if(typeof renderAudit==='function')renderAudit();
-    loadEntry();
-    note(old?"✓ Record updated and audit logged.":"✓ New record saved and audit logged.");
+    if(isAdminUser()){
+      const tbody=[...document.querySelectorAll('#entryFields tbody tr')];
+      for(let i=0;i<tbody.length;i++){
+        const tr=tbody[i];const isExisting=tr.classList.contains('entry-row-existing');const source=isExisting?rs[i]:entryDraftRows[i-rs.length];if(!source)continue;
+        if(isExisting){const bank=tr.querySelector('.entry-bank')?.value||'',brs=tr.querySelector('.entry-brs')?.value||'',books=tr.querySelector('.entry-books')?.value||'';source.bankBalance=bank;source.brs=brs;source.booksBalance=books;}else{source.instrument=tr.querySelector('.entry-instrument')?.value||source.instrument;source.account=tr.querySelector('.entry-account')?.value||source.account;source.category=tr.querySelector('.entry-category')?.value||source.category;source.bankBalance=tr.querySelector('.entry-bank')?.value||source.bankBalance;source.brs=tr.querySelector('.entry-brs')?.value||source.brs;source.booksBalance=tr.querySelector('.entry-books')?.value||source.booksBalance;}
+        const res=await saveOneEntryRow(source,i,isExisting);if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);
+      }
+    }else{
+      for(let i=0;i<rowsToSave.length;i++){const res=await saveOneEntryRow(rowsToSave[i],i,false);if(res.status!=='ok')throw Error(res.message||`Row ${i+1} failed`);}
+    }
+    entryDraftRows=[];await loadAll();note('✓ Treasury table saved and audit logged.');
   }catch(e){note(e.message,true)}finally{$("saveBtn").disabled=false}
 }
-
+function loadEntry(){const d=$("eDate")?.value||'',e=String($("eEntity")?.value||'').toUpperCase(),p=String($("eProject")?.value||'').toUpperCase();if(!d||!e||!p)return;entryDraftRows=[];renderEntryFields();}
+function clearEntry(){entryDraftRows=[];renderEntryFields();}
+function applyEntryPermissions(){const noteEl=$("entryReadonlyNote");const save=$("saveBtn");const existing=projectItemRows().length>0;const userReadonly=!isAdminUser()&&existing;if(noteEl)noteEl.classList.toggle('hidden',!userReadonly);if(save)save.textContent=isAdminUser()?'Save Table':'Add New Item';}
 function renderAudit(){
   if(!isAdminUser())return;
   const table=$("auditTable"); if(!table)return;
@@ -1272,9 +1346,40 @@ function renderAudit(){
     return `<tr><td>${escText(ts)}</td><td>${escText(x.action||"")}</td><td>${escText(x.date||"")}</td><td><b>${escText(x.entity||"")}</b></td><td class="audit-detail">${escText(x.details||"")}</td><td>${escText(x.movement||"")}</td><td class="reasontext">${escText(x.reason||"")}</td><td>${username?escText(username):"<span style=\"color:#9aa59f\">Not recorded</span>"}</td><td class="audit-detail">${escText(x.userAgent||"")}</td></tr>`;
   }).join("")||'<tr><td colspan="9" class="empty">No audit records found.</td></tr>';
 }
-function clearEntry(){columns.filter(c=>c.active!==false).forEach(c=>{const el=$("e_"+c.key);if(el)el.value=""});preview()}
+function movementRemarkKey(fromDate,toDate,entity,projectFilter){
+  return [String(fromDate||'').slice(0,10),String(toDate||'').slice(0,10),String(entity||'').toUpperCase(),String(projectFilter||'ALL').toUpperCase()].join('|');
+}
+function clearCompareView(){
+  const box=$('compareTable');if(box)box.innerHTML='<tr><td colspan="7" class="empty">Select the required From Date and To Date, then click Compare.</td></tr>';
+  const summary=$('compareSummary');if(summary)summary.innerHTML='';
+  const sub=$('compareSub');if(sub)sub.textContent='';
+  const h1=$('compareDate1Head');if(h1)h1.textContent='From Date';
+  const h2=$('compareDate2Head');if(h2)h2.textContent='To Date';
+}
+function movementRemarkRecord(key){return movementRemarks&&movementRemarks[key]?movementRemarks[key]:null;}
+function movementRemarkCell(entity,fromDate,toDate,projectFilter){
+  return '<span style="color:#9aa59f">—</span>';
+}
+async function saveMovementRemark(entity,fromDate,toDate,projectFilter){
+  if(!fromDate||!toDate||!entity)return;
+  const key=movementRemarkKey(fromDate,toDate,entity,projectFilter);
+  const el=document.getElementById('remark_'+encodeURIComponent(key));
+  const remark=String(el?.value||'').trim();
+  const existing=movementRemarkRecord(key);
+  if(existing && !isAdminUser()){note('This remark is already saved. Only Admin can modify it.',true);return;}
+  if(!remark){note('Remark cannot be blank.',true);return;}
+  const saveBtn=el?.parentElement?.querySelector('button');if(saveBtn)saveBtn.disabled=true;
+  try{
+    const res=await apiPost({action:'saveMovementRemark',fromDate,toDate,entity,projectFilter,remark,username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});
+    if(!res||res.status!=='ok')throw Error(res?.message||'Could not save movement remark');
+    movementRemarks[key]={remark,savedBy:res.savedBy||existing?.savedBy||maiaCurrentUser?.email||'',savedAt:res.savedAt||existing?.savedAt||new Date().toISOString(),modifiedBy:res.modifiedBy|| (existing?maiaCurrentUser?.email||'':'') ,modifiedAt:res.modifiedAt|| (existing?new Date().toISOString():'')};
+    renderCompare();
+    note(existing?'✓ Movement remark modified by Admin.':'✓ Movement remark saved.');
+  }catch(e){note(e.message,true)}finally{if(saveBtn)saveBtn.disabled=false;}
+}
 function renderCompare(){
-  const d1=$('c1').value,d2=$('c2').value;if(!d1||!d2)return;
+  const d1=$('c1').value,d2=$('c2').value;
+  if(!d1||!d2){clearCompareView();return;}
   const a=rowsForDate(d1),b=rowsForDate(d2),es=getDashboardEntities(),rowsOut=[];
   es.forEach(e=>{
     const r1=a.filter(r=>String(r.entity||'').toUpperCase()===String(e).toUpperCase()&&(selectedProject==='ALL'||String(r.project||'').toUpperCase()===String(selectedProject).toUpperCase()));
@@ -1284,7 +1389,7 @@ function renderCompare(){
     rowsOut.push({entity:e,t1,t2,mv,pctMove});
   });
   const box=$('compareTable');if(!box)return;
-  box.innerHTML=rowsOut.map(x=>`<tr><td><b>${esc(x.entity)}</b></td><td class="project-cell">TOTAL</td><td>${fmtCell(x.t1)}</td><td>${fmtCell(x.t2)}</td><td class="${x.mv>0?'pos':x.mv<0?'neg':'zero'}">${fmtCell(x.mv)}</td><td class="${x.pctMove>0?'pos':x.pctMove<0?'neg':'zero'}">${fmtPct(x.pctMove)}</td><td></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No comparison data.</td></tr>';
+  box.innerHTML=rowsOut.map(x=>`<tr><td><b>${esc(x.entity)}</b></td><td class="project-cell">TOTAL</td><td>${fmtCell(x.t1)}</td><td>${fmtCell(x.t2)}</td><td class="${x.mv>0?'pos':x.mv<0?'neg':'zero'}">${fmtCell(x.mv)}</td><td class="${x.pctMove>0?'pos':x.pctMove<0?'neg':'zero'}">${fmtPct(x.pctMove)}</td><td class="movement-remark-cell">${movementRemarkCell(x.entity,d1,d2,selectedProject)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">No comparison data.</td></tr>';
   const h1=$('compareDate1Head'),h2=$('compareDate2Head');if(h1)h1.textContent=fmtDate(d1);if(h2)h2.textContent=fmtDate(d2);
   const sub=$('compareSub');if(sub)sub.textContent=`Total Funds only · ${fmtDate(d1)} to ${fmtDate(d2)}`;
 }
