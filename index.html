@@ -518,7 +518,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 const INR_PER_CRORE = 10000000;
 function toCrValue(v){
   const n=Number(String(v??'').replace(/,/g,''));
-  return Number.isFinite(n)?n:0;
+  return Number.isFinite(n)?n/INR_PER_CRORE:0;
 }
 function absToCr(v){ const n=parseINR(v); return Number.isFinite(n)?n/INR_PER_CRORE:0; }
 function crToAbs(v){ const n=Number(v); return Number.isFinite(n)?n*INR_PER_CRORE:0; }
@@ -770,7 +770,29 @@ function apiGetJSONP(action){
     document.head.appendChild(script);
   });
 }
-async function apiPost(payload){if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");const body={...payload,username:payload?.username||maiaCurrentUser.email||""};const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(body)});if(!r.ok)throw Error("HTTP "+r.status);return await r.json()}
+async function apiPost(payload){
+  if(!maiaCurrentUser)throw Error("Please sign in to access the dashboard.");
+  const body={...payload,username:payload?.username||maiaCurrentUser.email||""};
+  // Google Apps Script web-app POST responses can be blocked by browser CORS/redirect
+  // handling. Use JSONP GET for writes so the browser receives the response reliably.
+  return await apiWriteJSONP(body);
+}
+function apiWriteJSONP(payload){
+  return new Promise((resolve,reject)=>{
+    const cb="maiaWrite_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    const script=document.createElement("script");
+    let encoded;
+    try{ encoded=encodeURIComponent(JSON.stringify(payload)); }
+    catch(e){ reject(Error("Could not prepare the Google Apps Script request.")); return; }
+    const url=API_URL+"?action="+encodeURIComponent(payload.action||"save")+"&payload="+encoded+"&_ts="+Date.now()+"&callback="+cb;
+    const timer=setTimeout(()=>{cleanup();reject(Error("Google Apps Script request timed out."))},30000);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
+    window[cb]=data=>{cleanup();resolve(data)};
+    script.onerror=()=>{cleanup();reject(Error("Google Apps Script request failed."))};
+    script.src=url;
+    document.head.appendChild(script);
+  });
+}
 function normalizeRows(data){
   const arr=data.data||data.rows||data.records||[];
   const numeric=['bank','fd','sweep','mf','bonds','brs','reserved','restricted','longTerm','liquid','totalTreasury','bankBalance','booksBalance'];
@@ -842,7 +864,7 @@ function defaultColumns(){return [
 function letter(i){let s="";i++;while(i){let r=(i-1)%26;s=String.fromCharCode(97+r)+s;i=Math.floor((i-1)/26)}return s}
 function coreColumnMap(){return {bank:"a",sweep:"b",fd:"c",mf:"d",bonds:"e",brs:"f",reserve:"h",restricted:"i",locked_funds:"j"}}
 function totalFormulaLabel(){const extra=columns.filter(c=>c.active!==false&&c.custom&&c.includeTotal).map((c,i)=>letter(12+i));return "G. Total Funds (g) = (a to f"+(extra.length?" + "+extra.join(" + "):"")+")"}
-async function loadAll(){
+async function loadAll(silent=false){
   const started=performance.now();
   // Start Chart.js immediately so it downloads in parallel with Google Sheets.
   ensureChartJs().catch(()=>{});
@@ -908,8 +930,10 @@ async function loadAll(){
     if(!rows.length)note("Google Sheet connected, but Treasury_Data has no usable rows.",true);
   }catch(e){
     clearTimeout(slowHint);
-    status("Connection error");
-    note(e.message||"Could not load Treasury data.",true);
+    if(!silent) {
+      status("Connection error");
+      note(e.message||"Could not load Treasury data.",true);
+    }
   }
 }
 
@@ -1402,7 +1426,7 @@ function entryRowTemplate(row={},isNew=false,index=0){
   const fixed=instrument!=='Bank';
   const instrOpts=V40_INSTRUMENTS.map(v=>`<option value="${esc(v)}" ${v===instrument?'selected':''}>${esc(v)}</option>`).join('');
   const cats=V40_CATEGORIES.map(v=>`<option value="${esc(v)}" ${v===category?'selected':''}>${esc(v)}</option>`).join('');
-  const categoryDisabled=instrument!=='Bank'||!isAdminUser();
+  const categoryDisabled=instrument!=='Bank'||(existing&&!isAdminUser());
   let accOpts='';
   if(instrument==='Bank'){
     const banks=bankItemsForCurrent();
@@ -1412,17 +1436,18 @@ function entryRowTemplate(row={},isNew=false,index=0){
   }
   const bank=instrument==='Bank';
   const draftAbsolute=!!row.__draft;
-  const bankBal=bank?(draftAbsolute?fmtAbsInput(parseINR(row.bankBalance??'')):fmtAbsInput(crToAbs(toCrValue(row.bankBalance??'')))):'';
-  const brs=bank?(draftAbsolute?fmtAbsInput(parseINR(row.brs??'')):fmtAbsInput(crToAbs(toCrValue(row.brs??'')))):'';
+  const bankBal=bank?(draftAbsolute?fmtAbsInput(parseINR(row.bankBalance??'')):fmtAbsInput(crToAbs(Number(row.bankBalance||0)))):'';
+  const brs=bank?(draftAbsolute?fmtAbsInput(parseINR(row.brs??'')):fmtAbsInput(crToAbs(Number(row.brs||0)))):'';
+  // For Bank, Books Balance is always Bank Balance + BRS.
   const storedBooks=draftAbsolute
     ? (row.booksBalance!==undefined&&row.booksBalance!==''?parseINR(row.booksBalance):parseINR(row.bankBalance||0)+parseINR(row.brs||0))
-    : toCrValue(row.booksBalance??(toCrValue(row.bankBalance||0)+toCrValue(row.brs||0)));
-  const books=bank?fmtAbsInput(draftAbsolute?storedBooks:crToAbs(storedBooks)):(draftAbsolute?fmtAbsInput(parseINR(row.booksBalance??'')):fmtAbsInput(crToAbs(toCrValue(row.booksBalance??''))));
+    : Number(row.bankBalance||0)+Number(row.brs||0);
+  const books=bank?fmtAbsInput(draftAbsolute?storedBooks:crToAbs(storedBooks)):(draftAbsolute?fmtAbsInput(parseINR(row.booksBalance??'')):fmtAbsInput(crToAbs(Number(row.booksBalance||0))));
   const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<span class="entry-view-pill" title="Carried forward from ${esc(row.__sourceDate||'previous date')}">Previous</span>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
     <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
     <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select></div></td>
-    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${categoryDisabled?'disabled':''} ${userReadonly?'disabled':''} title="${instrument==='Bank'&&isAdminUser()?'Admin can change this category retrospectively for all dates.':'Category is fixed; only Admin can change a Bank category retrospectively.'}">${cats}</select></td>
+    <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${categoryDisabled?'disabled':''} ${userReadonly?'disabled':''} title="${instrument==='Bank'&&!existing?'Set the Bank category for the first entry. After the first saved entry, only Admin can change it retrospectively.':instrument==='Bank'&&isAdminUser()?'Admin can change this category retrospectively for all dates.':'Category is fixed; only Admin can change a Bank category retrospectively.'}">${cats}</select></td>
     <td class="amount-col"><input class="entry-bank" type="text" inputmode="decimal" value="${esc(bankBal)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-brs" type="text" inputmode="decimal" value="${esc(brs)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-books" type="text" inputmode="decimal" value="${esc(books)}" placeholder="" oninput="entryAmountChanged(${index})" onblur="formatEntryInput(this)" ${bank||userReadonly?'disabled':''}></td>
@@ -1467,11 +1492,11 @@ async function populatePreviousIntoDraft_(rowIndex){
     const prev=candidates[0];
     if(!prev) return;
 
-    d.bankBalance = d.instrument==="Bank" ? fmtAbsInput(crToAbs(toCrValue(prev.bankBalance))) : "";
-    d.brs = d.instrument==="Bank" ? fmtAbsInput(crToAbs(toCrValue(prev.brs))) : "";
+    d.bankBalance = d.instrument==="Bank" ? fmtAbsInput(crToAbs(Number(prev.bankBalance||0))) : "";
+    d.brs = d.instrument==="Bank" ? fmtAbsInput(crToAbs(Number(prev.brs||0))) : "";
     d.booksBalance = d.instrument==="Bank"
-      ? fmtAbsInput(crToAbs(toCrValue(prev.bankBalance)+toCrValue(prev.brs)))
-      : fmtAbsInput(crToAbs(toCrValue(prev.booksBalance)));
+      ? fmtAbsInput(crToAbs(Number(prev.bankBalance||0)+Number(prev.brs||0)))
+      : fmtAbsInput(crToAbs(Number(prev.booksBalance||0)));
 
     renderEntryFields();
   }catch(e){
@@ -1595,7 +1620,7 @@ async function saveEntry(){
     renderDashboard();
     note(`✓ ${res.message||'Treasury data saved successfully.'}`);
     status(`Saved · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`);
-    loadAll().catch(()=>{});
+    loadAll(true).catch(()=>{});
   }catch(e){
     note(e?.message||'Treasury save failed.',true);
   }finally{
