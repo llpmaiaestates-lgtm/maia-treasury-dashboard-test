@@ -215,45 +215,15 @@ input[type="date"]{font-family:"Times New Roman",Times,serif;min-width:150px}
 #entryFields .entry-table .account-col{width:235px;min-width:235px}
 #entryFields .entry-table .category-col{width:115px;min-width:115px}
 #entryFields .entry-table .amount-col{width:125px;min-width:125px}
-#entryFields .entry-account-actions{margin-top:4px}
-#entryFields .entry-account-actions .btn{font-size:10px;padding:5px 7px}
+#entryFields .entry-account-actions{display:inline-flex;vertical-align:middle;margin-left:5px;margin-top:0}
+#entryFields .entry-account-actions .btn{width:28px;height:28px;padding:0;border-radius:6px;font-size:16px;line-height:26px;display:inline-flex;align-items:center;justify-content:center}
+#entryFields .entry-account-wrap{display:flex;align-items:center;gap:5px}
+#entryFields .entry-account-wrap select{flex:1;min-width:0}
 #entryFields .entry-row-delete{font-size:16px}
 @media(max-width:650px){
   #entryFields .entry-table{min-width:900px}
   #entryFields .entry-table th{font-size:8px}
   #entryFields .entry-table select,#entryFields .entry-table input{height:32px;font-size:11px;padding:5px 6px}
-}
-
-
-/* V40: compact Treasury Data Entry */
-#entry .fg label { font-size: 11px; }
-#entry input, #entry select, #entryFields input, #entryFields select {
-  font-size: 13px;
-  min-height: 38px;
-  height: 38px;
-  padding: 7px 9px;
-}
-#entryFields .fg { min-width: 0; }
-#entryFields input::placeholder {
-  color: #9aa3a0;
-  opacity: 1;
-  font-weight: 500;
-}
-#entryFields input.previous-placeholder::placeholder {
-  color: #a1aaa6;
-  font-style: italic;
-}
-@media (max-width: 900px) {
-  #entry .formgrid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
-  #entryFields { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
-}
-@media (max-width: 600px) {
-  #entry .formgrid, #entryFields { grid-template-columns: 1fr !important; }
-  #entry input, #entry select, #entryFields input, #entryFields select {
-    font-size: 12.5px;
-    min-height: 40px;
-    height: 40px;
-  }
 }
 
 </style>
@@ -505,31 +475,7 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 <div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
 </main>
 
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js">
-
-/* V40: previous-value placeholder helper.
-   The app can call setPreviousPlaceholder(input, value) after loading the
-   latest prior value for the same Entity + Project + Instrument + Account. */
-function setPreviousPlaceholder(input, value) {
-  if (!input) return;
-  const hasValue = value !== undefined && value !== null && String(value).trim() !== "";
-  if (!hasValue) {
-    input.placeholder = "";
-    input.classList.remove("previous-placeholder");
-    return;
-  }
-  const n = Number(value);
-  input.placeholder = Number.isFinite(n) ? n.toFixed(2) : String(value);
-  input.classList.add("previous-placeholder");
-}
-function clearPreviousPlaceholderOnInput(input) {
-  if (!input) return;
-  input.addEventListener("input", function () {
-    input.classList.remove("previous-placeholder");
-  }, { once: true });
-}
-
-</script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz5FeeE5v5tGh7beoKX3Hx3ZTjPFD9CB6Xov9_QDSYrdfzxLjfunW_a0tcpxSarDFIL/exec";
@@ -1362,7 +1308,7 @@ function entryRowTemplate(row={},isNew=false,index=0){
   const action=existing?(isAdminUser()?`<button type="button" class="entry-row-delete" title="Delete" onclick="deleteEntryRow(${index})">×</button>`:`<span class="entry-view-pill">View</span>`):`<button type="button" class="entry-row-delete" title="Remove row" onclick="removeEntryDraftRow(${index})">×</button>`;
   return `<tr class="${existing?'entry-row-existing':'entry-row-new'}" data-entry-index="${index}" data-item-id="${esc(row.itemId||'')}">
     <td class="instrument-col"><select class="entry-instrument" onchange="entryInstrumentChanged(${index})" ${existing?'disabled':''}>${instrOpts}</select></td>
-    <td class="account-col"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select>${bank?`<div class="entry-account-actions"><button type="button" class="btn sm" onclick="addBankAccountPrompt(${index})" ${existing||userReadonly?'disabled':''}>+ Add Bank Account</button></div>`:''}</td>
+    <td class="account-col"><div class="entry-account-wrap"><select class="entry-account" onchange="entryAccountChanged(${index})" ${existing||userReadonly?'disabled':''}>${accOpts}</select>${bank?`<span class="entry-account-actions"><button type="button" class="btn sm" title="Add Bank Account" aria-label="Add Bank Account" onclick="addBankAccountPrompt(${index})" ${existing||userReadonly?'disabled':''}>+</button></span>`:''}</div></td>
     <td class="category-col"><select class="entry-category" onchange="entryCategoryChanged(${index})" ${fixed?'disabled':''} ${existing||userReadonly?'disabled':''}>${cats}</select></td>
     <td class="amount-col"><input class="entry-bank" type="number" step=".01" value="${esc(bankBal)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
     <td class="amount-col"><input class="entry-brs" type="number" step=".01" value="${esc(brs)}" placeholder="0.00" oninput="entryAmountChanged(${index})" ${!bank||userReadonly?'disabled':''}></td>
