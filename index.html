@@ -1480,7 +1480,7 @@ function formatEntryInput(el){if(!el)return;const raw=String(el.value||'').repla
 function entryAmountChanged(i){syncDraftFromDom();document.querySelectorAll('#entryFields tbody tr').forEach((tr,idx)=>{if(idx===i){const bank=tr.querySelector('.entry-bank');const brs=tr.querySelector('.entry-brs');const books=tr.querySelector('.entry-books');if(bank&&!bank.disabled&&brs&&!brs.disabled&&books){const v=parseINR(bank.value)+parseINR(brs.value);books.value=formatIndianINR(Math.round(v));}}});syncDraftFromDom();updateEntrySummary();}
 function addEntryDraftRow(){syncDraftFromDom();entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
 function removeEntryDraftRow(i){const base=projectItemRows().length;const idx=i-base;if(idx<0)return;syncDraftFromDom();entryDraftRows.splice(idx,1);if(!entryDraftRows.length)entryDraftRows.push({__new:true,instrument:'Bank',account:'',category:'Liquid',bankBalance:'',brs:'',booksBalance:''});renderEntryFields();}
-async async function addBankAccountPrompt(){
+async function addBankAccountPrompt(){
   const entity=$("eEntity")?.value||"";
   const project=$("eProject")?.value||"";
   if(!entity||!project){
