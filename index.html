@@ -738,7 +738,24 @@ async function apiGet(action){
   // Apps Script Web Apps commonly redirect their GET response. Using JSONP
   // directly avoids waiting on a cross-origin fetch that may never expose the
   // redirected response to GitHub Pages.
-  return await apiGetJSONP(action);
+  // A single dropped/blocked request (ad-blocker, flaky mobile network, a
+  // momentary Google-side hiccup) fires script.onerror even though the
+  // deployment itself is healthy, so retry a couple of times with a short
+  // backoff before surfacing the failure to the user.
+  return await withRetry_(()=>apiGetJSONP(action),3,700);
+}
+function withRetry_(fn,attempts,delayMs){
+  return new Promise((resolve,reject)=>{
+    let tryNum=0;
+    const attempt=()=>{
+      tryNum++;
+      fn().then(resolve).catch(err=>{
+        if(tryNum>=attempts){reject(err);return;}
+        setTimeout(attempt,delayMs*tryNum);
+      });
+    };
+    attempt();
+  });
 }
 function apiGetJSONP(action){
   if(!maiaCurrentUser)return Promise.reject(Error("Please sign in to access the dashboard."));
