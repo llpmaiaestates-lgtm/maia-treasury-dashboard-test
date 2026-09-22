@@ -487,8 +487,8 @@ body:not(.sidebar-open) .wrap{margin-left:0;max-width:none}
 <div class="footer">MAIA Estates · Treasury Management · Google Sheets + Apps Script · Auto refresh every 10 minutes</div>
 </main>
 
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js">
-
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script>
 // Treasury amounts: user enters absolute INR; backend/dashboard stores and displays ₹ Crores.
 const INR_PER_CRORE = 10000000;
 function absToCr(v){ const n=Number(v); return Number.isFinite(n) ? n/INR_PER_CRORE : 0; }
