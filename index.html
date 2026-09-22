@@ -1338,27 +1338,70 @@ async function addBankAccountPrompt(i){
   syncDraftFromDom();
   const d=entryDraftRows[i-base];
   if(!d || d.instrument!=='Bank') return;
+
   const entity=$("eEntity")?.value||'';
   const project=$("eProject")?.value||'';
-  if(!entity||!project){note('Please select Entity and Project first.',true);return;}
+  if(!entity||!project){
+    note('Please select Entity and Project first.',true);
+    return;
+  }
+
   const name=(prompt('Enter Bank Account / Account Name:')||'').trim();
   if(!name)return;
+
   const category=d.category||'Liquid';
+
   try{
     note('Adding bank account…');
+
     const r=await apiPost({
-      action:'addBankAccount',entity,projectCode:project,account:name,category,
-      username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent
+      action:'addBankAccount',
+      entity,
+      projectCode:project,
+      account:name,
+      category,
+      username:maiaCurrentUser?.email||'',
+      userAgent:navigator.userAgent
     });
-    if(!r || r.status!=='ok') throw Error(r?.message||'Could not add bank account.');
-    // Reload the authoritative item master from Apps Script instead of relying on
-    // the browser's old list. This makes the new account immediately available.
-    await loadAll();
-    const fresh=bankItemsForCurrent().find(x=>String(x.itemId||'')===String(r.itemId||'')) || bankItemsForCurrent().find(x=>String(x.account||'').toUpperCase()===name.toUpperCase());
-    if(fresh)d.account=fresh.account;
+
+    if(!r || r.status!=='ok'){
+      throw Error(r?.message||'Could not add bank account.');
+    }
+
+    /*
+      Important: the backend save is authoritative. Update the local item master
+      immediately from the successful response. Do NOT make the success depend
+      on a second bootstrap refresh succeeding.
+    */
+    const item={
+      itemId:String(r.itemId||''),
+      entity:String(entity).toUpperCase(),
+      project:String(project).toUpperCase(),
+      instrument:'Bank',
+      account:String(r.account||name),
+      category:String(r.category||category),
+      active:true
+    };
+
+    treasuryItems=(treasuryItems||[]).filter(x=>String(x.itemId||'')!==item.itemId);
+    treasuryItems.push(item);
+
+    d.account=item.account;
+    d.category=item.category;
+
     renderEntryFields();
-    note(r.created===false?'✓ Bank account already existed; it is now available.':'✓ Bank account added successfully.');
-  }catch(e){note(e?.message||'Could not add bank account.',true);}
+    note(r.created===false
+      ? '✓ Bank account already existed and is now available.'
+      : '✓ Bank account added successfully.');
+
+    /*
+      Refresh in the background only. If bootstrap refresh fails, the account
+      we just added must remain visible in the current form.
+    */
+    loadAll().catch(()=>{});
+  }catch(e){
+    note(e?.message||'Could not add bank account.',true);
+  }
 }
 async function deleteEntryRow(i){if(!isAdminUser()){note('Admin access required.',true);return;}const rs=projectItemRows();const r=rs[i];if(!r?.itemId)return;if(!confirm('Delete this treasury entry for the selected date?'))return;try{const res=await apiPost({action:'delete',date:r.date,entity:r.entity,itemId:r.itemId,reason:'Treasury entry deleted by Admin',username:maiaCurrentUser?.email||'',userAgent:navigator.userAgent});if(res.status!=='ok')throw Error(res.message||'Delete failed');await loadAll();note('✓ Treasury entry deleted.');}catch(e){note(e.message,true)}}
 async function saveOneEntryRow(r,idx,existing){
