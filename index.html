@@ -1911,5 +1911,84 @@ ensureChartJs().catch(()=>{});
 })();
 </script>
 
+
+<script id="maia-login-recovery">
+/* Login recovery: keeps Firebase login usable even if another dashboard
+   initialization step fails after the page loads. */
+(function(){
+  const cfg = {
+    apiKey: "AIzaSyA9dkMh4Sla3aUG6cSP2sqM8kisyzNQoqE",
+    authDomain: "maia-treasury-dashboard.firebaseapp.com",
+    projectId: "maia-treasury-dashboard",
+    storageBucket: "maia-treasury-dashboard.firebasestorage.app",
+    messagingSenderId: "421524560340",
+    appId: "1:421524560340:web:574861ef7485d91e1c1e41"
+  };
+
+  function setErr(msg){
+    const el=document.getElementById("loginError");
+    if(el) el.textContent=msg||"";
+  }
+
+  function getAuth(){
+    try{
+      if(!window.firebase) return null;
+      if(!firebase.apps.length) firebase.initializeApp(cfg);
+      return firebase.auth();
+    }catch(e){
+      setErr("Firebase could not initialize: "+(e.message||e));
+      return null;
+    }
+  }
+
+  window.maiaLoginRecovery=function(){
+    const email=String(document.getElementById("loginEmail")?.value||"").trim();
+    const password=String(document.getElementById("loginPassword")?.value||"");
+    if(!email || !password){ setErr("Please enter your email and password."); return; }
+
+    const auth=getAuth();
+    if(!auth){ setErr("Firebase Authentication is not loaded. Please refresh the page once."); return; }
+
+    const btn=document.getElementById("loginBtn");
+    if(btn){btn.disabled=true;btn.textContent="Signing In…";}
+    setErr("");
+
+    auth.signInWithEmailAndPassword(email,password)
+      .then(function(userCred){
+        // Existing auth-state listener will open the dashboard.
+        window.maiaCurrentUser=userCred.user;
+      })
+      .catch(function(err){
+        const code=String(err?.code||"");
+        let msg=err?.message||"Unable to sign in.";
+        if(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found")) {
+          msg="Incorrect email or password.";
+        } else if(code.includes("too-many-requests")) {
+          msg="Too many login attempts. Please wait and try again.";
+        } else if(code.includes("unauthorized-domain")) {
+          msg="This website domain is not authorized in Firebase Authentication.";
+        }
+        setErr(msg);
+      })
+      .finally(function(){
+        if(btn){btn.disabled=false;btn.textContent="Sign In";}
+      });
+  };
+
+  document.addEventListener("DOMContentLoaded",function(){
+    const btn=document.getElementById("loginBtn");
+    if(!btn)return;
+    btn.onclick=function(e){
+      e.preventDefault();
+      try{
+        if(typeof window.signInUser==="function") window.signInUser();
+        else window.maiaLoginRecovery();
+      }catch(err){
+        window.maiaLoginRecovery();
+      }
+    };
+  });
+})();
+</script>
 </body>
 </html>
